@@ -18,6 +18,12 @@ package object nxn {
     }
   }
 
+  def vkCheck(errCode:Int):Unit = {
+    if (errCode != 0) {
+      throw new IllegalStateException(String.format("Vulkan error [0x%X]", errCode));
+    }
+  }
+
   extension (a:PointerBuffer){
     inline def putBuffer(b:PointerBuffer):PointerBuffer = {
       a.asInstanceOf[CustomBuffer[PointerBuffer]].put(b)
