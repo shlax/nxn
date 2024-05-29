@@ -2,6 +2,7 @@ package org
 
 import org.lwjgl.PointerBuffer
 import org.lwjgl.system.CustomBuffer
+import org.lwjgl.vulkan.VK10
 
 import scala.annotation.targetName
 
@@ -19,7 +20,7 @@ package object nxn {
   }
 
   def vkCheck(errCode:Int):Unit = {
-    if (errCode != 0) {
+    if (errCode != VK10.VK_SUCCESS) {
       throw new IllegalStateException(String.format("Vulkan error [0x%X]", errCode));
     }
   }
