@@ -7,8 +7,8 @@ import org.nxn.*
 class NxnPhysicalDevice(val instance: NxnInstance, surface: NxnSurface) {
 
   val (vkPhysicalDevice:VkPhysicalDevice,
-    graphicsQueueNodeIndex:Int,
-    presentQueueNodeIndex:Int) = MemoryStack.stackPush()|{ stack =>
+    preferredGraphicsQueueNodeIndex:Int, graphicsQueueNodeIndexes:List[Int],
+    preferredPresentQueueNodeIndex:Int, presentQueueNodeIndexes:List[Int]) = MemoryStack.stackPush()|{ stack =>
 
     val vkInstance = instance.vkInstance
 
@@ -22,7 +22,7 @@ class NxnPhysicalDevice(val instance: NxnInstance, surface: NxnSurface) {
     val devices = stack.callocPointer(n)
     vkCheck(VK10.vkEnumeratePhysicalDevices(vkInstance, nBuff, devices))
 
-    var vkGpu:Option[(VkPhysicalDevice, Int, Int)] = None
+    var vkGpu:Option[(VkPhysicalDevice, Int, List[Int], Int, List[Int])] = None
 
     for(i <- 0 until n){
       val gpu = new VkPhysicalDevice(devices.get(i), vkInstance)
@@ -67,8 +67,8 @@ class NxnPhysicalDevice(val instance: NxnInstance, surface: NxnSurface) {
         val gInd = if(int.isEmpty) graphicsQueueNodeInd.head else int.head
         val pInd = if(int.isEmpty) presentQueueNodeInd.head else int.head
 
-        if(vkGpu.isEmpty || ( int.nonEmpty && vkGpu.get._2 != vkGpu.get._3 )){ // resolve(vkDev.get, gpu)
-          vkGpu = Some((gpu, gInd, pInd))
+        if(vkGpu.isEmpty || ( int.nonEmpty && vkGpu.get._2 != vkGpu.get._4 )){
+          vkGpu = Some((gpu, gInd, graphicsQueueNodeInd, pInd, presentQueueNodeInd))
         }
       }
 
