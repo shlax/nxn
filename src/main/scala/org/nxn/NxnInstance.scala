@@ -23,7 +23,7 @@ class NxnInstance(ctx: NxnEngine) extends AutoCloseable, VkDebugUtilsMessengerCa
         for (i <- 0 until n) {
           val l = availableLayers.get(i)
           if (l.layerNameString() == "VK_LAYER_KHRONOS_validation") {
-            val p = stack.mallocPointer(1)
+            val p = stack.callocPointer(1)
             p.put(0, stack.ASCII("VK_LAYER_KHRONOS_validation"))
             requiredLayers = Some(p)
           }
@@ -47,7 +47,7 @@ class NxnInstance(ctx: NxnEngine) extends AutoCloseable, VkDebugUtilsMessengerCa
         for(i <- 0 until n){
           val e = ext.get(i)
           if(EXTDebugUtils.VK_EXT_DEBUG_UTILS_EXTENSION_NAME == e.extensionNameString()){
-            val p = stack.mallocPointer(1)
+            val p = stack.callocPointer(1)
             p.put(stack.ASCII(EXTDebugUtils.VK_EXT_DEBUG_UTILS_EXTENSION_NAME))
             requiredExtension = Some(p)
           }
@@ -66,12 +66,12 @@ class NxnInstance(ctx: NxnEngine) extends AutoCloseable, VkDebugUtilsMessengerCa
       .apiVersion(VK.getInstanceVersionSupported)
 
     val ext = if(requiredExtension.isDefined){
-      val p = stack.mallocPointer(glfwExt.remaining() + 1)
+      val p = stack.callocPointer(glfwExt.remaining() + 1)
       p.putBuffer(glfwExt)
       p.putBuffer(requiredExtension.get)
       p.flip()
     }else{
-      val p = stack.mallocPointer(glfwExt.remaining())
+      val p = stack.callocPointer(glfwExt.remaining())
       p.putBuffer(glfwExt)
       p.flip()
     }

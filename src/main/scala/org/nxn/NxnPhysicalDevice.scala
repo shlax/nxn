@@ -8,7 +8,7 @@ class NxnPhysicalDevice(val instance: NxnInstance, surface: NxnSurface) {
 
   val (vkPhysicalDevice:VkPhysicalDevice,
     graphicsQueueNodeIndex:Int,
-    presentQueueNodeIndex:Int ) = MemoryStack.stackPush()|{ stack =>
+    presentQueueNodeIndex:Int) = MemoryStack.stackPush()|{ stack =>
 
     val vkInstance = instance.vkInstance
 
@@ -19,7 +19,7 @@ class NxnPhysicalDevice(val instance: NxnInstance, surface: NxnSurface) {
       throw new IllegalStateException("vkEnumeratePhysicalDevices reported zero accessible devices.")
     }
 
-    val devices = stack.mallocPointer(n)
+    val devices = stack.callocPointer(n)
     vkCheck(VK10.vkEnumeratePhysicalDevices(vkInstance, nBuff, devices))
 
     var vkGpu:Option[(VkPhysicalDevice, Int, Int)] = None
@@ -41,7 +41,7 @@ class NxnPhysicalDevice(val instance: NxnInstance, surface: NxnSurface) {
           graphicsQueueNodeInd = i :: graphicsQueueNodeInd
         }
 
-        val supportsPresent = stack.mallocInt(1)
+        val supportsPresent = stack.callocInt(1)
         vkCheck(KHRSurface.vkGetPhysicalDeviceSurfaceSupportKHR(gpu, i, surface.vkSurface, supportsPresent))
         if (supportsPresent.get(0) == VK10.VK_TRUE) {
           presentQueueNodeInd = i :: presentQueueNodeInd
