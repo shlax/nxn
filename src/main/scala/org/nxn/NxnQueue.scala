@@ -4,7 +4,9 @@ import org.lwjgl.system.MemoryStack
 import org.lwjgl.vulkan.{VK10, VkQueue}
 import org.nxn.*
 
-class NxnQueue(device:NxnDevice, ind:Int) {
+class NxnQueue(device:NxnDevice, ind:Int) extends NxnContext {
+  override val engine: NxnEngine = device.engine
+
   if(ind >= device.queuesFamilies.size){
     throw new IndexOutOfBoundsException(ind)
   }

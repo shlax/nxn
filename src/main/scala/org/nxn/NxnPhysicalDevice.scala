@@ -4,7 +4,8 @@ import org.lwjgl.system.MemoryStack
 import org.lwjgl.vulkan.{KHRSurface, KHRSwapchain, VK10, VkExtensionProperties, VkPhysicalDevice, VkQueueFamilyProperties}
 import org.nxn.*
 
-class NxnPhysicalDevice(val instance: NxnInstance, surface: NxnSurface) {
+class NxnPhysicalDevice(val instance: NxnInstance, surface: NxnSurface) extends NxnContext{
+  override val engine: NxnEngine = instance.engine
 
   val (vkPhysicalDevice:VkPhysicalDevice,
     preferredGraphicsQueueNodeIndex:Int, graphicsQueueNodeIndexes:List[Int],

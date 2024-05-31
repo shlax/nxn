@@ -4,7 +4,9 @@ import org.lwjgl.glfw.Callbacks
 import org.lwjgl.glfw.GLFW
 import org.lwjgl.system.MemoryUtil
 
-class NxnWindow(en:NxnEngine) extends AutoCloseable{
+class NxnWindow(en:NxnEngine) extends AutoCloseable, NxnContext{
+  override val engine: NxnEngine = en
+
   GLFW.glfwWindowHint(GLFW.GLFW_CLIENT_API, GLFW.GLFW_NO_API)
   GLFW.glfwWindowHint(GLFW.GLFW_RESIZABLE, GLFW.GLFW_FALSE)
 
