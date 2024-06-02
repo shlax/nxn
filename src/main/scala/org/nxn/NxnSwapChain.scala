@@ -4,10 +4,12 @@ import org.lwjgl.system.MemoryStack
 import org.lwjgl.vulkan.{KHRSurface, KHRSwapchain, VK10, VkExtent2D, VkSurfaceCapabilitiesKHR, VkSurfaceFormatKHR, VkSwapchainCreateInfoKHR}
 import org.nxn.*
 
-class NxnSwapChain(surface: NxnSurface, device: NxnDevice, imgCount:Int) extends NxnContext {
+class NxnSwapChain(surface: NxnSurface, val device: NxnDevice, imgCount:Int) extends NxnContext , AutoCloseable{
   override val engine: NxnEngine = device.engine
 
-  val vkSwapChain : Long = MemoryStack.stackPush() | { stack =>
+  val (vkSwapChain : Long,
+    vkImages: IndexedSeq[Long], format:Int ) = MemoryStack.stackPush() | { stack =>
+
     val vkPhysicalDevice = device.physicalDevice.vkPhysicalDevice
 
     val surfCapabilities = VkSurfaceCapabilitiesKHR.calloc(stack)
@@ -41,7 +43,7 @@ class NxnSwapChain(surface: NxnSurface, device: NxnDevice, imgCount:Int) extends
     vkCheck(KHRSurface.vkGetPhysicalDeviceSurfacePresentModesKHR(vkPhysicalDevice, surface.vkSurface, presentModesBuff, null))
     val mumPresentModes = presentModesBuff.get(0)
 
-    val presentModes = stack.mallocInt(mumPresentModes)
+    val presentModes = stack.callocInt(mumPresentModes)
     vkCheck(KHRSurface.vkGetPhysicalDeviceSurfacePresentModesKHR(vkPhysicalDevice, surface.vkSurface, presentModesBuff, presentModes))
 
     val modes = for(i <- 0 until mumPresentModes) yield presentModes.get(i)
@@ -49,7 +51,7 @@ class NxnSwapChain(surface: NxnSurface, device: NxnDevice, imgCount:Int) extends
       else if(modes.contains(KHRSurface.VK_PRESENT_MODE_FIFO_KHR)) KHRSurface.VK_PRESENT_MODE_FIFO_KHR
       else modes.head
 
-    val swapChainExtent = VkExtent2D.malloc(stack)
+    val swapChainExtent = VkExtent2D.calloc(stack)
     if(surfCapabilities.currentExtent().width() == 0xFFFFFFFF && surfCapabilities.currentExtent().height() == 0xFFFFFFFF){
       // Surface size undefined. Set to the window size if within bounds
       val s = device.engine.size
@@ -95,7 +97,18 @@ class NxnSwapChain(surface: NxnSurface, device: NxnDevice, imgCount:Int) extends
     vkCheck(KHRSwapchain.vkCreateSwapchainKHR(device.vkDevice, swapChainInfo, null, lp))
     val swapChain = lp.get(0)
 
-    swapChain
+    val ivBuff = stack.callocInt(1)
+    vkCheck(KHRSwapchain.vkGetSwapchainImagesKHR(device.vkDevice, swapChain, ivBuff, null))
+    val numImages = ivBuff.get(0)
+
+    val swapChainImages = stack.callocLong(numImages)
+    vkCheck(KHRSwapchain.vkGetSwapchainImagesKHR(device.vkDevice, swapChain, ivBuff, swapChainImages))
+    val images = for(i <- 0 until numImages ) yield swapChainImages.get(i)
+
+    (swapChain, images, imageFormat)
   }
 
+  override def close(): Unit = {
+    KHRSwapchain.vkDestroySwapchainKHR(device.vkDevice, vkSwapChain, null)
+  }
 }
