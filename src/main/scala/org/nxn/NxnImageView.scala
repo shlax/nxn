@@ -1,17 +1,31 @@
 package org.nxn
 
 import org.lwjgl.system.MemoryStack
-import org.lwjgl.vulkan.VK10
+import org.lwjgl.vulkan.{VK10, VkImageSubresourceRange, VkImageViewCreateInfo}
 import org.nxn.*
+
+import java.util.function.Consumer
 
 class NxnImageView(swapChain: NxnSwapChain, ind:Int) extends AutoCloseable, NxnContext {
   override val engine: NxnEngine = swapChain.engine
 
   val vkImageView: Long = MemoryStack.stackPush() | { stack =>
-    // https://github.com/LWJGL/lwjgl3/blob/master/modules/samples/src/test/java/org/lwjgl/demo/vulkan/HelloVulkan.java#L872
-    // https://github.com/lwjglgamedev/vulkanbook/blob/master/booksamples/chapter-04/src/main/java/org/vulkanb/eng/graph/vk/ImageView.java#L58
-    // https://github.com/lwjglgamedev/vulkanbook/blob/master/bookcontents/chapter-04/chapter-04.md
-    0
+    val info = VkImageViewCreateInfo.calloc(stack)
+      .sType$Default()
+      .image(swapChain.vkImages(ind))
+      .viewType(VK10.VK_IMAGE_VIEW_TYPE_2D)
+      .format(swapChain.format)
+      .subresourceRange( (r: VkImageSubresourceRange) => {
+        r.aspectMask(VK10.VK_IMAGE_ASPECT_COLOR_BIT)
+          .baseMipLevel(0)
+          .levelCount(1)
+          .baseArrayLayer(0)
+          .layerCount(1)
+      }:Unit )
+
+    val lp = stack.callocLong(1)
+    vkCheck(VK10.vkCreateImageView(swapChain.device.vkDevice, info, null, lp))
+    lp.get(0)
   }
 
   override def close(): Unit = {
