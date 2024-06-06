@@ -2,6 +2,7 @@ package org.nxn.vulkan
 
 import org.lwjgl.system.MemoryStack
 import org.lwjgl.vulkan.{KHRSurface, KHRSwapchain, VK10, VkExtent2D, VkSurfaceCapabilitiesKHR, VkSurfaceFormatKHR, VkSwapchainCreateInfoKHR}
+import org.nxn.utils.Dimension
 import org.nxn.Extensions.*
 
 class NxnSwapChain(val surface: NxnSurface, val device: NxnDevice, val imgCount:Int) extends NxnContext , AutoCloseable{
@@ -9,8 +10,8 @@ class NxnSwapChain(val surface: NxnSurface, val device: NxnDevice, val imgCount:
 
   /** (vkSwapChain : Long,
    vkImages: IndexedSeq[Long], format:Int,
-   width:Int, height:Int) */
-  protected def init(): (Long, IndexedSeq[Long], Int, Int, Int) = MemoryStack.stackPush() | { stack =>
+   dimension: Dimension) */
+  protected def init(): (Long, IndexedSeq[Long], Int, Dimension) = MemoryStack.stackPush() | { stack =>
     val vkPhysicalDevice = device.physicalDevice.vkPhysicalDevice
 
     val surfCapabilities = VkSurfaceCapabilitiesKHR.calloc(stack)
@@ -113,12 +114,12 @@ class NxnSwapChain(val surface: NxnSurface, val device: NxnDevice, val imgCount:
     vkCheck(KHRSwapchain.vkGetSwapchainImagesKHR(device.vkDevice, swapChain, ivBuff, swapChainImages))
     val images = for(i <- 0 until numImages ) yield swapChainImages.get(i)
 
-    (swapChain, images, imageFormat, width, height)
+    (swapChain, images, imageFormat, Dimension(width, height) )
   }
 
   val (vkSwapChain : Long,
     vkImages: IndexedSeq[Long], format:Int,
-    width:Int, height:Int) = init()
+    dimension: Dimension) = init()
 
   override def close(): Unit = {
     KHRSwapchain.vkDestroySwapchainKHR(device.vkDevice, vkSwapChain, null)

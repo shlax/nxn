@@ -1,7 +1,8 @@
 package org.nxn.vulkan
 
 import org.lwjgl.glfw.{GLFW, GLFWErrorCallback, GLFWVulkan}
-import java.awt.Dimension
+import org.nxn.utils.Dimension
+
 
 class NxnEngine(val debug :Boolean, val name:String, val size:Dimension) extends AutoCloseable{
   GLFWErrorCallback.createPrint.set()
