@@ -9,7 +9,7 @@ import java.util.function.Consumer
 class NxnImageView(swapChain: NxnSwapChain, ind:Int) extends AutoCloseable, NxnContext {
   override val engine: NxnEngine = swapChain.engine
 
-  val vkImageView: Long = MemoryStack.stackPush() | { stack =>
+  protected def init() : Long = MemoryStack.stackPush() | { stack =>
     val info = VkImageViewCreateInfo.calloc(stack)
       .sType$Default()
       .image(swapChain.vkImages(ind))
@@ -27,6 +27,8 @@ class NxnImageView(swapChain: NxnSwapChain, ind:Int) extends AutoCloseable, NxnC
     vkCheck(VK10.vkCreateImageView(swapChain.device.vkDevice, info, null, lp))
     lp.get(0)
   }
+
+  val vkImageView: Long = init()
 
   override def close(): Unit = {
     VK10.vkDestroyImageView(swapChain.device.vkDevice, vkImageView, null)

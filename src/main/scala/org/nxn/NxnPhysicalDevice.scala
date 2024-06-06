@@ -7,10 +7,10 @@ import org.nxn.*
 class NxnPhysicalDevice(val instance: NxnInstance, surface: NxnSurface) extends NxnContext{
   override val engine: NxnEngine = instance.engine
 
-  val (vkPhysicalDevice:VkPhysicalDevice,
-    preferredGraphicsQueueNodeIndex:Int, graphicsQueueNodeIndexes:IndexedSeq[Int],
-    preferredPresentQueueNodeIndex:Int, presentQueueNodeIndexes:IndexedSeq[Int]) = MemoryStack.stackPush()|{ stack =>
-
+  /** vkPhysicalDevice:VkPhysicalDevice,
+   preferredGraphicsQueueNodeIndex:Int, graphicsQueueNodeIndexes:IndexedSeq[Int],
+   preferredPresentQueueNodeIndex:Int, presentQueueNodeIndexes:IndexedSeq[Int] */
+  protected def init():(VkPhysicalDevice, Int, IndexedSeq[Int], Int, IndexedSeq[Int]) = MemoryStack.stackPush()|{ stack =>
     val vkInstance = instance.vkInstance
 
     val nBuff = stack.callocInt(1)
@@ -77,5 +77,9 @@ class NxnPhysicalDevice(val instance: NxnInstance, surface: NxnSurface) extends 
 
     vkGpu.get
   }
+
+  val (vkPhysicalDevice:VkPhysicalDevice,
+    preferredGraphicsQueueNodeIndex:Int, graphicsQueueNodeIndexes:IndexedSeq[Int],
+    preferredPresentQueueNodeIndex:Int, presentQueueNodeIndexes:IndexedSeq[Int]) = init()
 
 }

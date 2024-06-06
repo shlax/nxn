@@ -7,9 +7,9 @@ import org.nxn.*
 class NxnSwapChain(surface: NxnSurface, val device: NxnDevice, imgCount:Int) extends NxnContext , AutoCloseable{
   override val engine: NxnEngine = device.engine
 
-  val (vkSwapChain : Long,
-    vkImages: IndexedSeq[Long], format:Int ) = MemoryStack.stackPush() | { stack =>
-
+  /** (vkSwapChain : Long,
+   vkImages: IndexedSeq[Long], format:Int ) */
+  protected def init(): (Long, IndexedSeq[Long], Int) = MemoryStack.stackPush() | { stack =>
     val vkPhysicalDevice = device.physicalDevice.vkPhysicalDevice
 
     val surfCapabilities = VkSurfaceCapabilitiesKHR.calloc(stack)
@@ -48,8 +48,8 @@ class NxnSwapChain(surface: NxnSurface, val device: NxnDevice, imgCount:Int) ext
 
     val modes = for(i <- 0 until mumPresentModes) yield presentModes.get(i)
     val presentMode = if(modes.contains(KHRSurface.VK_PRESENT_MODE_FIFO_RELAXED_KHR)) KHRSurface.VK_PRESENT_MODE_FIFO_RELAXED_KHR
-      else if(modes.contains(KHRSurface.VK_PRESENT_MODE_FIFO_KHR)) KHRSurface.VK_PRESENT_MODE_FIFO_KHR
-      else modes.head
+    else if(modes.contains(KHRSurface.VK_PRESENT_MODE_FIFO_KHR)) KHRSurface.VK_PRESENT_MODE_FIFO_KHR
+    else modes.head
 
     val swapChainExtent = VkExtent2D.calloc(stack)
     if(surfCapabilities.currentExtent().width() == 0xFFFFFFFF && surfCapabilities.currentExtent().height() == 0xFFFFFFFF){
@@ -107,6 +107,9 @@ class NxnSwapChain(surface: NxnSurface, val device: NxnDevice, imgCount:Int) ext
 
     (swapChain, images, imageFormat)
   }
+
+  val (vkSwapChain : Long,
+    vkImages: IndexedSeq[Long], format:Int ) = init()
 
   override def close(): Unit = {
     KHRSwapchain.vkDestroySwapchainKHR(device.vkDevice, vkSwapChain, null)

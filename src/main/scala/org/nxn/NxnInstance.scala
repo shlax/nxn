@@ -12,7 +12,7 @@ class NxnInstance(ctx: NxnEngine) extends AutoCloseable, VkDebugUtilsMessengerCa
   private var dbgFn:Option[VkDebugUtilsMessengerCallbackEXT] = None
   private var dbgCallBack:Option[Long] = None
 
-  val vkInstance:VkInstance = MemoryStack.stackPush()|{ stack =>
+  protected def init() : VkInstance = MemoryStack.stackPush()|{ stack =>
     var requiredLayers:Option[PointerBuffer] = None
     if(ctx.debug){ // validate layer
       val nBuff = stack.callocInt(1)
@@ -121,6 +121,8 @@ class NxnInstance(ctx: NxnEngine) extends AutoCloseable, VkDebugUtilsMessengerCa
 
     vkInst
   }
+
+  val vkInstance:VkInstance =  init()
 
   override def invoke(messageSeverity: Int, messageTypes: Int, pCallbackData: Long, pUserData: Long): Int = {
 

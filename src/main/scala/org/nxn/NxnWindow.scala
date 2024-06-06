@@ -10,7 +10,11 @@ class NxnWindow(en:NxnEngine) extends AutoCloseable, NxnContext{
   GLFW.glfwWindowHint(GLFW.GLFW_CLIENT_API, GLFW.GLFW_NO_API)
   GLFW.glfwWindowHint(GLFW.GLFW_RESIZABLE, GLFW.GLFW_FALSE)
 
-  val windowHandle:Long = GLFW.glfwCreateWindow(en.size.width, en.size.height, en.name, MemoryUtil.NULL, MemoryUtil.NULL)
+  protected def init():Long = {
+    GLFW.glfwCreateWindow(en.size.width, en.size.height, en.name, MemoryUtil.NULL, MemoryUtil.NULL)
+  }
+
+  val windowHandle:Long = init()
   if (windowHandle == MemoryUtil.NULL){
     throw new IllegalStateException("Failed to create the GLFW window")
   }

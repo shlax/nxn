@@ -7,7 +7,7 @@ import org.nxn.*
 class NxnDevice(val physicalDevice:NxnPhysicalDevice, val queuesFamilies:Seq[Int]) extends NxnContext, AutoCloseable{
   override val engine: NxnEngine = physicalDevice.engine
 
-  val vkDevice:VkDevice = MemoryStack.stackPush() | { stack =>
+  protected def init(): VkDevice = MemoryStack.stackPush() | { stack =>
     val queue = VkDeviceQueueCreateInfo.calloc(queuesFamilies.size, stack)
     val priorities = stack.callocFloat(queuesFamilies.size)
     for(i <- queuesFamilies.zipWithIndex) {
@@ -44,7 +44,9 @@ class NxnDevice(val physicalDevice:NxnPhysicalDevice, val queuesFamilies:Seq[Int
     new VkDevice(buff.get(0), physicalDevice.vkPhysicalDevice, devInf)
   }
 
-  def features(deviceFeatures:VkPhysicalDeviceFeatures, enabled:VkPhysicalDeviceFeatures) : Unit = {
+  val vkDevice:VkDevice = init()
+
+  protected def features(deviceFeatures:VkPhysicalDeviceFeatures, enabled:VkPhysicalDeviceFeatures) : Unit = {
     // ??
   }
 
