@@ -1,8 +1,8 @@
-package org.nxn
+package org.nxn.vulkan
 
 import org.lwjgl.system.{MemoryStack, MemoryUtil}
 import org.lwjgl.vulkan.{KHRSwapchain, VK10, VkDevice, VkDeviceCreateInfo, VkDeviceQueueCreateInfo, VkPhysicalDeviceFeatures}
-import org.nxn.*
+import org.nxn.Extensions.*
 
 class NxnDevice(val physicalDevice:NxnPhysicalDevice, val queuesFamilies:Seq[Int]) extends NxnContext, AutoCloseable{
   override val engine: NxnEngine = physicalDevice.engine

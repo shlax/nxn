@@ -1,8 +1,8 @@
-package org.nxn
+package org.nxn.vulkan
 
 import org.lwjgl.system.MemoryStack
 import org.lwjgl.vulkan.{VK10, VkFramebufferCreateInfo}
-import org.nxn.*
+import org.nxn.Extensions.*
 
 class NxnFrameBuffer(val renderPass: NxnRenderPass, val imageView:NxnImageView) extends NxnContext, AutoCloseable {
   override val engine: NxnEngine = renderPass.engine

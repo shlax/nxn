@@ -1,4 +1,4 @@
-package org.nxn
+package org.nxn.vulkan
 
 import org.lwjgl.glfw.{GLFW, GLFWErrorCallback, GLFWVulkan}
 import java.awt.Dimension

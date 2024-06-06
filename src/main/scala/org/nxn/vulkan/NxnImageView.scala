@@ -1,8 +1,8 @@
-package org.nxn
+package org.nxn.vulkan
 
 import org.lwjgl.system.MemoryStack
 import org.lwjgl.vulkan.{VK10, VkImageSubresourceRange, VkImageViewCreateInfo}
-import org.nxn.*
+import org.nxn.Extensions.*
 
 import java.util.function.Consumer
 

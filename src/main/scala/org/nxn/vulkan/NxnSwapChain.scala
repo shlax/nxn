@@ -1,8 +1,8 @@
-package org.nxn
+package org.nxn.vulkan
 
 import org.lwjgl.system.MemoryStack
 import org.lwjgl.vulkan.{KHRSurface, KHRSwapchain, VK10, VkExtent2D, VkSurfaceCapabilitiesKHR, VkSurfaceFormatKHR, VkSwapchainCreateInfoKHR}
-import org.nxn.*
+import org.nxn.Extensions.*
 
 class NxnSwapChain(val surface: NxnSurface, val device: NxnDevice, val imgCount:Int) extends NxnContext , AutoCloseable{
   override val engine: NxnEngine = device.engine

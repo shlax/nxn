@@ -1,8 +1,8 @@
-package org.nxn
+package org.nxn.vulkan
 
 import org.lwjgl.system.MemoryStack
 import org.lwjgl.vulkan.{VK10, VkQueue}
-import org.nxn.*
+import org.nxn.Extensions.*
 
 class NxnQueue(val device:NxnDevice, val ind:Int) extends NxnContext {
   override val engine: NxnEngine = device.engine

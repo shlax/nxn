@@ -1,4 +1,4 @@
-package org.nxn
+package org.nxn.vulkan
 
 trait NxnContext {
   def engine : NxnEngine

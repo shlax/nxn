@@ -1,8 +1,8 @@
-package org.nxn
+package org.nxn.vulkan
 
 import org.lwjgl.system.MemoryStack
 import org.lwjgl.vulkan.{KHRSurface, KHRSwapchain, VK10, VkExtensionProperties, VkPhysicalDevice, VkQueueFamilyProperties}
-import org.nxn.*
+import org.nxn.Extensions.*
 
 class NxnPhysicalDevice(val instance: NxnInstance, val surface: NxnSurface) extends NxnContext{
   override val engine: NxnEngine = instance.engine

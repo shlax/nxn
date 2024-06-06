@@ -1,10 +1,10 @@
-package org.nxn
+package org.nxn.vulkan
 
 import org.lwjgl.PointerBuffer
 import org.lwjgl.glfw.GLFWVulkan
 import org.lwjgl.system.{MemoryStack, MemoryUtil}
 import org.lwjgl.vulkan.{EXTDebugUtils, VK, VK10, VkApplicationInfo, VkDebugUtilsMessengerCallbackDataEXT, VkDebugUtilsMessengerCallbackEXT, VkDebugUtilsMessengerCallbackEXTI, VkDebugUtilsMessengerCreateInfoEXT, VkExtensionProperties, VkInstance, VkInstanceCreateInfo, VkLayerProperties}
-import org.nxn.*
+import org.nxn.Extensions.*
 
 class NxnInstance(ctx: NxnEngine) extends AutoCloseable, VkDebugUtilsMessengerCallbackEXTI, NxnContext{
   override val engine: NxnEngine = ctx

@@ -1,23 +1,10 @@
-package org
+package org.nxn
 
 import org.lwjgl.PointerBuffer
 import org.lwjgl.system.CustomBuffer
 import org.lwjgl.vulkan.VK10
 
-import scala.annotation.targetName
-
-package object nxn {
-
-  extension [T <: AutoCloseable] (ac:T){
-    @targetName("withClose")
-    inline def | [R](f : T => R ):R = {
-      try{
-        f.apply(ac)
-      }finally {
-        ac.close()
-      }
-    }
-  }
+package object vulkan {
 
   def vkCheck(errCode:Int):Unit = {
     if (errCode != VK10.VK_SUCCESS) {

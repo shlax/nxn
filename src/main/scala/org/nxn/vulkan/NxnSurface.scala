@@ -1,9 +1,9 @@
-package org.nxn
+package org.nxn.vulkan
 
 import org.lwjgl.glfw.GLFWVulkan
 import org.lwjgl.system.MemoryStack
 import org.lwjgl.vulkan.KHRSurface
-import org.nxn.*
+import org.nxn.Extensions.*
 
 class NxnSurface(val instance:NxnInstance, val win:NxnWindow) extends AutoCloseable, NxnContext{
   override val engine: NxnEngine = instance.engine
