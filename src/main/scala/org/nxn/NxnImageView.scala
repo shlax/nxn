@@ -6,8 +6,12 @@ import org.nxn.*
 
 import java.util.function.Consumer
 
-class NxnImageView(swapChain: NxnSwapChain, ind:Int) extends AutoCloseable, NxnContext {
+class NxnImageView(val swapChain: NxnSwapChain, val ind:Int) extends AutoCloseable, NxnContext {
   override val engine: NxnEngine = swapChain.engine
+
+  if(ind >= swapChain.vkImages.size){
+    throw new IndexOutOfBoundsException(ind)
+  }
 
   protected def init() : Long = MemoryStack.stackPush() | { stack =>
     val info = VkImageViewCreateInfo.calloc(stack)

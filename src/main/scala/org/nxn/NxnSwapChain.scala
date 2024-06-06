@@ -4,12 +4,13 @@ import org.lwjgl.system.MemoryStack
 import org.lwjgl.vulkan.{KHRSurface, KHRSwapchain, VK10, VkExtent2D, VkSurfaceCapabilitiesKHR, VkSurfaceFormatKHR, VkSwapchainCreateInfoKHR}
 import org.nxn.*
 
-class NxnSwapChain(surface: NxnSurface, val device: NxnDevice, imgCount:Int) extends NxnContext , AutoCloseable{
+class NxnSwapChain(val surface: NxnSurface, val device: NxnDevice, val imgCount:Int) extends NxnContext , AutoCloseable{
   override val engine: NxnEngine = device.engine
 
   /** (vkSwapChain : Long,
-   vkImages: IndexedSeq[Long], format:Int ) */
-  protected def init(): (Long, IndexedSeq[Long], Int) = MemoryStack.stackPush() | { stack =>
+   vkImages: IndexedSeq[Long], format:Int,
+   width:Int, height:Int) */
+  protected def init(): (Long, IndexedSeq[Long], Int, Int, Int) = MemoryStack.stackPush() | { stack =>
     val vkPhysicalDevice = device.physicalDevice.vkPhysicalDevice
 
     val surfCapabilities = VkSurfaceCapabilitiesKHR.calloc(stack)
@@ -51,17 +52,24 @@ class NxnSwapChain(surface: NxnSurface, val device: NxnDevice, imgCount:Int) ext
     else if(modes.contains(KHRSurface.VK_PRESENT_MODE_FIFO_KHR)) KHRSurface.VK_PRESENT_MODE_FIFO_KHR
     else modes.head
 
+    val s = device.engine.size
+    var width = s.width
+    var height = s.height
+
     val swapChainExtent = VkExtent2D.calloc(stack)
     if(surfCapabilities.currentExtent().width() == 0xFFFFFFFF && surfCapabilities.currentExtent().height() == 0xFFFFFFFF){
       // Surface size undefined. Set to the window size if within bounds
-      val s = device.engine.size
+
       val minExt = surfCapabilities.minImageExtent()
       val maxExt = surfCapabilities.maxImageExtent()
 
       def minMax(v: Int, min: Int, max: Int) = v.min(max).max(min)
 
-      swapChainExtent.width( minMax(s.width, minExt.width(), maxExt.width()) )
-      swapChainExtent.height( minMax(s.height, minExt.height(), maxExt.height()) )
+      width = minMax(s.width, minExt.width(), maxExt.width())
+      height = minMax(s.height, minExt.height(), maxExt.height())
+
+      swapChainExtent.width(width)
+      swapChainExtent.height(height)
     }else{
       swapChainExtent.set(surfCapabilities.currentExtent())
     }
@@ -105,11 +113,12 @@ class NxnSwapChain(surface: NxnSurface, val device: NxnDevice, imgCount:Int) ext
     vkCheck(KHRSwapchain.vkGetSwapchainImagesKHR(device.vkDevice, swapChain, ivBuff, swapChainImages))
     val images = for(i <- 0 until numImages ) yield swapChainImages.get(i)
 
-    (swapChain, images, imageFormat)
+    (swapChain, images, imageFormat, width, height)
   }
 
   val (vkSwapChain : Long,
-    vkImages: IndexedSeq[Long], format:Int ) = init()
+    vkImages: IndexedSeq[Long], format:Int,
+    width:Int, height:Int) = init()
 
   override def close(): Unit = {
     KHRSwapchain.vkDestroySwapchainKHR(device.vkDevice, vkSwapChain, null)

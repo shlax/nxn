@@ -4,7 +4,7 @@ import org.lwjgl.system.MemoryStack
 import org.lwjgl.vulkan.{KHRSwapchain, VK10, VkAttachmentDescription, VkAttachmentReference, VkRenderPassCreateInfo, VkSubpassDescription}
 import org.nxn.*
 
-class NxnRenderPass(swapChain: NxnSwapChain)  extends NxnContext , AutoCloseable{
+class NxnRenderPass(val swapChain: NxnSwapChain)  extends NxnContext , AutoCloseable{
   override val engine: NxnEngine = swapChain.engine
 
   protected def init(): Long = MemoryStack.stackPush() | { stack =>
