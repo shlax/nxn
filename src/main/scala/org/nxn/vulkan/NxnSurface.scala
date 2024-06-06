@@ -5,12 +5,12 @@ import org.lwjgl.system.MemoryStack
 import org.lwjgl.vulkan.KHRSurface
 import org.nxn.Extensions.*
 
-class NxnSurface(val instance:NxnInstance, val win:NxnWindow) extends AutoCloseable, NxnContext{
+class NxnSurface(val instance:NxnInstance, val window:NxnWindow) extends AutoCloseable, NxnContext{
   override val engine: NxnEngine = instance.engine
 
   protected def init():Long = MemoryStack.stackPush()|{ stack =>
     val b = stack.callocLong(1)
-    vkCheck(GLFWVulkan.glfwCreateWindowSurface(instance.vkInstance, win.windowHandle, null, b))
+    vkCheck(GLFWVulkan.glfwCreateWindowSurface(instance.vkInstance, window.windowHandle, null, b))
     b.get(0)
   }
 

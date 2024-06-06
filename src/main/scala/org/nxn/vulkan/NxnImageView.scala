@@ -6,17 +6,17 @@ import org.nxn.Extensions.*
 
 import java.util.function.Consumer
 
-class NxnImageView(val swapChain: NxnSwapChain, val ind:Int) extends AutoCloseable, NxnContext {
+class NxnImageView(val swapChain: NxnSwapChain, val index:Int) extends AutoCloseable, NxnContext {
   override val engine: NxnEngine = swapChain.engine
 
-  if(ind >= swapChain.vkImages.size){
-    throw new IndexOutOfBoundsException(ind)
+  if(index >= swapChain.vkImages.size){
+    throw new IndexOutOfBoundsException(index)
   }
 
   protected def init() : Long = MemoryStack.stackPush() | { stack =>
     val info = VkImageViewCreateInfo.calloc(stack)
       .sType$Default()
-      .image(swapChain.vkImages(ind))
+      .image(swapChain.vkImages(index))
       .viewType(VK10.VK_IMAGE_VIEW_TYPE_2D)
       .format(swapChain.format)
       .subresourceRange( (r: VkImageSubresourceRange) => {

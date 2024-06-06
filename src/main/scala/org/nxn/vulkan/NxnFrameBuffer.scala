@@ -13,13 +13,15 @@ class NxnFrameBuffer(val renderPass: NxnRenderPass, val imageView:NxnImageView) 
     val attachments = stack.callocLong(1)
     attachments.put(imageView.vkImageView)
     attachments.flip()
-
+    
+    val dim = swapChain.dimension
+    
     val info = VkFramebufferCreateInfo.calloc(stack)
       .sType$Default()
       .renderPass(renderPass.vkRenderPass)
       .pAttachments(attachments)
-      .width(swapChain.width)
-      .height(swapChain.height)
+      .width(dim.width)
+      .height(dim.height)
       .layers(1)
 
     val buff = stack.callocLong(1)
