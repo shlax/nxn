@@ -5,7 +5,7 @@ import org.lwjgl.vulkan.{KHRSurface, KHRSwapchain, VK10, VkExtent2D, VkSurfaceCa
 import org.nxn.utils.Dimension
 import org.nxn.Extensions.*
 
-class NxnSwapChain(val surface: NxnSurface, val device: NxnDevice, val imgCount:Int) extends NxnContext , AutoCloseable{
+class NxnSwapChain(val surface: NxnSurface, val device: NxnDevice, imageCount:Int) extends NxnContext , AutoCloseable{
   override val engine: NxnEngine = device.engine
 
   /** (vkSwapChain : Long,
@@ -19,7 +19,7 @@ class NxnSwapChain(val surface: NxnSurface, val device: NxnDevice, val imgCount:
 
     val maxImages = surfCapabilities.maxImageCount()
     val minImages = surfCapabilities.minImageCount()
-    val imgCnt = (if( maxImages == 0 ) imgCount else imgCount.min(maxImages)).max(minImages)
+    val imgCnt = (if( maxImages == 0 ) imageCount else imageCount.min(maxImages)).max(minImages)
 
     val formatsBuff = stack.callocInt(1)
     vkCheck(KHRSurface.vkGetPhysicalDeviceSurfaceFormatsKHR(vkPhysicalDevice, surface.vkSurface, formatsBuff, null))
