@@ -8,8 +8,8 @@ class NxnPhysicalDevice(val instance: NxnInstance, val surface: NxnSurface) exte
   override val engine: NxnEngine = instance.engine
 
   /** vkPhysicalDevice:VkPhysicalDevice,
-   preferredGraphicsQueueNodeIndex:Int, graphicsQueueNodeIndexes:IndexedSeq[Int],
-   preferredPresentQueueNodeIndex:Int, presentQueueNodeIndexes:IndexedSeq[Int] */
+   graphicsQueueIndex:Int, graphicsQueueIndexes:IndexedSeq[Int],
+   presentQueueIndex:Int, presentQueueIndexes:IndexedSeq[Int] */
   protected def init():(VkPhysicalDevice, Int, IndexedSeq[Int], Int, IndexedSeq[Int]) = MemoryStack.stackPush()|{ stack =>
     val vkInstance = instance.vkInstance
 
@@ -33,24 +33,24 @@ class NxnPhysicalDevice(val instance: NxnInstance, val surface: NxnSurface) exte
       val props = VkQueueFamilyProperties.calloc(intBuff.get(0), stack)
       VK10.vkGetPhysicalDeviceQueueFamilyProperties(gpu, intBuff, props)
 
-      var graphicsQueueNodeInd:List[Int] = Nil
-      var presentQueueNodeInd:List[Int] = Nil
+      var graphicsQueueInd:List[Int] = Nil
+      var presentQueueInd:List[Int] = Nil
 
       for(i <- 0 until props.capacity()){
         val p = props.get(i)
         if( (p.queueFlags() & VK10.VK_QUEUE_GRAPHICS_BIT) != 0 ){
-          graphicsQueueNodeInd = i :: graphicsQueueNodeInd
+          graphicsQueueInd = i :: graphicsQueueInd
         }
 
         val supportsPresent = stack.callocInt(1)
         vkCheck(KHRSurface.vkGetPhysicalDeviceSurfaceSupportKHR(gpu, i, surface.vkSurface, supportsPresent))
         if (supportsPresent.get(0) == VK10.VK_TRUE) {
-          presentQueueNodeInd = i :: presentQueueNodeInd
+          presentQueueInd = i :: presentQueueInd
         }
       }
 
       var hasKHRSwapChainExtension = false
-      if(graphicsQueueNodeInd.nonEmpty && presentQueueNodeInd.nonEmpty){
+      if(graphicsQueueInd.nonEmpty && presentQueueInd.nonEmpty){
         vkCheck(VK10.vkEnumerateDeviceExtensionProperties(gpu, null.asInstanceOf[CharSequence], intBuff, null))
         val ext = VkExtensionProperties.calloc(intBuff.get(0), stack)
         vkCheck(VK10.vkEnumerateDeviceExtensionProperties(gpu, null.asInstanceOf[CharSequence], intBuff, ext))
@@ -64,12 +64,12 @@ class NxnPhysicalDevice(val instance: NxnInstance, val surface: NxnSurface) exte
       }
 
       if(hasKHRSwapChainExtension){
-        val int = graphicsQueueNodeInd.intersect(presentQueueNodeInd)
-        val gInd = if(int.isEmpty) graphicsQueueNodeInd.head else int.head
-        val pInd = if(int.isEmpty) presentQueueNodeInd.head else int.head
+        val int = graphicsQueueInd.intersect(presentQueueInd)
+        val gInd = if(int.isEmpty) graphicsQueueInd.head else int.head
+        val pInd = if(int.isEmpty) presentQueueInd.head else int.head
 
         if(vkGpu.isEmpty || ( int.nonEmpty && vkGpu.get._2 != vkGpu.get._4 )){
-          vkGpu = Some((gpu, gInd, graphicsQueueNodeInd.toIndexedSeq, pInd, presentQueueNodeInd.toIndexedSeq))
+          vkGpu = Some((gpu, gInd, graphicsQueueInd.toIndexedSeq, pInd, presentQueueInd.toIndexedSeq))
         }
       }
 
@@ -79,7 +79,7 @@ class NxnPhysicalDevice(val instance: NxnInstance, val surface: NxnSurface) exte
   }
 
   val (vkPhysicalDevice:VkPhysicalDevice,
-    preferredGraphicsQueueNodeIndex:Int, graphicsQueueNodeIndexes:IndexedSeq[Int],
-    preferredPresentQueueNodeIndex:Int, presentQueueNodeIndexes:IndexedSeq[Int]) = init()
+    graphicsQueueIndex:Int, graphicsQueueIndexes:IndexedSeq[Int],
+    presentQueueIndex:Int, presentQueueIndexes:IndexedSeq[Int]) = init()
 
 }
