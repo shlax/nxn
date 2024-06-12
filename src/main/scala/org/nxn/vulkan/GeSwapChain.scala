@@ -1,17 +1,31 @@
 package org.nxn.vulkan
 
 import org.lwjgl.system.MemoryStack
-import org.lwjgl.vulkan.{KHRSurface, KHRSwapchain, VK10, VkExtent2D, VkSurfaceCapabilitiesKHR, VkSurfaceFormatKHR, VkSwapchainCreateInfoKHR}
+import org.lwjgl.vulkan.{KHRSurface, KHRSwapchain, VK10, VkExtent2D, VkPresentInfoKHR, VkSurfaceCapabilitiesKHR, VkSurfaceFormatKHR, VkSwapchainCreateInfoKHR}
 import org.nxn.utils.Dimension
 import org.nxn.Extensions.*
 
 class GeSwapChain(val surface: GeSurface, val device: GeDevice, imageCount:Int) extends GeContext , AutoCloseable{
   override val system: GeSystem = device.system
 
+  class SyncSemaphore extends AutoCloseable{
+    val imageAcquisition:GeSemaphore = new GeSemaphore(device)
+    val renderComplete:GeSemaphore = new GeSemaphore(device)
+
+    override def close(): Unit = {
+      imageAcquisition.close()
+      renderComplete.close()
+    }
+  }
+
+  enum PresentResult{
+    case outOfDate, suboptimal
+  }
+
   /** (vkSwapChain : Long,
    vkImages: IndexedSeq[Long], format:Int,
    dimension: Dimension) */
-  protected def init(): (Long, IndexedSeq[Long], Int, Dimension) = MemoryStack.stackPush() | { stack =>
+  protected def init(): (Long, IndexedSeq[Long], Int, IndexedSeq[SyncSemaphore], Dimension) = MemoryStack.stackPush() | { stack =>
     val vkPhysicalDevice = device.physicalDevice.vkPhysicalDevice
 
     val surfCapabilities = VkSurfaceCapabilitiesKHR.calloc(stack)
@@ -113,15 +127,47 @@ class GeSwapChain(val surface: GeSurface, val device: GeDevice, imageCount:Int) 
     val swapChainImages = stack.callocLong(numImages)
     vkCheck(KHRSwapchain.vkGetSwapchainImagesKHR(device.vkDevice, swapChain, ivBuff, swapChainImages))
     val images = for(i <- 0 until numImages ) yield swapChainImages.get(i)
+    val sync = for(i <- 0 until numImages ) yield new SyncSemaphore
 
-    (swapChain, images, imageFormat, Dimension(width, height) )
+    (swapChain, images, imageFormat, sync, Dimension(width, height) )
   }
 
   val (vkSwapChain : Long,
     vkImages: IndexedSeq[Long], format:Int,
+    syncSemaphores: IndexedSeq[SyncSemaphore],
     dimension: Dimension) = init()
 
+  private var ind = 0
+  def index:Int = ind
+
+  def presentImage(queue: GeQueue):Option[PresentResult] = MemoryStack.stackPush() | { stack =>
+    val sem = syncSemaphores(ind).renderComplete.vkSemaphore
+
+    val info = VkPresentInfoKHR.calloc(stack)
+      .sType$Default()
+      .pWaitSemaphores(stack.longs(sem))
+      .swapchainCount(1)
+      .pSwapchains(stack.longs(vkSwapChain))
+      .pImageIndices(stack.ints(ind))
+
+    var res:Option[PresentResult] = None
+
+    val err = KHRSwapchain.vkQueuePresentKHR(queue.vkQueue, info)
+    if (err == KHRSwapchain.VK_ERROR_OUT_OF_DATE_KHR) {
+      res = Some(PresentResult.outOfDate)
+    } else if (err == KHRSwapchain.VK_SUBOPTIMAL_KHR) {
+      res = Some(PresentResult.suboptimal)
+    } else if (err != VK10.VK_SUCCESS) {
+      throw new IllegalStateException(String.format("Vulkan error [0x%X]", err));
+    }
+
+    ind = (ind + 1) % vkImages.length
+
+    res
+  }
+
   override def close(): Unit = {
+    for(c <- syncSemaphores) c.close()
     KHRSwapchain.vkDestroySwapchainKHR(device.vkDevice, vkSwapChain, null)
   }
 }

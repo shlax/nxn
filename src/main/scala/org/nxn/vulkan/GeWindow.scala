@@ -20,6 +20,12 @@ class GeWindow(en:GeSystem) extends GeContext, AutoCloseable{
     throw new IllegalStateException("Failed to create the GLFW window")
   }
 
+  def pullEvents() :Boolean = {
+    val res = !GLFW.glfwWindowShouldClose(windowHandle)
+    if(res) GLFW.glfwPollEvents()
+    res
+  }
+
   override def close(): Unit = {
     Callbacks.glfwFreeCallbacks(windowHandle)
     GLFW.glfwDestroyWindow(windowHandle)
