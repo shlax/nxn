@@ -5,8 +5,8 @@ import org.lwjgl.vulkan.{VK10, VkFenceCreateInfo}
 import scala.concurrent.duration.Duration
 import org.nxn.Extensions.*
 
-class NxnFence(val device: NxnDevice, val signaled:Boolean = true) extends NxnContext, AutoCloseable{
-  override val engine: NxnEngine = device.engine
+class GeFence(val device: GeDevice, val signaled:Boolean = true) extends GeContext, AutoCloseable{
+  override val system: GeSystem = device.system
 
   private val vkDevice = device.vkDevice
 
@@ -22,7 +22,7 @@ class NxnFence(val device: NxnDevice, val signaled:Boolean = true) extends NxnCo
 
   val vkFence:Long = init()
 
-  def await(waitAll:Boolean = true, timeout:Duration = engine.timeout):Unit = {
+  def await(waitAll:Boolean = true, timeout:Duration = system.timeout):Unit = {
     vkCheck( VK10.vkWaitForFences(vkDevice, vkFence, waitAll, timeout.toNanos) )
   }
 

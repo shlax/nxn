@@ -4,8 +4,8 @@ import org.lwjgl.system.MemoryStack
 import org.lwjgl.vulkan.{VK10, VkCommandPoolCreateInfo}
 import org.nxn.Extensions.*
 
-class NxnCommandPool(val device: NxnDevice, val queueFamilyIndex:Int) extends NxnContext, AutoCloseable{
-  override val engine: NxnEngine = device.engine
+class GeCommandPool(val device: GeDevice, val queueFamilyIndex:Int) extends GeContext, AutoCloseable{
+  override val system: GeSystem = device.system
 
   protected def init(): Long = MemoryStack.stackPush() | { stack =>
     val info = VkCommandPoolCreateInfo.calloc(stack)

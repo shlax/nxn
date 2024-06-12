@@ -4,8 +4,8 @@ import org.lwjgl.system.{MemoryStack, MemoryUtil}
 import org.lwjgl.vulkan.{KHRSwapchain, VK10, VkDevice, VkDeviceCreateInfo, VkDeviceQueueCreateInfo, VkPhysicalDeviceFeatures}
 import org.nxn.Extensions.*
 
-class NxnDevice(val physicalDevice:NxnPhysicalDevice, val queuesFamilies:Seq[Int]) extends NxnContext, AutoCloseable{
-  override val engine: NxnEngine = physicalDevice.engine
+class GeDevice(val physicalDevice:GePhysicalDevice, val queuesFamilies:Seq[Int]) extends GeContext, AutoCloseable{
+  override val system: GeSystem = physicalDevice.system
 
   protected def init(): VkDevice = MemoryStack.stackPush() | { stack =>
     val queue = VkDeviceQueueCreateInfo.calloc(queuesFamilies.size, stack)

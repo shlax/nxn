@@ -5,8 +5,8 @@ import org.lwjgl.vulkan.{KHRSurface, KHRSwapchain, VK10, VkExtent2D, VkSurfaceCa
 import org.nxn.utils.Dimension
 import org.nxn.Extensions.*
 
-class NxnSwapChain(val surface: NxnSurface, val device: NxnDevice, imageCount:Int) extends NxnContext , AutoCloseable{
-  override val engine: NxnEngine = device.engine
+class GeSwapChain(val surface: GeSurface, val device: GeDevice, imageCount:Int) extends GeContext , AutoCloseable{
+  override val system: GeSystem = device.system
 
   /** (vkSwapChain : Long,
    vkImages: IndexedSeq[Long], format:Int,
@@ -53,7 +53,7 @@ class NxnSwapChain(val surface: NxnSurface, val device: NxnDevice, imageCount:In
     else if(modes.contains(KHRSurface.VK_PRESENT_MODE_FIFO_KHR)) KHRSurface.VK_PRESENT_MODE_FIFO_KHR
     else modes.head
 
-    val s = device.engine.size
+    val s = system.windowSize
     var width = s.width
     var height = s.height
 

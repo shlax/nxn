@@ -6,8 +6,8 @@ import org.lwjgl.system.{MemoryStack, MemoryUtil}
 import org.lwjgl.vulkan.{EXTDebugUtils, VK, VK10, VkApplicationInfo, VkDebugUtilsMessengerCallbackDataEXT, VkDebugUtilsMessengerCallbackEXT, VkDebugUtilsMessengerCallbackEXTI, VkDebugUtilsMessengerCreateInfoEXT, VkExtensionProperties, VkInstance, VkInstanceCreateInfo, VkLayerProperties}
 import org.nxn.Extensions.*
 
-class NxnInstance(ctx: NxnEngine) extends AutoCloseable, VkDebugUtilsMessengerCallbackEXTI, NxnContext{
-  override val engine: NxnEngine = ctx
+class GeInstance(ctx: GeSystem) extends VkDebugUtilsMessengerCallbackEXTI, GeContext, AutoCloseable{
+  override val system: GeSystem = ctx
 
   private var dbgFn:Option[VkDebugUtilsMessengerCallbackEXT] = None
   private var dbgCallBack:Option[Long] = None

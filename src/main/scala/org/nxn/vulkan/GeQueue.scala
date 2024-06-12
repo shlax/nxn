@@ -4,8 +4,8 @@ import org.lwjgl.system.MemoryStack
 import org.lwjgl.vulkan.{VK10, VkQueue}
 import org.nxn.Extensions.*
 
-class NxnQueue(val device:NxnDevice, val index:Int) extends NxnContext {
-  override val engine: NxnEngine = device.engine
+class GeQueue(val device:GeDevice, val index:Int) extends GeContext {
+  override val system: GeSystem = device.system
 
   if(index >= device.queuesFamilies.size){
     throw new IndexOutOfBoundsException(index)

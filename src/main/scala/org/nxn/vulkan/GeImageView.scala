@@ -6,8 +6,8 @@ import org.nxn.Extensions.*
 
 import java.util.function.Consumer
 
-class NxnImageView(val swapChain: NxnSwapChain, val index:Int) extends AutoCloseable, NxnContext {
-  override val engine: NxnEngine = swapChain.engine
+class GeImageView(val swapChain: GeSwapChain, val index:Int) extends GeContext, AutoCloseable{
+  override val system: GeSystem = swapChain.system
 
   if(index >= swapChain.vkImages.size){
     throw new IndexOutOfBoundsException(index)

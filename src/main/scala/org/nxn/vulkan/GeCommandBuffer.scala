@@ -6,8 +6,8 @@ import org.nxn.Extensions.*
 
 import java.util.function.Consumer
 
-class NxnCommandBuffer(val commandPool: NxnCommandPool, val primary:Boolean = true)(fn: Consumer[VkCommandBuffer]) extends NxnContext, AutoCloseable{
-  override val engine: NxnEngine = commandPool.engine
+class GeCommandBuffer(val commandPool: GeCommandPool, val primary:Boolean = true)(fn: Consumer[VkCommandBuffer]) extends GeContext, AutoCloseable{
+  override val system: GeSystem = commandPool.system
 
   protected def init():VkCommandBuffer = MemoryStack.stackPush() | { stack =>
     val info = VkCommandBufferAllocateInfo.calloc(stack)
