@@ -4,7 +4,7 @@ import org.lwjgl.system.{MemoryStack, MemoryUtil}
 import org.lwjgl.vulkan.{KHRSwapchain, VK10, VkDevice, VkDeviceCreateInfo, VkDeviceQueueCreateInfo, VkPhysicalDeviceFeatures}
 import org.nxn.Extensions.*
 
-class GeDevice(val physicalDevice:GePhysicalDevice, val queuesFamilies:Seq[Int]) extends GeContext, AutoCloseable{
+class GeDevice(val physicalDevice:GePhysicalDevice, val queuesFamilies:IndexedSeq[Int]) extends GeContext, AutoCloseable{
   override val system: GeSystem = physicalDevice.system
 
   protected def init(): VkDevice = MemoryStack.stackPush() | { stack =>
