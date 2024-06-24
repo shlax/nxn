@@ -4,7 +4,7 @@ import org.lwjgl.system.MemoryStack
 import org.lwjgl.vulkan.{VK10, VkFramebufferCreateInfo}
 import org.nxn.Extensions.*
 
-class GeFrameBuffer(val renderPass: GeRenderPass, val imageView:GeImageView) extends GeContext, AutoCloseable {
+class GpFrameBuffer(val renderPass: GeRenderPass, val imageView:GeImageView) extends GeContext, AutoCloseable {
   override val system: GeSystem = renderPass.system
 
   protected def init():Long = MemoryStack.stackPush() | { stack =>

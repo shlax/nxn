@@ -4,7 +4,7 @@ import org.lwjgl.system.MemoryStack
 import org.lwjgl.vulkan.{KHRSwapchain, VK10, VkAttachmentDescription, VkAttachmentReference, VkRenderPassCreateInfo, VkSubpassDescription}
 import org.nxn.Extensions.*
 
-class GeRenderPass(val swapChain: GeSwapChain)  extends GeContext , AutoCloseable{
+class GpRenderPass(val swapChain: GeSwapChain)  extends GeContext , AutoCloseable{
   override val system: GeSystem = swapChain.system
 
   protected def init(): Long = MemoryStack.stackPush() | { stack =>

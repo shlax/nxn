@@ -4,7 +4,7 @@ import org.lwjgl.glfw.Callbacks
 import org.lwjgl.glfw.GLFW
 import org.lwjgl.system.MemoryUtil
 
-class GeWindow(en:GeSystem) extends GeContext, AutoCloseable{
+class GpWindow(en:GeSystem) extends GeContext, AutoCloseable{
   override val system: GeSystem = en
 
   GLFW.glfwWindowHint(GLFW.GLFW_CLIENT_API, GLFW.GLFW_NO_API)

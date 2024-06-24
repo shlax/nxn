@@ -4,7 +4,7 @@ import org.lwjgl.system.MemoryStack
 import org.lwjgl.vulkan.{VK10, VkSemaphoreCreateInfo}
 import org.nxn.Extensions.*
 
-class GeSemaphore(val device: GeDevice) extends GeContext, AutoCloseable{
+class GpSemaphore(val device: GeDevice) extends GeContext, AutoCloseable{
   override val system: GeSystem = device.system
 
   protected def init():Long = MemoryStack.stackPush() | { stack =>

@@ -6,8 +6,8 @@ import org.nxn.Extensions.*
 
 import java.util.function.Consumer
 
-class GeImageView(val swapChain: GeSwapChain, val index:Int) extends GeContext, AutoCloseable{
-  override val system: GeSystem = swapChain.system
+class GpImageView(val swapChain: GpSwapChain, val index:Int) extends GpContext, AutoCloseable{
+  override val system: GpSystem = swapChain.system
 
   if(index >= swapChain.vkImages.size){
     throw new IndexOutOfBoundsException(index)

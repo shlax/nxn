@@ -2,7 +2,7 @@ package org.nxn
 
 import org.nxn.Extensions.*
 import org.nxn.utils.Dimension
-import org.nxn.vulkan.{GeDevice, GeInstance, GePhysicalDevice, GeSurface, GeSystem, GeWindow}
+import org.nxn.vulkan.{GeDevice, GeInstance, GePhysicalDevice, GeQueue, GeSurface, GeSwapChain, GeSystem, GeWindow}
 
 import scala.util.control.NonFatal
 
@@ -16,11 +16,18 @@ object Main {
             new GeSurface(inst, win) |{ surf =>
               val psDev = new GePhysicalDevice(inst, surf)
               new GeDevice(psDev) | { dev =>
-                // >>
-                while (win.pullEvents()) {
+                val graphicsQueue = dev.graphicsQueue
+                val presentQueue = dev.presentQueue
+                new GeSwapChain(surf, dev)|{ swap =>
+
+                  // >>
+                  while (win.pullEvents()) {
+
+                  }
+                  // <<
 
                 }
-                // <<
+
               }
             }
           }

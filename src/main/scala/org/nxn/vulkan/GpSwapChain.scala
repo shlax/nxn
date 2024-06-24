@@ -5,14 +5,8 @@ import org.lwjgl.vulkan.{KHRSurface, KHRSwapchain, VK10, VkExtent2D, VkPresentIn
 import org.nxn.utils.Dimension
 import org.nxn.Extensions.*
 
-class GeSwapChain(val surface: GeSurface, val device: GeDevice, imageCount:Int) extends GeContext , AutoCloseable{
-  override val system: GeSystem = device.system
-
-  protected def initImageAcquisition():GeSemaphore = new GeSemaphore(device)
-  val imageAcquisition:GeSemaphore = initImageAcquisition()
-
-  protected def initRenderComplete():GeSemaphore = new GeSemaphore(device)
-  val renderComplete:GeSemaphore = initRenderComplete()
+class GpSwapChain(val surface: GpSurface, val device: GpDevice, imageCount:Int = 0) extends GpContext , AutoCloseable{
+  override val system: GpSystem = device.system
 
   /** (vkSwapChain : Long,
    vkImages: IndexedSeq[Long], format:Int,
@@ -25,13 +19,26 @@ class GeSwapChain(val surface: GeSurface, val device: GeDevice, imageCount:Int) 
 
     val maxImages = surfCapabilities.maxImageCount()
     val minImages = surfCapabilities.minImageCount()
-    val imgCnt = (if( maxImages == 0 ) imageCount else imageCount.min(maxImages)).max(minImages)
+    val imgCnt = if(imageCount == 0) {
+      if( maxImages == 0 ){
+        minImages + 1
+      }else{
+        // sticking to this minimum means that we may sometimes have to wait on the driver to complete internal operations before we can acquire another image to render to.
+        (minImages + 1).min(maxImages)
+      }
+    }else{
+      if( maxImages == 0 ){
+        imageCount.max(minImages)
+      }else{
+        imageCount.min(maxImages).max(minImages)
+      }
+    }
 
     val formatsBuff = stack.callocInt(1)
     vkCheck(KHRSurface.vkGetPhysicalDeviceSurfaceFormatsKHR(vkPhysicalDevice, surface.vkSurface, formatsBuff, null))
     val numFormats = formatsBuff.get(0)
     if(numFormats <= 0){
-      throw new RuntimeException("vkGetPhysicalDeviceSurfaceFormatsKHR pSurfaceFormatCount is "+numFormats)
+      throw new RuntimeException("vkGetPhysicalDeviceSurfaceFormatsKHR pSurfaceFormatCount = "+numFormats)
     }
 
     val surfaceFormats = VkSurfaceFormatKHR.calloc(numFormats, stack)
@@ -41,7 +48,7 @@ class GeSwapChain(val surface: GeSurface, val device: GeDevice, imageCount:Int) 
     var colorSpace = surfaceFormats.get(0).colorSpace()
     for(i <- 0 until numFormats){
       val sf = surfaceFormats.get(i)
-      if(sf.format() == VK10.VK_FORMAT_B8G8R8A8_UNORM && sf.colorSpace() == KHRSurface.VK_COLOR_SPACE_SRGB_NONLINEAR_KHR){
+      if(sf.format() == VK10.VK_FORMAT_B8G8R8A8_SRGB && sf.colorSpace() == KHRSurface.VK_COLOR_SPACE_SRGB_NONLINEAR_KHR){
         imageFormat = sf.format()
         colorSpace = sf.colorSpace()
       }
@@ -55,9 +62,7 @@ class GeSwapChain(val surface: GeSurface, val device: GeDevice, imageCount:Int) 
     vkCheck(KHRSurface.vkGetPhysicalDeviceSurfacePresentModesKHR(vkPhysicalDevice, surface.vkSurface, presentModesBuff, presentModes))
 
     val modes = for(i <- 0 until mumPresentModes) yield presentModes.get(i)
-    val presentMode = if(modes.contains(KHRSurface.VK_PRESENT_MODE_FIFO_RELAXED_KHR)) KHRSurface.VK_PRESENT_MODE_FIFO_RELAXED_KHR
-    else if(modes.contains(KHRSurface.VK_PRESENT_MODE_FIFO_KHR)) KHRSurface.VK_PRESENT_MODE_FIFO_KHR
-    else modes.head
+    val presentMode = if(modes.contains(KHRSurface.VK_PRESENT_MODE_FIFO_RELAXED_KHR)) KHRSurface.VK_PRESENT_MODE_FIFO_RELAXED_KHR else KHRSurface.VK_PRESENT_MODE_FIFO_KHR
 
     val s = system.windowSize
     var width = s.width
@@ -94,6 +99,7 @@ class GeSwapChain(val surface: GeSurface, val device: GeDevice, imageCount:Int) 
       .compositeAlpha(KHRSurface.VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR)
       .preTransform(surfCapabilities.currentTransform())
       .clipped(true)
+      .oldSwapchain(MemoryUtil.NULL)
 
     val indices = device.queuesFamilies.toSet
     if(indices.size > 1){
@@ -106,6 +112,8 @@ class GeSwapChain(val surface: GeSurface, val device: GeDevice, imageCount:Int) 
         .pQueueFamilyIndices(intBuffer)
     }else{
       swapChainInfo.imageSharingMode(VK10.VK_SHARING_MODE_EXCLUSIVE)
+        .queueFamilyIndexCount(0)
+        .pQueueFamilyIndices(null)
     }
 
     val lp = stack.callocLong(1)
@@ -126,6 +134,12 @@ class GeSwapChain(val surface: GeSurface, val device: GeDevice, imageCount:Int) 
   val (vkSwapChain : Long,
     vkImages: IndexedSeq[Long], format:Int,
     dimension: Dimension) = init()
+  
+  protected def initImageView(): IndexedSeq[GpImageView] = {
+    for(i <- vkImages.zipWithIndex) yield new GpImageView(this, i._2)
+  }
+  
+  val imageView: IndexedSeq[GpImageView] = initImageView()
 
   def presentResult(err:Int) : Option[PresentResult] = {
     var res:Option[PresentResult] = None
@@ -145,12 +159,12 @@ class GeSwapChain(val surface: GeSurface, val device: GeDevice, imageCount:Int) 
     case outOfDate, suboptimal
   }
 
-  def presentImage(queue: GeQueue, index:Int):Option[PresentResult] = MemoryStack.stackPush() | { stack =>
+  def presentImage(queue: GpQueue, index:Int, waitSemaphores:GpSemaphore):Option[PresentResult] = MemoryStack.stackPush() | { stack =>
     if(index >= vkImages.length){
       throw new IndexOutOfBoundsException(index)
     }
 
-    val sem = renderComplete.vkSemaphore
+    val sem = waitSemaphores.vkSemaphore
 
     val info = VkPresentInfoKHR.calloc(stack)
       .sType$Default()
@@ -165,8 +179,8 @@ class GeSwapChain(val surface: GeSurface, val device: GeDevice, imageCount:Int) 
 
   case class NextImage(index:Int, presentResult:Option[PresentResult])
 
-  def acquireNextImage(timeout:Long = system.timeout.toNanos):NextImage = MemoryStack.stackPush() | { stack =>
-    val sem = imageAcquisition.vkSemaphore
+  def acquireNextImage(semaphore: GeSemaphore,timeout:Long = system.timeout.toNanos):NextImage = MemoryStack.stackPush() | { stack =>
+    val sem = semaphore.vkSemaphore
 
     val ip = stack.callocInt(1)
     val err = KHRSwapchain.vkAcquireNextImageKHR(device.vkDevice, vkSwapChain, timeout, sem, MemoryUtil.NULL, ip)
@@ -178,8 +192,7 @@ class GeSwapChain(val surface: GeSurface, val device: GeDevice, imageCount:Int) 
   }
 
   override def close(): Unit = {
+    for(i <- imageView) i.close()
     KHRSwapchain.vkDestroySwapchainKHR(device.vkDevice, vkSwapChain, null)
-    imageAcquisition.close()
-    renderComplete.close()
   }
 }

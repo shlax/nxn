@@ -6,8 +6,8 @@ import org.nxn.Extensions.*
 
 import java.util.function.Consumer
 
-class GeCommandBuffer(val commandPool: GeCommandPool, val primary:Boolean = true)(fn: Consumer[VkCommandBuffer]) extends GeContext, AutoCloseable{
-  override val system: GeSystem = commandPool.system
+class GpCommandBuffer(val commandPool: GpCommandPool, val primary:Boolean = true)(fn: Consumer[VkCommandBuffer]) extends GpContext, AutoCloseable{
+  override val system: GpSystem = commandPool.system
 
   protected def init():VkCommandBuffer = MemoryStack.stackPush() | { stack =>
     val info = VkCommandBufferAllocateInfo.calloc(stack)

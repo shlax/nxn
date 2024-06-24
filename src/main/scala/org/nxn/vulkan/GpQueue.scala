@@ -4,8 +4,8 @@ import org.lwjgl.system.MemoryStack
 import org.lwjgl.vulkan.{VK10, VkQueue, VkSubmitInfo}
 import org.nxn.Extensions.*
 
-class GeQueue(val device:GeDevice, val familyIndex:Int, val index:Int) extends GeContext {
-  override val system: GeSystem = device.system
+class GpQueue(val device:GpDevice, val familyIndex:Int, val index:Int) extends GpContext {
+  override val system: GpSystem = device.system
 
   if(familyIndex >= device.queuesFamilies.size){
     throw new IndexOutOfBoundsException(familyIndex)

@@ -6,7 +6,7 @@ import org.lwjgl.vulkan.{VK10, VkClearValue, VkCommandBuffer, VkRect2D, VkRender
 import java.util.function.Consumer
 import org.nxn.Extensions.*
 
-class GeForwardRenderer(val swapChain:GeSwapChain, val commandPool:GeCommandPool) extends GeContext, AutoCloseable {
+class GpForwardRenderer(val swapChain:GeSwapChain, val commandPool:GeCommandPool) extends GeContext, AutoCloseable {
   override val system: GeSystem = swapChain.system
 
   protected def initRenderPass(): GeRenderPass = new GeRenderPass(swapChain)
@@ -52,7 +52,7 @@ class GeForwardRenderer(val swapChain:GeSwapChain, val commandPool:GeCommandPool
 
   def submit(queue: GeQueue, ind:Int):Unit = MemoryStack.stackPush() | { stack =>
     fence.reset()
-    queue.submit(commandBuffers(ind), swapChain.imageAcquisition, swapChain.renderComplete, VK10.VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, fence)
+//    queue.submit(commandBuffers(ind), swapChain.imageAcquisition, swapChain.renderComplete, VK10.VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, fence)
   }
 
   override def close(): Unit = {

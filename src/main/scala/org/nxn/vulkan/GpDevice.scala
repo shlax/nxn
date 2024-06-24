@@ -5,8 +5,8 @@ import org.lwjgl.system.{MemoryStack, MemoryUtil}
 import org.lwjgl.vulkan.{KHRSwapchain, VK10, VkDevice, VkDeviceCreateInfo, VkDeviceQueueCreateInfo, VkPhysicalDeviceFeatures}
 import org.nxn.Extensions.*
 
-class GeDevice(val physicalDevice:GePhysicalDevice) extends GeContext, AutoCloseable{
-  override val system: GeSystem = physicalDevice.system
+class GpDevice(val physicalDevice:GpPhysicalDevice) extends GpContext, AutoCloseable{
+  override val system: GpSystem = physicalDevice.system
 
   val queuesFamilies:IndexedSeq[Int] = physicalDevice.queuesFamilies()
 
@@ -62,6 +62,22 @@ class GeDevice(val physicalDevice:GePhysicalDevice) extends GeContext, AutoClose
   protected def features(deviceFeatures:VkPhysicalDeviceFeatures, stack:MemoryStack) : VkPhysicalDeviceFeatures = {
     deviceFeatures
   }
+
+  protected def graphicsQueueInit():GpQueue = {
+    new GpQueue(this, physicalDevice.graphicsQueueIndex, 0)
+  }
+
+  val graphicsQueue:GpQueue = graphicsQueueInit()
+
+  protected def presentQueueInit(): GpQueue = {
+    if(physicalDevice.graphicsQueueIndex == physicalDevice.presentQueueIndex){
+      graphicsQueue
+    }else {
+      new GpQueue(this, physicalDevice.presentQueueIndex, 0)
+    }
+  }
+
+  val presentQueue:GpQueue = presentQueueInit()
 
   override def close(): Unit = {
     VK10.vkDestroyDevice(vkDevice, null)
