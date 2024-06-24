@@ -6,7 +6,7 @@ import org.nxn.Extensions.*
 
 import java.util.function.Consumer
 
-class GpCommandBuffer(val commandPool: GpCommandPool, val primary:Boolean = true)(fn: Consumer[VkCommandBuffer]) extends AutoCloseable{
+class ViCommandBuffer(val commandPool: ViCommandPool, val primary:Boolean = true)(fn: Consumer[VkCommandBuffer]) extends AutoCloseable{
 
   protected def init():VkCommandBuffer = MemoryStack.stackPush() | { stack =>
     val info = VkCommandBufferAllocateInfo.calloc(stack)

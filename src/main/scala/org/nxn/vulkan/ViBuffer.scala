@@ -6,7 +6,7 @@ import java.util.function.BiConsumer
 
 import org.nxn.Extensions.*
 
-class GpBuffer(val device: GpDevice, val size:Long, val usage:Int, val reqMask:Int) extends AutoCloseable{
+class ViBuffer(val device: ViDevice, val size:Long, val usage:Int, val reqMask:Int) extends AutoCloseable{
 
   protected def init(): (Long, Long) = MemoryStack.stackPush() |{ stack =>
     val info = VkBufferCreateInfo.calloc(stack)

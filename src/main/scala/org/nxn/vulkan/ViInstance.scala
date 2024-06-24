@@ -6,7 +6,7 @@ import org.lwjgl.system.{MemoryStack, MemoryUtil}
 import org.lwjgl.vulkan.{EXTDebugUtils, VK, VK10, VkApplicationInfo, VkDebugUtilsMessengerCallbackDataEXT, VkDebugUtilsMessengerCallbackEXT, VkDebugUtilsMessengerCallbackEXTI, VkDebugUtilsMessengerCreateInfoEXT, VkExtensionProperties, VkInstance, VkInstanceCreateInfo, VkLayerProperties}
 import org.nxn.Extensions.*
 
-class GpInstance(val system: GpSystem) extends VkDebugUtilsMessengerCallbackEXTI, AutoCloseable{
+class ViInstance(val system: ViSystem) extends VkDebugUtilsMessengerCallbackEXTI, AutoCloseable{
 
   private var dbgFn:Option[VkDebugUtilsMessengerCallbackEXT] = None
   private var dbgCallBack:Option[Long] = None
@@ -143,11 +143,11 @@ class GpInstance(val system: GpSystem) extends VkDebugUtilsMessengerCallbackEXTI
     val data = VkDebugUtilsMessengerCallbackDataEXT.create(pCallbackData)
 
     if((messageSeverity & EXTDebugUtils.VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT) != 0) {
-      Console.err.println("[" + tpe + ":" + severity + "]" + data.pMessageIdNameString() + ":" + data.pMessageString())
-    }else if((messageSeverity & EXTDebugUtils.VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT) != 0){
-      Console.println(Console.YELLOW+"[" + tpe + ":" + severity + "]" + data.pMessageIdNameString() + ":" + data.pMessageString())
+      Console.err.println("" + tpe + ":" + severity + " " + data.pMessageIdNameString() + ":" + data.pMessageString())
+//    }else if((messageSeverity & EXTDebugUtils.VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT) != 0){
+//      Console.println(Console.YELLOW+"[" + tpe + ":" + severity + "]" + data.pMessageIdNameString() + ":" + data.pMessageString())
     }else {
-      println("[" + tpe + ":" + severity + "]" + data.pMessageIdNameString() + ":" + data.pMessageString())
+      println("" + tpe + ":" + severity + " " + data.pMessageIdNameString() + " : " + data.pMessageString())
     }
 
     VK10.VK_FALSE

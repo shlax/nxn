@@ -5,7 +5,7 @@ import org.lwjgl.system.{MemoryStack, MemoryUtil}
 import org.lwjgl.vulkan.{KHRSwapchain, VK10, VkDevice, VkDeviceCreateInfo, VkDeviceQueueCreateInfo, VkPhysicalDeviceFeatures}
 import org.nxn.Extensions.*
 
-class GpDevice(val physicalDevice:GpPhysicalDevice) extends AutoCloseable{
+class ViDevice(val physicalDevice:ViPhysicalDevice) extends AutoCloseable{
 
   val queuesFamilies:IndexedSeq[Int] = physicalDevice.queuesFamilies()
 
@@ -33,18 +33,18 @@ class GpDevice(val physicalDevice:GpPhysicalDevice) extends AutoCloseable{
     extNm.put(MemoryUtil.memASCII(KHRSwapchain.VK_KHR_SWAPCHAIN_EXTENSION_NAME))
     extNm.flip()
 
-    var enabledLayerNames:Option[PointerBuffer] = None
+    /* var enabledLayerNames:Option[PointerBuffer] = None
     if(physicalDevice.instance.system.debug){
       val p = stack.callocPointer(1)
       p.put(stack.ASCII("VK_LAYER_KHRONOS_validation"))
       p.flip()
       enabledLayerNames = Some(p)
-    }
+    } */
 
     val devInf = VkDeviceCreateInfo.calloc(stack)
       .sType$Default()
       .pQueueCreateInfos(queue)
-      .ppEnabledLayerNames(enabledLayerNames.orNull)
+//      .ppEnabledLayerNames(enabledLayerNames.orNull)
       .pEnabledFeatures(enabledFeatures)
       .ppEnabledExtensionNames(extNm)
       .pNext(MemoryUtil.NULL)
@@ -62,21 +62,21 @@ class GpDevice(val physicalDevice:GpPhysicalDevice) extends AutoCloseable{
     deviceFeatures
   }
 
-  protected def graphicsQueueInit():GpQueue = {
-    new GpQueue(this, physicalDevice.graphicsQueueIndex, 0)
+  protected def graphicsQueueInit():ViQueue = {
+    new ViQueue(this, physicalDevice.graphicsQueueIndex, 0)
   }
 
-  val graphicsQueue:GpQueue = graphicsQueueInit()
+  val graphicsQueue:ViQueue = graphicsQueueInit()
 
-  protected def presentQueueInit(): GpQueue = {
+  protected def presentQueueInit(): ViQueue = {
     if(physicalDevice.graphicsQueueIndex == physicalDevice.presentQueueIndex){
       graphicsQueue
     }else {
-      new GpQueue(this, physicalDevice.presentQueueIndex, 0)
+      new ViQueue(this, physicalDevice.presentQueueIndex, 0)
     }
   }
 
-  val presentQueue:GpQueue = presentQueueInit()
+  val presentQueue:ViQueue = presentQueueInit()
 
   override def close(): Unit = {
     VK10.vkDestroyDevice(vkDevice, null)

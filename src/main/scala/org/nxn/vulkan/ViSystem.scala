@@ -6,7 +6,7 @@ import org.nxn.utils.Dimension
 import scala.concurrent.duration.Duration
 import scala.concurrent.duration.*
 
-class GpSystem(val debug :Boolean, val name:String, val windowSize:Dimension, val timeout:Duration = 1.second) extends AutoCloseable{
+class ViSystem(val debug :Boolean, val name:String, val windowSize:Dimension, val timeout:Duration = 1.second) extends AutoCloseable{
   GLFWErrorCallback.createPrint.set()
 
   if (!GLFW.glfwInit()){
