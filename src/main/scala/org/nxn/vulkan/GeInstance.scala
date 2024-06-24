@@ -93,7 +93,7 @@ class GeInstance(ctx: GeSystem) extends VkDebugUtilsMessengerCallbackEXTI, GeCon
 
       val dbgInf = VkDebugUtilsMessengerCreateInfoEXT.calloc(stack)
         .sType$Default()
-        .messageSeverity( EXTDebugUtils.VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT
+        .messageSeverity(EXTDebugUtils.VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT
           | EXTDebugUtils.VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT
           | EXTDebugUtils.VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT
           | EXTDebugUtils.VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT)
@@ -142,7 +142,14 @@ class GeInstance(ctx: GeSystem) extends VkDebugUtilsMessengerCallbackEXTI, GeCon
       else "UNKNOWN"
 
     val data = VkDebugUtilsMessengerCallbackDataEXT.create(pCallbackData)
-    println("["+tpe+":"+severity+"]"+data.pMessageIdNameString()+":"+data.pMessageString())
+
+    if((messageSeverity & EXTDebugUtils.VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT) != 0) {
+      Console.err.println("[" + tpe + ":" + severity + "]" + data.pMessageIdNameString() + ":" + data.pMessageString())
+    }else if((messageSeverity & EXTDebugUtils.VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT) != 0){
+      Console.println(Console.YELLOW+"[" + tpe + ":" + severity + "]" + data.pMessageIdNameString() + ":" + data.pMessageString())
+    }else {
+      println("[" + tpe + ":" + severity + "]" + data.pMessageIdNameString() + ":" + data.pMessageString())
+    }
 
     VK10.VK_FALSE
   }
