@@ -56,7 +56,7 @@ class GePhysicalDevice(val instance: GeInstance, val surface: GeSurface) extends
         vkCheck(VK10.vkEnumerateDeviceExtensionProperties(gpu, null.asInstanceOf[CharSequence], intBuff, ext))
 
         for(i <- 0 until ext.capacity() if !hasKHRSwapChainExtension){
-          val e = ext.get(0)
+          val e = ext.get(i)
           if(KHRSwapchain.VK_KHR_SWAPCHAIN_EXTENSION_NAME == e.extensionNameString()){
             hasKHRSwapChainExtension = true
           }
