@@ -4,6 +4,7 @@ import org.lwjgl.PointerBuffer
 import org.lwjgl.system.CustomBuffer
 import org.lwjgl.vulkan.VK10
 
+/** Graphics pipeline  */
 package object vulkan {
 
   def vkCheck(errCode:Int):Unit = {
