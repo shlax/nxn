@@ -25,7 +25,8 @@ class GeInstance(ctx: GeSystem) extends VkDebugUtilsMessengerCallbackEXTI, GeCon
           val l = availableLayers.get(i)
           if (l.layerNameString() == "VK_LAYER_KHRONOS_validation") {
             val p = stack.callocPointer(1)
-            p.put(0, stack.ASCII("VK_LAYER_KHRONOS_validation"))
+            p.put(stack.ASCII("VK_LAYER_KHRONOS_validation"))
+            p.flip()
             requiredLayers = Some(p)
           }
         }
@@ -50,6 +51,7 @@ class GeInstance(ctx: GeSystem) extends VkDebugUtilsMessengerCallbackEXTI, GeCon
           if(EXTDebugUtils.VK_EXT_DEBUG_UTILS_EXTENSION_NAME == e.extensionNameString()){
             val p = stack.callocPointer(1)
             p.put(stack.ASCII(EXTDebugUtils.VK_EXT_DEBUG_UTILS_EXTENSION_NAME))
+            p.flip()
             requiredExtension = Some(p)
           }
         }
@@ -91,7 +93,9 @@ class GeInstance(ctx: GeSystem) extends VkDebugUtilsMessengerCallbackEXTI, GeCon
 
       val dbgInf = VkDebugUtilsMessengerCreateInfoEXT.calloc(stack)
         .sType$Default()
-        .messageSeverity(EXTDebugUtils.VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT
+        .messageSeverity( EXTDebugUtils.VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT
+          | EXTDebugUtils.VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT
+          | EXTDebugUtils.VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT
           | EXTDebugUtils.VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT)
         .messageType(EXTDebugUtils.VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT
           | EXTDebugUtils.VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT

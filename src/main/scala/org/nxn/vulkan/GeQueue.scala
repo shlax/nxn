@@ -1,7 +1,7 @@
 package org.nxn.vulkan
 
 import org.lwjgl.system.MemoryStack
-import org.lwjgl.vulkan.{VK10, VkQueue}
+import org.lwjgl.vulkan.{VK10, VkQueue, VkSubmitInfo}
 import org.nxn.Extensions.*
 
 class GeQueue(val device:GeDevice, val familyIndex:Int, val index:Int) extends GeContext {
@@ -18,5 +18,22 @@ class GeQueue(val device:GeDevice, val familyIndex:Int, val index:Int) extends G
   }
 
   val vkQueue:VkQueue = init()
+
+  def submit(buffer: GeCommandBuffer, waitSemaphore: GeSemaphore, signalSemaphore: GeSemaphore, stageMasks: Int, fence: GeFence): Unit = MemoryStack.stackPush() | { stack =>
+    val pb = stack.pointers(buffer.vkCommandBuffer)
+    val vs = stack.longs(waitSemaphore.vkSemaphore)
+    val ss = stack.longs(signalSemaphore.vkSemaphore)
+    val mi = stack.ints(stageMasks)
+
+    val info = VkSubmitInfo.calloc(stack)
+      .sType$Default()
+      .pCommandBuffers(pb)
+      .pSignalSemaphores(ss)
+      .waitSemaphoreCount(1)
+      .pWaitSemaphores(vs)
+      .pWaitDstStageMask(mi)
+
+    vkCheck(VK10.vkQueueSubmit(vkQueue, info, fence.vkFence))
+  }
 
 }

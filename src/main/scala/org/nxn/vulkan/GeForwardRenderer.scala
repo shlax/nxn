@@ -19,7 +19,7 @@ class GeForwardRenderer(val swapChain:GeSwapChain, val commandPool:GeCommandPool
   val frameBuffers: IndexedSeq[GeFrameBuffer] = initFrameBuffers()
 
   protected def initFence():GeFence = new GeFence(swapChain.device)
-  val fences:GeFence = initFence()
+  val fence:GeFence = initFence()
 
   protected def initCommandBuffers(): IndexedSeq[GeCommandBuffer] = MemoryStack.stackPush() | { stack =>
     val clearValues = VkClearValue.calloc(1, stack)
@@ -50,11 +50,16 @@ class GeForwardRenderer(val swapChain:GeSwapChain, val commandPool:GeCommandPool
 
   val commandBuffers: IndexedSeq[GeCommandBuffer] = initCommandBuffers()
 
+  def submit(queue: GeQueue, ind:Int):Unit = MemoryStack.stackPush() | { stack =>
+    fence.reset()
+    queue.submit(commandBuffers(ind), swapChain.imageAcquisition, swapChain.renderComplete, VK10.VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, fence)
+  }
+
   override def close(): Unit = {
     for(i <- frameBuffers) i.close()
     for(i <- imageViews) i.close()
     renderPass.close()
-    fences.close()
+    fence.close()
   }
 
 }
