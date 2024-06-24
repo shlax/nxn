@@ -2,7 +2,7 @@ package org.nxn
 
 import org.nxn.Extensions.*
 import org.nxn.utils.Dimension
-import org.nxn.vulkan.{GeInstance, GePhysicalDevice, GeSurface, GeSystem, GeWindow}
+import org.nxn.vulkan.{GeDevice, GeInstance, GePhysicalDevice, GeSurface, GeSystem, GeWindow}
 
 import scala.util.control.NonFatal
 
@@ -14,15 +14,16 @@ object Main {
         new GeWindow(sys) | { win =>
           new GeInstance(sys) | { inst =>
             new GeSurface(inst, win) |{ surf =>
-              val dev = new GePhysicalDevice(inst, surf)
+              val psDev = new GePhysicalDevice(inst, surf)
+              new GeDevice(psDev) | { dev =>
+                // >>
+                while (win.pullEvents()) {
 
-              while (win.pullEvents()) {
-
+                }
+                // <<
               }
             }
-
           }
-
         }
       }
     }catch {

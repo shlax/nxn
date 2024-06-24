@@ -1,15 +1,22 @@
 package org.nxn.vulkan
 
+import org.lwjgl.PointerBuffer
 import org.lwjgl.system.{MemoryStack, MemoryUtil}
 import org.lwjgl.vulkan.{KHRSwapchain, VK10, VkDevice, VkDeviceCreateInfo, VkDeviceQueueCreateInfo, VkPhysicalDeviceFeatures}
 import org.nxn.Extensions.*
 
-class GeDevice(val physicalDevice:GePhysicalDevice, val queuesFamilies:IndexedSeq[Int]) extends GeContext, AutoCloseable{
+class GeDevice(val physicalDevice:GePhysicalDevice) extends GeContext, AutoCloseable{
   override val system: GeSystem = physicalDevice.system
+
+  val queuesFamilies:IndexedSeq[Int] = physicalDevice.queuesFamilies()
 
   protected def init(): VkDevice = MemoryStack.stackPush() | { stack =>
     val queue = VkDeviceQueueCreateInfo.calloc(queuesFamilies.size, stack)
+
     val priorities = stack.callocFloat(queuesFamilies.size)
+    for(_ <- queuesFamilies.indices) priorities.put(1f)
+    priorities.flip()
+
     for(i <- queuesFamilies.zipWithIndex) {
       queue.get(i._2)
         .sType$Default()
@@ -21,18 +28,24 @@ class GeDevice(val physicalDevice:GePhysicalDevice, val queuesFamilies:IndexedSe
 
     val deviceFeatures = VkPhysicalDeviceFeatures.calloc(stack)
     VK10.vkGetPhysicalDeviceFeatures(physicalDevice.vkPhysicalDevice, deviceFeatures)
-
-    val enabledFeatures = VkPhysicalDeviceFeatures.calloc(stack)
-    features(deviceFeatures, enabledFeatures)
+    val enabledFeatures = features(deviceFeatures, stack)
 
     val extNm = stack.callocPointer(1)
     extNm.put(MemoryUtil.memASCII(KHRSwapchain.VK_KHR_SWAPCHAIN_EXTENSION_NAME))
     extNm.flip()
 
+    var enabledLayerNames:Option[PointerBuffer] = None
+    if(system.debug){
+      val p = stack.callocPointer(1)
+      p.put(stack.ASCII("VK_LAYER_KHRONOS_validation"))
+      p.flip()
+      enabledLayerNames = Some(p)
+    }
+
     val devInf = VkDeviceCreateInfo.calloc(stack)
       .sType$Default()
       .pQueueCreateInfos(queue)
-      .ppEnabledLayerNames(null)
+      .ppEnabledLayerNames(enabledLayerNames.orNull)
       .pEnabledFeatures(enabledFeatures)
       .ppEnabledExtensionNames(extNm)
       .pNext(MemoryUtil.NULL)
@@ -46,8 +59,8 @@ class GeDevice(val physicalDevice:GePhysicalDevice, val queuesFamilies:IndexedSe
 
   val vkDevice:VkDevice = init()
 
-  protected def features(deviceFeatures:VkPhysicalDeviceFeatures, enabled:VkPhysicalDeviceFeatures) : Unit = {
-    // ??
+  protected def features(deviceFeatures:VkPhysicalDeviceFeatures, stack:MemoryStack) : VkPhysicalDeviceFeatures = {
+    deviceFeatures
   }
 
   override def close(): Unit = {

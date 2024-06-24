@@ -82,4 +82,8 @@ class GePhysicalDevice(val instance: GeInstance, val surface: GeSurface) extends
     graphicsQueueIndex:Int, graphicsQueueIndexes:IndexedSeq[Int],
     presentQueueIndex:Int, presentQueueIndexes:IndexedSeq[Int]) = init()
 
+  def queuesFamilies() :IndexedSeq[Int] = {
+    Set(graphicsQueueIndex, presentQueueIndex).toIndexedSeq
+  }
+
 }
