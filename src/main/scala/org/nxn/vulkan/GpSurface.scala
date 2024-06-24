@@ -5,8 +5,7 @@ import org.lwjgl.system.MemoryStack
 import org.lwjgl.vulkan.KHRSurface
 import org.nxn.Extensions.*
 
-class GpSurface(val instance:GeInstance, val window:GeWindow) extends GeContext, AutoCloseable{
-  override val system: GeSystem = instance.system
+class GpSurface(val instance:GpInstance, val window:GpWindow) extends AutoCloseable{
 
   protected def init():Long = MemoryStack.stackPush()|{ stack =>
     val b = stack.callocLong(1)

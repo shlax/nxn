@@ -4,8 +4,7 @@ import org.lwjgl.system.MemoryStack
 import org.lwjgl.vulkan.{VK10, VkCommandPoolCreateInfo}
 import org.nxn.Extensions.*
 
-class GpCommandPool(val device: GpDevice, val queueFamilyIndex:Int) extends GpContext, AutoCloseable{
-  override val system: GpSystem = device.system
+class GpCommandPool(val device: GpDevice, val queueFamilyIndex:Int) extends AutoCloseable{
 
   protected def init(): Long = MemoryStack.stackPush() | { stack =>
     val info = VkCommandPoolCreateInfo.calloc(stack)

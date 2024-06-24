@@ -5,8 +5,7 @@ import org.lwjgl.util.shaderc.Shaderc
 import scala.io.Source
 import org.nxn.Extensions.*
 
-class GpShaderCompiler(en:GpSystem) extends GpContext, AutoCloseable{
-  override val system: GpSystem = en
+class GpShaderCompiler(val system:GpSystem) extends AutoCloseable{
 
   val compiler:Long = Shaderc.shaderc_compiler_initialize()
   val options: Long = Shaderc.shaderc_compile_options_initialize()

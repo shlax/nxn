@@ -6,15 +6,14 @@ import org.lwjgl.system.{MemoryStack, MemoryUtil}
 import org.lwjgl.vulkan.{EXTDebugUtils, VK, VK10, VkApplicationInfo, VkDebugUtilsMessengerCallbackDataEXT, VkDebugUtilsMessengerCallbackEXT, VkDebugUtilsMessengerCallbackEXTI, VkDebugUtilsMessengerCreateInfoEXT, VkExtensionProperties, VkInstance, VkInstanceCreateInfo, VkLayerProperties}
 import org.nxn.Extensions.*
 
-class GpInstance(ctx: GpSystem) extends VkDebugUtilsMessengerCallbackEXTI, GpContext, AutoCloseable{
-  override val system: GpSystem = ctx
+class GpInstance(val system: GpSystem) extends VkDebugUtilsMessengerCallbackEXTI, AutoCloseable{
 
   private var dbgFn:Option[VkDebugUtilsMessengerCallbackEXT] = None
   private var dbgCallBack:Option[Long] = None
 
   protected def init() : VkInstance = MemoryStack.stackPush()|{ stack =>
     var requiredLayers:Option[PointerBuffer] = None
-    if(ctx.debug){ // validate layer
+    if(system.debug){ // validate layer
       val nBuff = stack.callocInt(1)
       vkCheck(VK10.vkEnumerateInstanceLayerProperties(nBuff, null))
       val n = nBuff.get(0)
@@ -39,7 +38,7 @@ class GpInstance(ctx: GpSystem) extends VkDebugUtilsMessengerCallbackEXTI, GpCon
     }
 
     var requiredExtension:Option[PointerBuffer] = None
-    if(ctx.debug) {
+    if(system.debug) {
       val nBuff = stack.callocInt(1)
       vkCheck(VK10.vkEnumerateInstanceExtensionProperties(null.asInstanceOf[CharSequence], nBuff, null))
       val n = nBuff.get(0)
@@ -58,7 +57,7 @@ class GpInstance(ctx: GpSystem) extends VkDebugUtilsMessengerCallbackEXTI, GpCon
       }
     }
 
-    val nm = stack.UTF8(ctx.name)
+    val nm = stack.UTF8(system.name)
     val appInfo = VkApplicationInfo.calloc(stack)
       .sType$Default()
       .pNext(MemoryUtil.NULL)
@@ -87,7 +86,7 @@ class GpInstance(ctx: GpSystem) extends VkDebugUtilsMessengerCallbackEXTI, GpCon
       .flags(0)
 
     var dbgInfo:Option[VkDebugUtilsMessengerCreateInfoEXT] = None
-    if(ctx.debug){
+    if(system.debug){
       val f = VkDebugUtilsMessengerCallbackEXT.create(this)
       dbgFn = Some(f)
 

@@ -4,8 +4,7 @@ import org.lwjgl.system.MemoryStack
 import org.lwjgl.vulkan.{VK10, VkQueue, VkSubmitInfo}
 import org.nxn.Extensions.*
 
-class GpQueue(val device:GpDevice, val familyIndex:Int, val index:Int) extends GpContext {
-  override val system: GpSystem = device.system
+class GpQueue(val device:GpDevice, val familyIndex:Int, val index:Int) {
 
   if(familyIndex >= device.queuesFamilies.size){
     throw new IndexOutOfBoundsException(familyIndex)
@@ -19,7 +18,7 @@ class GpQueue(val device:GpDevice, val familyIndex:Int, val index:Int) extends G
 
   val vkQueue:VkQueue = init()
 
-  def submit(buffer: GeCommandBuffer, waitSemaphore: GeSemaphore, signalSemaphore: GeSemaphore, stageMasks: Int, fence: GeFence): Unit = MemoryStack.stackPush() | { stack =>
+  def submit(buffer: GpCommandBuffer, waitSemaphore: GpSemaphore, signalSemaphore: GpSemaphore, stageMasks: Int, fence: GpFence): Unit = MemoryStack.stackPush() | { stack =>
     val pb = stack.pointers(buffer.vkCommandBuffer)
     val vs = stack.longs(waitSemaphore.vkSemaphore)
     val ss = stack.longs(signalSemaphore.vkSemaphore)

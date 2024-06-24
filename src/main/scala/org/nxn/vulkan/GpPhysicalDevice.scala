@@ -4,8 +4,7 @@ import org.lwjgl.system.MemoryStack
 import org.lwjgl.vulkan.{KHRSurface, KHRSwapchain, VK10, VkExtensionProperties, VkPhysicalDevice, VkQueueFamilyProperties}
 import org.nxn.Extensions.*
 
-class GpPhysicalDevice(val instance: GpInstance, val surface: GpSurface) extends GpContext{
-  override val system: GpSystem = instance.system
+class GpPhysicalDevice(val instance: GpInstance, val surface: GpSurface){
 
   /** vkPhysicalDevice:VkPhysicalDevice,
    graphicsQueueIndex:Int, graphicsQueueIndexes:IndexedSeq[Int],

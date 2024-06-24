@@ -4,8 +4,7 @@ import org.lwjgl.system.MemoryStack
 import org.lwjgl.vulkan.{VK10, VkShaderModuleCreateInfo}
 import org.nxn.Extensions.*
 
-class GpShaderModule(val device: GpDevice, data:Array[Byte]) extends GpContext , AutoCloseable{
-  override val system: GpSystem = device.system
+class GpShaderModule(val device: GpDevice, data:Array[Byte]) extends AutoCloseable{
 
   protected def init(dt:Array[Byte]):Long = MemoryStack.stackPush()|{ stack =>
     val pCode = stack.malloc(dt.length).put(0, dt)

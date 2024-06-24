@@ -6,8 +6,7 @@ import java.util.function.BiConsumer
 
 import org.nxn.Extensions.*
 
-class GpBuffer(val device: GpDevice, val size:Long, val usage:Int, val reqMask:Int) extends GpContext , AutoCloseable{
-  override val system: GpSystem = device.system
+class GpBuffer(val device: GpDevice, val size:Long, val usage:Int, val reqMask:Int) extends AutoCloseable{
 
   protected def init(): (Long, Long) = MemoryStack.stackPush() |{ stack =>
     val info = VkBufferCreateInfo.calloc(stack)

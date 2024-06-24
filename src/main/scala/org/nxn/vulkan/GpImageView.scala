@@ -6,8 +6,7 @@ import org.nxn.Extensions.*
 
 import java.util.function.Consumer
 
-class GpImageView(val swapChain: GpSwapChain, val index:Int) extends GpContext, AutoCloseable{
-  override val system: GpSystem = swapChain.system
+class GpImageView(val swapChain: GpSwapChain, val index:Int) extends AutoCloseable{
 
   if(index >= swapChain.vkImages.size){
     throw new IndexOutOfBoundsException(index)

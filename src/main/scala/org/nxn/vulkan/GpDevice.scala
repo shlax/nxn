@@ -5,8 +5,7 @@ import org.lwjgl.system.{MemoryStack, MemoryUtil}
 import org.lwjgl.vulkan.{KHRSwapchain, VK10, VkDevice, VkDeviceCreateInfo, VkDeviceQueueCreateInfo, VkPhysicalDeviceFeatures}
 import org.nxn.Extensions.*
 
-class GpDevice(val physicalDevice:GpPhysicalDevice) extends GpContext, AutoCloseable{
-  override val system: GpSystem = physicalDevice.system
+class GpDevice(val physicalDevice:GpPhysicalDevice) extends AutoCloseable{
 
   val queuesFamilies:IndexedSeq[Int] = physicalDevice.queuesFamilies()
 
@@ -35,7 +34,7 @@ class GpDevice(val physicalDevice:GpPhysicalDevice) extends GpContext, AutoClose
     extNm.flip()
 
     var enabledLayerNames:Option[PointerBuffer] = None
-    if(system.debug){
+    if(physicalDevice.instance.system.debug){
       val p = stack.callocPointer(1)
       p.put(stack.ASCII("VK_LAYER_KHRONOS_validation"))
       p.flip()

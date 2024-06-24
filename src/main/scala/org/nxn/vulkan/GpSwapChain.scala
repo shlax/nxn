@@ -5,8 +5,9 @@ import org.lwjgl.vulkan.{KHRSurface, KHRSwapchain, VK10, VkExtent2D, VkPresentIn
 import org.nxn.utils.Dimension
 import org.nxn.Extensions.*
 
-class GpSwapChain(val surface: GpSurface, val device: GpDevice, imageCount:Int = 0) extends GpContext , AutoCloseable{
-  override val system: GpSystem = device.system
+import scala.concurrent.duration.Duration
+
+class GpSwapChain(val surface: GpSurface, val device: GpDevice, imageCount:Int = 0) extends AutoCloseable{
 
   /** (vkSwapChain : Long,
    vkImages: IndexedSeq[Long], format:Int,
@@ -64,7 +65,7 @@ class GpSwapChain(val surface: GpSurface, val device: GpDevice, imageCount:Int =
     val modes = for(i <- 0 until mumPresentModes) yield presentModes.get(i)
     val presentMode = if(modes.contains(KHRSurface.VK_PRESENT_MODE_FIFO_RELAXED_KHR)) KHRSurface.VK_PRESENT_MODE_FIFO_RELAXED_KHR else KHRSurface.VK_PRESENT_MODE_FIFO_KHR
 
-    val s = system.windowSize
+    val s = surface.window.system.windowSize
     var width = s.width
     var height = s.height
 
@@ -134,12 +135,12 @@ class GpSwapChain(val surface: GpSurface, val device: GpDevice, imageCount:Int =
   val (vkSwapChain : Long,
     vkImages: IndexedSeq[Long], format:Int,
     dimension: Dimension) = init()
-  
-  protected def initImageView(): IndexedSeq[GpImageView] = {
+
+  protected def initImageViews(): IndexedSeq[GpImageView] = {
     for(i <- vkImages.zipWithIndex) yield new GpImageView(this, i._2)
   }
-  
-  val imageView: IndexedSeq[GpImageView] = initImageView()
+
+  val imageViews: IndexedSeq[GpImageView] = initImageViews()
 
   def presentResult(err:Int) : Option[PresentResult] = {
     var res:Option[PresentResult] = None
@@ -179,11 +180,11 @@ class GpSwapChain(val surface: GpSurface, val device: GpDevice, imageCount:Int =
 
   case class NextImage(index:Int, presentResult:Option[PresentResult])
 
-  def acquireNextImage(semaphore: GeSemaphore,timeout:Long = system.timeout.toNanos):NextImage = MemoryStack.stackPush() | { stack =>
+  def acquireNextImage(semaphore: GpSemaphore,timeout:Duration = device.physicalDevice.instance.system.timeout):NextImage = MemoryStack.stackPush() | { stack =>
     val sem = semaphore.vkSemaphore
 
     val ip = stack.callocInt(1)
-    val err = KHRSwapchain.vkAcquireNextImageKHR(device.vkDevice, vkSwapChain, timeout, sem, MemoryUtil.NULL, ip)
+    val err = KHRSwapchain.vkAcquireNextImageKHR(device.vkDevice, vkSwapChain, timeout.toNanos, sem, MemoryUtil.NULL, ip)
 
     val res = presentResult(err)
     val ind = ip.get(0)
@@ -192,7 +193,7 @@ class GpSwapChain(val surface: GpSurface, val device: GpDevice, imageCount:Int =
   }
 
   override def close(): Unit = {
-    for(i <- imageView) i.close()
+    for(i <- imageViews) i.close()
     KHRSwapchain.vkDestroySwapchainKHR(device.vkDevice, vkSwapChain, null)
   }
 }

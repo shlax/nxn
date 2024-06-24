@@ -4,15 +4,14 @@ import org.lwjgl.glfw.Callbacks
 import org.lwjgl.glfw.GLFW
 import org.lwjgl.system.MemoryUtil
 
-class GpWindow(en:GeSystem) extends GeContext, AutoCloseable{
-  override val system: GeSystem = en
+class GpWindow(val system:GpSystem) extends  AutoCloseable{
 
   GLFW.glfwWindowHint(GLFW.GLFW_CLIENT_API, GLFW.GLFW_NO_API)
   GLFW.glfwWindowHint(GLFW.GLFW_RESIZABLE, GLFW.GLFW_FALSE)
 
   protected def init():Long = {
-    val s = en.windowSize
-    GLFW.glfwCreateWindow(s.width, s.height, en.name, MemoryUtil.NULL, MemoryUtil.NULL)
+    val s = system.windowSize
+    GLFW.glfwCreateWindow(s.width, s.height, system.name, MemoryUtil.NULL, MemoryUtil.NULL)
   }
 
   val windowHandle:Long = init()

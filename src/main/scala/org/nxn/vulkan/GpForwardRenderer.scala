@@ -6,22 +6,18 @@ import org.lwjgl.vulkan.{VK10, VkClearValue, VkCommandBuffer, VkRect2D, VkRender
 import java.util.function.Consumer
 import org.nxn.Extensions.*
 
-class GpForwardRenderer(val swapChain:GeSwapChain, val commandPool:GeCommandPool) extends GeContext, AutoCloseable {
-  override val system: GeSystem = swapChain.system
+class GpForwardRenderer(val swapChain:GpSwapChain, val commandPool:GpCommandPool) extends AutoCloseable {
 
-  protected def initRenderPass(): GeRenderPass = new GeRenderPass(swapChain)
-  val renderPass: GeRenderPass = initRenderPass()
+  protected def initRenderPass(): GpRenderPass = new GpRenderPass(swapChain)
+  val renderPass: GpRenderPass = initRenderPass()
 
-  protected def initImageViews(): IndexedSeq[GeImageView] = for(i <- swapChain.vkImages.indices) yield new GeImageView(swapChain, i)
-  val imageViews: IndexedSeq[GeImageView] = initImageViews()
+  protected def initFrameBuffers(): IndexedSeq[GpFrameBuffer] = for(i <- swapChain.vkImages.indices) yield new GpFrameBuffer(renderPass, swapChain.imageViews(i))
+  val frameBuffers: IndexedSeq[GpFrameBuffer] = initFrameBuffers()
 
-  protected def initFrameBuffers(): IndexedSeq[GeFrameBuffer] = for(i <- swapChain.vkImages.indices) yield new GeFrameBuffer(renderPass, imageViews(i))
-  val frameBuffers: IndexedSeq[GeFrameBuffer] = initFrameBuffers()
+  protected def initFence():GpFence = new GpFence(swapChain.device)
+  val fence:GpFence = initFence()
 
-  protected def initFence():GeFence = new GeFence(swapChain.device)
-  val fence:GeFence = initFence()
-
-  protected def initCommandBuffers(): IndexedSeq[GeCommandBuffer] = MemoryStack.stackPush() | { stack =>
+  protected def initCommandBuffers(): IndexedSeq[GpCommandBuffer] = MemoryStack.stackPush() | { stack =>
     val clearValues = VkClearValue.calloc(1, stack)
       .apply(0, (v: VkClearValue) => { v.color().float32(0, 0f).float32(1, 0f).float32(2, 0f).float32(3, 0f) })
 
@@ -41,23 +37,22 @@ class GpForwardRenderer(val swapChain:GeSwapChain, val commandPool:GeCommandPool
         .renderArea(areaFn)
         .framebuffer(frameBuffers(i).vkFrameBuffer)
 
-      new GeCommandBuffer(commandPool)(new GeRecording({ (vkCommandBuffer:VkCommandBuffer) =>
+      new GpCommandBuffer(commandPool)(new GpRecording({ (vkCommandBuffer:VkCommandBuffer) =>
         VK10.vkCmdBeginRenderPass(vkCommandBuffer, info, VK10.VK_SUBPASS_CONTENTS_INLINE)
         VK10.vkCmdEndRenderPass(vkCommandBuffer)
       }))
     }
   }
 
-  val commandBuffers: IndexedSeq[GeCommandBuffer] = initCommandBuffers()
+  val commandBuffers: IndexedSeq[GpCommandBuffer] = initCommandBuffers()
 
-  def submit(queue: GeQueue, ind:Int):Unit = MemoryStack.stackPush() | { stack =>
+  def submit(queue: GpQueue, ind:Int):Unit = MemoryStack.stackPush() | { stack =>
     fence.reset()
 //    queue.submit(commandBuffers(ind), swapChain.imageAcquisition, swapChain.renderComplete, VK10.VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, fence)
   }
 
   override def close(): Unit = {
     for(i <- frameBuffers) i.close()
-    for(i <- imageViews) i.close()
     renderPass.close()
     fence.close()
   }
