@@ -6,7 +6,7 @@ import org.nxn.Extensions.*
 
 import java.util.function.Consumer
 
-class ViImageView(val swapChain: ViSwapChain, val index:Int) extends AutoCloseable{
+class VnImageView(val swapChain: VnSwapChain, val index:Int) extends AutoCloseable{
 
   if(index >= swapChain.vkImages.size){
     throw new IndexOutOfBoundsException(index)

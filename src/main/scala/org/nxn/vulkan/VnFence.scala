@@ -5,7 +5,7 @@ import org.lwjgl.vulkan.{VK10, VkFenceCreateInfo}
 import scala.concurrent.duration.Duration
 import org.nxn.Extensions.*
 
-class ViFence(val device: ViDevice, val signaled:Boolean = true) extends AutoCloseable{
+class VnFence(val device: VnDevice, val signaled:Boolean = true) extends AutoCloseable{
 
   private val vkDevice = device.vkDevice
 

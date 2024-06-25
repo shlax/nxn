@@ -4,7 +4,7 @@ import org.lwjgl.system.MemoryStack
 import org.lwjgl.vulkan.{VK10, VkQueue, VkSubmitInfo}
 import org.nxn.Extensions.*
 
-class ViQueue(val device:ViDevice, val familyIndex:Int, val index:Int) {
+class VnQueue(val device:VnDevice, val familyIndex:Int, val index:Int) {
 
   if(familyIndex >= device.queuesFamilies.size){
     throw new IndexOutOfBoundsException(familyIndex)
@@ -18,7 +18,7 @@ class ViQueue(val device:ViDevice, val familyIndex:Int, val index:Int) {
 
   val vkQueue:VkQueue = init()
 
-  def submit(buffer: ViCommandBuffer, waitSemaphore: ViSemaphore, signalSemaphore: ViSemaphore, stageMasks: Int, fence: ViFence): Unit = MemoryStack.stackPush() | { stack =>
+  def submit(buffer: VnCommandBuffer, waitSemaphore: VnSemaphore, signalSemaphore: VnSemaphore, stageMasks: Int, fence: VnFence): Unit = MemoryStack.stackPush() | { stack =>
     val pb = stack.pointers(buffer.vkCommandBuffer)
     val vs = stack.longs(waitSemaphore.vkSemaphore)
     val ss = stack.longs(signalSemaphore.vkSemaphore)

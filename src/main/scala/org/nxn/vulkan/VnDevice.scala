@@ -5,7 +5,7 @@ import org.lwjgl.system.{MemoryStack, MemoryUtil}
 import org.lwjgl.vulkan.{KHRSwapchain, VK10, VkDevice, VkDeviceCreateInfo, VkDeviceQueueCreateInfo, VkPhysicalDeviceFeatures}
 import org.nxn.Extensions.*
 
-class ViDevice(val physicalDevice:ViPhysicalDevice) extends AutoCloseable{
+class VnDevice(val physicalDevice:VnPhysicalDevice) extends AutoCloseable{
 
   val queuesFamilies:IndexedSeq[Int] = physicalDevice.queuesFamilies()
 
@@ -62,21 +62,21 @@ class ViDevice(val physicalDevice:ViPhysicalDevice) extends AutoCloseable{
     deviceFeatures
   }
 
-  protected def graphicsQueueInit():ViQueue = {
-    new ViQueue(this, physicalDevice.graphicsQueueIndex, 0)
+  protected def graphicsQueueInit():VnQueue = {
+    new VnQueue(this, physicalDevice.graphicsQueueIndex, 0)
   }
 
-  val graphicsQueue:ViQueue = graphicsQueueInit()
+  val graphicsQueue:VnQueue = graphicsQueueInit()
 
-  protected def presentQueueInit(): ViQueue = {
+  protected def presentQueueInit(): VnQueue = {
     if(physicalDevice.graphicsQueueIndex == physicalDevice.presentQueueIndex){
       graphicsQueue
     }else {
-      new ViQueue(this, physicalDevice.presentQueueIndex, 0)
+      new VnQueue(this, physicalDevice.presentQueueIndex, 0)
     }
   }
 
-  val presentQueue:ViQueue = presentQueueInit()
+  val presentQueue:VnQueue = presentQueueInit()
 
   override def close(): Unit = {
     VK10.vkDestroyDevice(vkDevice, null)

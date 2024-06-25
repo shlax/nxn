@@ -7,7 +7,7 @@ import org.nxn.Extensions.*
 
 import scala.concurrent.duration.Duration
 
-class ViSwapChain(val surface: ViSurface, val device: ViDevice, imageCount:Int = 0) extends AutoCloseable{
+class VnSwapChain(val surface: VnSurface, val device: VnDevice, imageCount:Int = 0) extends AutoCloseable{
 
   /** (vkSwapChain : Long,
    vkImages: IndexedSeq[Long], format:Int,
@@ -136,11 +136,11 @@ class ViSwapChain(val surface: ViSurface, val device: ViDevice, imageCount:Int =
     vkImages: IndexedSeq[Long], format:Int,
     dimension: Dimension) = init()
 
-  protected def initImageViews(): IndexedSeq[ViImageView] = {
-    for(i <- vkImages.zipWithIndex) yield new ViImageView(this, i._2)
+  protected def initImageViews(): IndexedSeq[VnImageView] = {
+    for(i <- vkImages.zipWithIndex) yield new VnImageView(this, i._2)
   }
 
-  val imageViews: IndexedSeq[ViImageView] = initImageViews()
+  val imageViews: IndexedSeq[VnImageView] = initImageViews()
 
   def presentResult(err:Int) : Option[PresentResult] = {
     var res:Option[PresentResult] = None
@@ -160,7 +160,7 @@ class ViSwapChain(val surface: ViSurface, val device: ViDevice, imageCount:Int =
     case outOfDate, suboptimal
   }
 
-  def presentImage(queue: ViQueue, index:Int, waitSemaphores:ViSemaphore):Option[PresentResult] = MemoryStack.stackPush() | { stack =>
+  def presentImage(queue: VnQueue, index:Int, waitSemaphores:VnSemaphore):Option[PresentResult] = MemoryStack.stackPush() | { stack =>
     if(index >= vkImages.length){
       throw new IndexOutOfBoundsException(index)
     }
@@ -180,7 +180,7 @@ class ViSwapChain(val surface: ViSurface, val device: ViDevice, imageCount:Int =
 
   case class NextImage(index:Int, presentResult:Option[PresentResult])
 
-  def acquireNextImage(semaphore: ViSemaphore, timeout:Duration = device.physicalDevice.instance.system.timeout):NextImage = MemoryStack.stackPush() | { stack =>
+  def acquireNextImage(semaphore: VnSemaphore, timeout:Duration = device.physicalDevice.instance.system.timeout):NextImage = MemoryStack.stackPush() | { stack =>
     val sem = semaphore.vkSemaphore
 
     val ip = stack.callocInt(1)

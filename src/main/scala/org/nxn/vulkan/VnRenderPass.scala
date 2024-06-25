@@ -4,7 +4,7 @@ import org.lwjgl.system.MemoryStack
 import org.lwjgl.vulkan.{KHRSwapchain, VK10, VkAttachmentDescription, VkAttachmentReference, VkRenderPassCreateInfo, VkSubpassDescription}
 import org.nxn.Extensions.*
 
-class ViRenderPass(val swapChain: ViSwapChain)  extends AutoCloseable{
+class VnRenderPass(val swapChain: VnSwapChain)  extends AutoCloseable{
 
   protected def init(): Long = MemoryStack.stackPush() | { stack =>
     val attachments = VkAttachmentDescription.calloc(1, stack)

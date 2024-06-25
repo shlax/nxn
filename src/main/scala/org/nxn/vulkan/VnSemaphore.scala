@@ -4,7 +4,7 @@ import org.lwjgl.system.MemoryStack
 import org.lwjgl.vulkan.{VK10, VkSemaphoreCreateInfo}
 import org.nxn.Extensions.*
 
-class ViSemaphore(val device: ViDevice) extends AutoCloseable{
+class VnSemaphore(val device: VnDevice) extends AutoCloseable{
 
   protected def init():Long = MemoryStack.stackPush() | { stack =>
     val info = VkSemaphoreCreateInfo.calloc(stack)

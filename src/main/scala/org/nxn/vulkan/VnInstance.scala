@@ -6,7 +6,7 @@ import org.lwjgl.system.{MemoryStack, MemoryUtil}
 import org.lwjgl.vulkan.{EXTDebugUtils, VK, VK10, VkApplicationInfo, VkDebugUtilsMessengerCallbackDataEXT, VkDebugUtilsMessengerCallbackEXT, VkDebugUtilsMessengerCallbackEXTI, VkDebugUtilsMessengerCreateInfoEXT, VkExtensionProperties, VkInstance, VkInstanceCreateInfo, VkLayerProperties}
 import org.nxn.Extensions.*
 
-class ViInstance(val system: ViSystem) extends VkDebugUtilsMessengerCallbackEXTI, AutoCloseable{
+class VnInstance(val system: VnSystem) extends VkDebugUtilsMessengerCallbackEXTI, AutoCloseable{
 
   private var dbgFn:Option[VkDebugUtilsMessengerCallbackEXT] = None
   private var dbgCallBack:Option[Long] = None

@@ -6,18 +6,18 @@ import org.lwjgl.vulkan.{VK10, VkClearValue, VkCommandBuffer, VkRect2D, VkRender
 import java.util.function.Consumer
 import org.nxn.Extensions.*
 
-class ViForwardRenderer(val swapChain:ViSwapChain, val commandPool:ViCommandPool) extends AutoCloseable {
+class VnForwardRenderer(val swapChain:VnSwapChain, val commandPool:VnCommandPool) extends AutoCloseable {
 
-  protected def initRenderPass(): ViRenderPass = new ViRenderPass(swapChain)
-  val renderPass: ViRenderPass = initRenderPass()
+  protected def initRenderPass(): VnRenderPass = new VnRenderPass(swapChain)
+  val renderPass: VnRenderPass = initRenderPass()
 
-  protected def initFrameBuffers(): IndexedSeq[ViFrameBuffer] = for(i <- swapChain.vkImages.indices) yield new ViFrameBuffer(renderPass, swapChain.imageViews(i))
-  val frameBuffers: IndexedSeq[ViFrameBuffer] = initFrameBuffers()
+  protected def initFrameBuffers(): IndexedSeq[VnFrameBuffer] = for(i <- swapChain.vkImages.indices) yield new VnFrameBuffer(renderPass, swapChain.imageViews(i))
+  val frameBuffers: IndexedSeq[VnFrameBuffer] = initFrameBuffers()
 
-  protected def initFence():ViFence = new ViFence(swapChain.device)
-  val fence:ViFence = initFence()
+  protected def initFence():VnFence = new VnFence(swapChain.device)
+  val fence:VnFence = initFence()
 
-  protected def initCommandBuffers(): IndexedSeq[ViCommandBuffer] = MemoryStack.stackPush() | { stack =>
+  protected def initCommandBuffers(): IndexedSeq[VnCommandBuffer] = MemoryStack.stackPush() | { stack =>
     val clearValues = VkClearValue.calloc(1, stack)
       .apply(0, (v: VkClearValue) => { v.color().float32(0, 0f).float32(1, 0f).float32(2, 0f).float32(3, 0f) })
 
@@ -37,16 +37,16 @@ class ViForwardRenderer(val swapChain:ViSwapChain, val commandPool:ViCommandPool
         .renderArea(areaFn)
         .framebuffer(frameBuffers(i).vkFrameBuffer)
 
-      new ViCommandBuffer(commandPool)(new ViRecording({ (vkCommandBuffer:VkCommandBuffer) =>
+      new VnCommandBuffer(commandPool)(new VnRecording({ (vkCommandBuffer:VkCommandBuffer) =>
         VK10.vkCmdBeginRenderPass(vkCommandBuffer, info, VK10.VK_SUBPASS_CONTENTS_INLINE)
         VK10.vkCmdEndRenderPass(vkCommandBuffer)
       }))
     }
   }
 
-  val commandBuffers: IndexedSeq[ViCommandBuffer] = initCommandBuffers()
+  val commandBuffers: IndexedSeq[VnCommandBuffer] = initCommandBuffers()
 
-  def submit(queue: ViQueue, ind:Int):Unit = MemoryStack.stackPush() | { stack =>
+  def submit(queue: VnQueue, ind:Int):Unit = MemoryStack.stackPush() | { stack =>
     fence.reset()
 //    queue.submit(commandBuffers(ind), swapChain.imageAcquisition, swapChain.renderComplete, VK10.VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, fence)
   }

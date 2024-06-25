@@ -5,7 +5,7 @@ import org.lwjgl.system.MemoryStack
 import org.lwjgl.vulkan.KHRSurface
 import org.nxn.Extensions.*
 
-class ViSurface(val instance:ViInstance, val window:ViWindow) extends AutoCloseable{
+class VnSurface(val instance:VnInstance, val window:VnWindow) extends AutoCloseable{
 
   protected def init():Long = MemoryStack.stackPush()|{ stack =>
     val b = stack.callocLong(1)

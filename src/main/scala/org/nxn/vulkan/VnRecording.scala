@@ -6,7 +6,7 @@ import org.lwjgl.vulkan.{VK10, VkCommandBuffer, VkCommandBufferBeginInfo}
 import java.util.function.Consumer
 import org.nxn.Extensions.*
 
-class ViRecording(fn: Consumer[VkCommandBuffer]) extends Consumer[VkCommandBuffer]{
+class VnRecording(fn: Consumer[VkCommandBuffer]) extends Consumer[VkCommandBuffer]{
 
   protected def info(vkCommandBuffer: VkCommandBuffer, stack:MemoryStack):VkCommandBufferBeginInfo = {
     VkCommandBufferBeginInfo.calloc(stack)
