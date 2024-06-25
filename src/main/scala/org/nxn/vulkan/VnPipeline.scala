@@ -6,7 +6,7 @@ import org.nxn.Extensions.*
 
 import java.util.function.Consumer
 
-class VnPipeline(val renderPass: VnRenderPass, shaderModules:IndexedSeq[VnShaderModule],
+class VnPipeline( val renderPass: VnRenderPass, shaderModules:IndexedSeq[VnShaderModule],
                   val topology:Int = VK10.VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST,
                   val polygonMode:Int = VK10.VK_POLYGON_MODE_FILL,
                   val cullMode:Int = VK10.VK_CULL_MODE_BACK_BIT, val frontFace:Int = VK10.VK_FRONT_FACE_COUNTER_CLOCKWISE,
