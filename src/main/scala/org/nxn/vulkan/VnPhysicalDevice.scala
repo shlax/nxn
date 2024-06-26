@@ -9,7 +9,7 @@ class VnPhysicalDevice(val instance: VnInstance, val surface: VnSurface){
   /** vkPhysicalDevice:VkPhysicalDevice,
    graphicsQueueIndex:Int, graphicsQueueIndexes:IndexedSeq[Int],
    presentQueueIndex:Int, presentQueueIndexes:IndexedSeq[Int] */
-  protected def init():(VkPhysicalDevice, Int, IndexedSeq[Int], Int, IndexedSeq[Int]) = MemoryStack.stackPush()|{ stack =>
+  protected def initPhysicalDeviceQueues():(VkPhysicalDevice, Int, IndexedSeq[Int], Int, IndexedSeq[Int]) = MemoryStack.stackPush()|{ stack =>
     val vkInstance = instance.vkInstance
 
     val nBuff = stack.callocInt(1)
@@ -79,7 +79,7 @@ class VnPhysicalDevice(val instance: VnInstance, val surface: VnSurface){
 
   val (vkPhysicalDevice:VkPhysicalDevice,
     graphicsQueueIndex:Int, graphicsQueueIndexes:IndexedSeq[Int],
-    presentQueueIndex:Int, presentQueueIndexes:IndexedSeq[Int]) = init()
+    presentQueueIndex:Int, presentQueueIndexes:IndexedSeq[Int]) = initPhysicalDeviceQueues()
 
   def queuesFamilies() :IndexedSeq[Int] = {
     Set(graphicsQueueIndex, presentQueueIndex).toIndexedSeq

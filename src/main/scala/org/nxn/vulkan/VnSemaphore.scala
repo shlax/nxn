@@ -6,7 +6,7 @@ import org.nxn.Extensions.*
 
 class VnSemaphore(val device: VnDevice) extends AutoCloseable{
 
-  protected def init():Long = MemoryStack.stackPush() | { stack =>
+  protected def initSemaphore():Long = MemoryStack.stackPush() | { stack =>
     val info = VkSemaphoreCreateInfo.calloc(stack)
       .sType$Default()
 
@@ -15,7 +15,7 @@ class VnSemaphore(val device: VnDevice) extends AutoCloseable{
     buff.get(0)
   }
 
-  val vkSemaphore:Long = init()
+  val vkSemaphore:Long = initSemaphore()
 
   override def close(): Unit = {
     VK10.vkDestroySemaphore(device.vkDevice, vkSemaphore, null)

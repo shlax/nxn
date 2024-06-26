@@ -6,7 +6,7 @@ import org.nxn.Extensions.*
 
 class VnFrameBuffer(val renderPass: VnRenderPass, val imageView:VnImageView) extends AutoCloseable {
 
-  protected def init():Long = MemoryStack.stackPush() | { stack =>
+  protected def initFrameBuffer():Long = MemoryStack.stackPush() | { stack =>
     val swapChain = renderPass.swapChain
 
     val attachments = stack.callocLong(1)
@@ -28,7 +28,7 @@ class VnFrameBuffer(val renderPass: VnRenderPass, val imageView:VnImageView) ext
     buff.get(0)
   }
 
-  val vkFrameBuffer:Long = init()
+  val vkFrameBuffer:Long = initFrameBuffer()
 
   override def close(): Unit = {
     VK10.vkDestroyFramebuffer(renderPass.swapChain.device.vkDevice, vkFrameBuffer, null)

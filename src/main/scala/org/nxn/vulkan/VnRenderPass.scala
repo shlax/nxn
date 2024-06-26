@@ -6,7 +6,7 @@ import org.nxn.Extensions.*
 
 class VnRenderPass(val swapChain: VnSwapChain)  extends AutoCloseable{
 
-  protected def init(): Long = MemoryStack.stackPush() | { stack =>
+  protected def initRenderPass(): Long = MemoryStack.stackPush() | { stack =>
     val attachments = VkAttachmentDescription.calloc(1, stack)
     attachments.get(0)
       .flags(0)
@@ -38,9 +38,16 @@ class VnRenderPass(val swapChain: VnSwapChain)  extends AutoCloseable{
     buff.get(0)
   }
 
-  val vkRenderPass : Long = init()
+  val vkRenderPass: Long = initRenderPass()
+
+  protected def initFrameBuffers():IndexedSeq[VnFrameBuffer] = {
+    for(i <- swapChain.imageViews) yield new VnFrameBuffer(this, i)
+  }
+
+  val frameBuffers:IndexedSeq[VnFrameBuffer] = initFrameBuffers()
 
   override def close(): Unit = {
+    for(i <- frameBuffers) i.close()
     VK10.vkDestroyRenderPass(swapChain.device.vkDevice, vkRenderPass, null)
   }
 

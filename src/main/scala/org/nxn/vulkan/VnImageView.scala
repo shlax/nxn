@@ -12,7 +12,7 @@ class VnImageView(val swapChain: VnSwapChain, val index:Int) extends AutoCloseab
     throw new IndexOutOfBoundsException(index)
   }
 
-  protected def init() : Long = MemoryStack.stackPush() | { stack =>
+  protected def initImageView() : Long = MemoryStack.stackPush() | { stack =>
     val info = VkImageViewCreateInfo.calloc(stack)
       .sType$Default()
       .image(swapChain.vkImages(index))
@@ -31,7 +31,7 @@ class VnImageView(val swapChain: VnSwapChain, val index:Int) extends AutoCloseab
     lp.get(0)
   }
 
-  val vkImageView: Long = init()
+  val vkImageView: Long = initImageView()
 
   override def close(): Unit = {
     VK10.vkDestroyImageView(swapChain.device.vkDevice, vkImageView, null)

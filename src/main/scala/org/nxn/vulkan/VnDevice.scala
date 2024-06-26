@@ -9,7 +9,7 @@ class VnDevice(val physicalDevice:VnPhysicalDevice) extends AutoCloseable{
 
   val queuesFamilies:IndexedSeq[Int] = physicalDevice.queuesFamilies()
 
-  protected def init(): VkDevice = MemoryStack.stackPush() | { stack =>
+  protected def initDevice(): VkDevice = MemoryStack.stackPush() | { stack =>
     val queue = VkDeviceQueueCreateInfo.calloc(queuesFamilies.size, stack)
 
     val priorities = stack.callocFloat(queuesFamilies.size)
@@ -56,19 +56,19 @@ class VnDevice(val physicalDevice:VnPhysicalDevice) extends AutoCloseable{
     new VkDevice(buff.get(0), physicalDevice.vkPhysicalDevice, devInf)
   }
 
-  val vkDevice:VkDevice = init()
+  val vkDevice:VkDevice = initDevice()
 
   protected def features(deviceFeatures:VkPhysicalDeviceFeatures, stack:MemoryStack) : VkPhysicalDeviceFeatures = {
     deviceFeatures
   }
 
-  protected def graphicsQueueInit():VnQueue = {
+  protected def initGraphicsQueue():VnQueue = {
     new VnQueue(this, physicalDevice.graphicsQueueIndex, 0)
   }
 
-  val graphicsQueue:VnQueue = graphicsQueueInit()
+  val graphicsQueue:VnQueue = initGraphicsQueue()
 
-  protected def presentQueueInit(): VnQueue = {
+  protected def initPresentQueue(): VnQueue = {
     if(physicalDevice.graphicsQueueIndex == physicalDevice.presentQueueIndex){
       graphicsQueue
     }else {
@@ -76,7 +76,7 @@ class VnDevice(val physicalDevice:VnPhysicalDevice) extends AutoCloseable{
     }
   }
 
-  val presentQueue:VnQueue = presentQueueInit()
+  val presentQueue:VnQueue = initPresentQueue()
 
   override def close(): Unit = {
     VK10.vkDestroyDevice(vkDevice, null)

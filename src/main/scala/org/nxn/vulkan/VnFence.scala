@@ -9,7 +9,7 @@ class VnFence(val device: VnDevice, val signaled:Boolean = true) extends AutoClo
 
   private val vkDevice = device.vkDevice
 
-  protected def init():Long = MemoryStack.stackPush() | { stack =>
+  protected def initFence():Long = MemoryStack.stackPush() | { stack =>
     val info = VkFenceCreateInfo.calloc(stack)
       .sType$Default()
       .flags(if(signaled) VK10.VK_FENCE_CREATE_SIGNALED_BIT else 0)
@@ -19,7 +19,7 @@ class VnFence(val device: VnDevice, val signaled:Boolean = true) extends AutoClo
     buff.get(0)
   }
 
-  val vkFence:Long = init()
+  val vkFence:Long = initFence()
 
   def await(waitAll:Boolean = true, timeout:Duration = device.physicalDevice.instance.system.timeout):Unit = {
     vkCheck( VK10.vkWaitForFences(vkDevice, vkFence, waitAll, timeout.toNanos) )

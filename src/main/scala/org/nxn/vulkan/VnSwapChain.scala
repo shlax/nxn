@@ -12,7 +12,7 @@ class VnSwapChain(val surface: VnSurface, val device: VnDevice, imageCount:Int =
   /** (vkSwapChain : Long,
    vkImages: IndexedSeq[Long], format:Int,
    dimension: Dimension) */
-  protected def init(): (Long, IndexedSeq[Long], Int, Dimension) = MemoryStack.stackPush() | { stack =>
+  protected def initSwapChain(): (Long, IndexedSeq[Long], Int, Dimension) = MemoryStack.stackPush() | { stack =>
     val vkPhysicalDevice = device.physicalDevice.vkPhysicalDevice
 
     val surfCapabilities = VkSurfaceCapabilitiesKHR.calloc(stack)
@@ -134,7 +134,7 @@ class VnSwapChain(val surface: VnSurface, val device: VnDevice, imageCount:Int =
 
   val (vkSwapChain : Long,
     vkImages: IndexedSeq[Long], format:Int,
-    dimension: Dimension) = init()
+    dimension: Dimension) = initSwapChain()
 
   protected def initImageViews(): IndexedSeq[VnImageView] = {
     for(i <- vkImages.zipWithIndex) yield new VnImageView(this, i._2)

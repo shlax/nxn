@@ -8,7 +8,7 @@ import org.nxn.Extensions.*
 
 class VnBuffer(val device: VnDevice, val size:Long, val usage:Int, val reqMask:Int) extends AutoCloseable{
 
-  protected def init(): (Long, Long) = MemoryStack.stackPush() |{ stack =>
+  protected def initBufferMemory(): (Long, Long) = MemoryStack.stackPush() |{ stack =>
     val info = VkBufferCreateInfo.calloc(stack)
       .sType$Default()
       .size(size)
@@ -55,7 +55,7 @@ class VnBuffer(val device: VnDevice, val size:Long, val usage:Int, val reqMask:I
     (buff, mem)
   }
 
-  val (buffer:Long,  memory:Long) = init()
+  val (buffer:Long,  memory:Long) = initBufferMemory()
 
   def map(c:BiConsumer[Long, MemoryStack]):Unit = MemoryStack.stackPush() |{ stack =>
     val vkDevice = device.vkDevice

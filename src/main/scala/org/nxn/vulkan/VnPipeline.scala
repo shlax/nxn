@@ -14,7 +14,21 @@ class VnPipeline( val renderPass: VnRenderPass, shaderModules:IndexedSeq[VnShade
 
   val device: VnDevice = shaderModules.head.device
 
-  protected def init(modules:IndexedSeq[VnShaderModule]): (Long, Long) = MemoryStack.stackPush() | { stack =>
+  protected def initPipelineLayout():Long = MemoryStack.stackPush() | { stack =>
+    val layout = VkPipelineLayoutCreateInfo.calloc(stack)
+      .sType$Default()
+
+
+    val lp = stack.callocLong(1)
+    vkCheck(VK10.vkCreatePipelineLayout(device.vkDevice, layout, null, lp))
+    val pipelineLayout = lp.get(0)
+
+    pipelineLayout
+  }
+
+  val vkPipelineLayout:Long = initPipelineLayout()
+
+  protected def initPipeline(modules:IndexedSeq[VnShaderModule]): Long = MemoryStack.stackPush() | { stack =>
 
     val stages = VkPipelineShaderStageCreateInfo.calloc(modules.length, stack)
     for(i <- modules.indices){
@@ -85,14 +99,6 @@ class VnPipeline( val renderPass: VnRenderPass, shaderModules:IndexedSeq[VnShade
       .sType$Default()
       //.pDynamicStates(stack.ints(VK10.VK_DYNAMIC_STATE_VIEWPORT, VK10.VK_DYNAMIC_STATE_SCISSOR))
 
-    val layout = VkPipelineLayoutCreateInfo.calloc(stack)
-      .sType$Default()
-
-
-    val lp = stack.callocLong(1)
-    vkCheck(VK10.vkCreatePipelineLayout(device.vkDevice, layout, null, lp))
-    val pipelineLayout = lp.get(0)
-
     val info = VkGraphicsPipelineCreateInfo.calloc(1, stack)
       .sType$Default()
       .pStages(stages)
@@ -103,17 +109,17 @@ class VnPipeline( val renderPass: VnRenderPass, shaderModules:IndexedSeq[VnShade
       .pMultisampleState(multisample)
       .pColorBlendState(colorBlend)
       .pDynamicState(dynamic)
-      .layout(pipelineLayout)
+      .layout(vkPipelineLayout)
       .renderPass(renderPass.vkRenderPass)
 
     val pl = stack.callocLong(1)
     vkCheck(VK10.vkCreateGraphicsPipelines(device.vkDevice, VK10.VK_NULL_HANDLE, info, null, pl))
     val pipeline = pl.get(0)
 
-    (pipeline, pipelineLayout)
+    pipeline
   }
 
-  val (vkPipeline:Long, vkPipelineLayout:Long) = init(shaderModules)
+  val vkPipeline:Long = initPipeline(shaderModules)
 
   override def close(): Unit = {
     VK10.vkDestroyPipeline(device.vkDevice, vkPipeline, null)

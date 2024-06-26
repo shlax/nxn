@@ -6,7 +6,7 @@ import org.nxn.Extensions.*
 
 class VnCommandPool(val device: VnDevice, val queueFamilyIndex:Int) extends AutoCloseable{
 
-  protected def init(): Long = MemoryStack.stackPush() | { stack =>
+  protected def initCommandPool(): Long = MemoryStack.stackPush() | { stack =>
     val info = VkCommandPoolCreateInfo.calloc(stack)
       .sType$Default()
       .flags(0) //.flags(VK10.VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT)
@@ -17,7 +17,7 @@ class VnCommandPool(val device: VnDevice, val queueFamilyIndex:Int) extends Auto
     buff.get(0)
   }
 
-  val vkCommandPool: Long = init()
+  val vkCommandPool: Long = initCommandPool()
 
   override def close(): Unit = {
     VK10.vkDestroyCommandPool(device.vkDevice, vkCommandPool, null)

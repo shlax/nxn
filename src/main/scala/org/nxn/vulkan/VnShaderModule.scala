@@ -7,7 +7,7 @@ import org.nxn.Extensions.*
 /** allowed to destroy the shader modules again as soon as pipeline creation is finished */
 class VnShaderModule(val device: VnDevice, val stage:Int, val name:String, data:Array[Byte]) extends AutoCloseable{
 
-  protected def init(dt:Array[Byte]):Long = MemoryStack.stackPush()|{ stack =>
+  protected def initShaderModule(dt:Array[Byte]):Long = MemoryStack.stackPush()|{ stack =>
     val pCode = stack.calloc(dt.length).put(0, dt)
 
     val info = VkShaderModuleCreateInfo.calloc(stack)
@@ -19,7 +19,7 @@ class VnShaderModule(val device: VnDevice, val stage:Int, val name:String, data:
     lp.get()
   }
 
-  val shaderModule:Long = init(data)
+  val shaderModule:Long = initShaderModule(data)
 
   override def close(): Unit = {
     VK10.vkDestroyShaderModule(device.vkDevice, shaderModule, null)

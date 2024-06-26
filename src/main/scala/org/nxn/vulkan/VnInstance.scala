@@ -11,7 +11,7 @@ class VnInstance(val system: VnSystem) extends VkDebugUtilsMessengerCallbackEXTI
   private var dbgFn:Option[VkDebugUtilsMessengerCallbackEXT] = None
   private var dbgCallBack:Option[Long] = None
 
-  protected def init() : VkInstance = MemoryStack.stackPush()|{ stack =>
+  protected def initInstance() : VkInstance = MemoryStack.stackPush()|{ stack =>
     var requiredLayers:Option[PointerBuffer] = None
     if(system.debug){ // validate layer
       val nBuff = stack.callocInt(1)
@@ -125,7 +125,7 @@ class VnInstance(val system: VnSystem) extends VkDebugUtilsMessengerCallbackEXTI
     vkInst
   }
 
-  val vkInstance:VkInstance =  init()
+  val vkInstance:VkInstance =  initInstance()
 
   override def invoke(messageSeverity: Int, messageTypes: Int, pCallbackData: Long, pUserData: Long): Int = {
 

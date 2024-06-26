@@ -7,13 +7,13 @@ import org.nxn.Extensions.*
 
 class VnSurface(val instance:VnInstance, val window:VnWindow) extends AutoCloseable{
 
-  protected def init():Long = MemoryStack.stackPush()|{ stack =>
+  protected def initSurface():Long = MemoryStack.stackPush()|{ stack =>
     val b = stack.callocLong(1)
     vkCheck(GLFWVulkan.glfwCreateWindowSurface(instance.vkInstance, window.windowHandle, null, b))
     b.get(0)
   }
 
-  val vkSurface:Long = init()
+  val vkSurface:Long = initSurface()
 
   override def close(): Unit = {
     KHRSurface.vkDestroySurfaceKHR(instance.vkInstance, vkSurface, null)

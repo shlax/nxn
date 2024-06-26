@@ -10,13 +10,13 @@ class VnQueue(val device:VnDevice, val familyIndex:Int, val index:Int) {
     throw new IndexOutOfBoundsException(familyIndex)
   }
 
-  protected def init(): VkQueue = MemoryStack.stackPush() | { stack =>
+  protected def initQueue(): VkQueue = MemoryStack.stackPush() | { stack =>
     val p = stack.callocPointer(1)
     VK10.vkGetDeviceQueue(device.vkDevice, familyIndex, index, p)
     new VkQueue(p.get(0), device.vkDevice)
   }
 
-  val vkQueue:VkQueue = init()
+  val vkQueue:VkQueue = initQueue()
 
   def submit(buffer: VnCommandBuffer, waitSemaphore: VnSemaphore, signalSemaphore: VnSemaphore, stageMasks: Int, fence: VnFence): Unit = MemoryStack.stackPush() | { stack =>
     val pb = stack.pointers(buffer.vkCommandBuffer)
