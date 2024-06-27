@@ -1,26 +1,22 @@
 package org.nxn.vulkan
 
 import org.lwjgl.system.MemoryStack
-import org.lwjgl.vulkan.{VK10, VkExtent2D, VkGraphicsPipelineCreateInfo, VkOffset2D, VkPipelineColorBlendAttachmentState, VkPipelineColorBlendStateCreateInfo, VkPipelineDynamicStateCreateInfo, VkPipelineInputAssemblyStateCreateInfo, VkPipelineLayoutCreateInfo, VkPipelineMultisampleStateCreateInfo, VkPipelineRasterizationStateCreateInfo, VkPipelineShaderStageCreateInfo, VkPipelineVertexInputStateCreateInfo, VkPipelineViewportStateCreateInfo, VkRect2D, VkViewport}
+import org.lwjgl.vulkan.{VK10, VkCommandBuffer, VkGraphicsPipelineCreateInfo, VkPipelineColorBlendAttachmentState, VkPipelineColorBlendStateCreateInfo, VkPipelineDynamicStateCreateInfo, VkPipelineInputAssemblyStateCreateInfo, VkPipelineLayoutCreateInfo, VkPipelineMultisampleStateCreateInfo, VkPipelineRasterizationStateCreateInfo, VkPipelineShaderStageCreateInfo, VkPipelineVertexInputStateCreateInfo, VkPipelineViewportStateCreateInfo, VkRect2D, VkViewport}
 import org.nxn.Extensions.*
+import org.nxn.vulkan.shader.CompiledShader
 
-import java.util.function.Consumer
-
-class VnPipeline( val renderPass: VnRenderPass, shaderModules:IndexedSeq[VnShaderModule],
+class VnPipeline(val renderPass: VnRenderPass, compiledShaders:IndexedSeq[CompiledShader],
                   val topology:Int = VK10.VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST,
                   val polygonMode:Int = VK10.VK_POLYGON_MODE_FILL,
                   val cullMode:Int = VK10.VK_CULL_MODE_BACK_BIT, val frontFace:Int = VK10.VK_FRONT_FACE_COUNTER_CLOCKWISE,
                   val colorAttachmentsCount:Int = 1 ) extends AutoCloseable{
 
-  val device: VnDevice = shaderModules.head.device
-
   protected def initPipelineLayout():Long = MemoryStack.stackPush() | { stack =>
     val layout = VkPipelineLayoutCreateInfo.calloc(stack)
       .sType$Default()
 
-
     val lp = stack.callocLong(1)
-    vkCheck(VK10.vkCreatePipelineLayout(device.vkDevice, layout, null, lp))
+    vkCheck(VK10.vkCreatePipelineLayout(renderPass.swapChain.device.vkDevice, layout, null, lp))
     val pipelineLayout = lp.get(0)
 
     pipelineLayout
@@ -28,11 +24,17 @@ class VnPipeline( val renderPass: VnRenderPass, shaderModules:IndexedSeq[VnShade
 
   val vkPipelineLayout:Long = initPipelineLayout()
 
-  protected def initPipeline(modules:IndexedSeq[VnShaderModule]): Long = MemoryStack.stackPush() | { stack =>
+  protected def createShaderModules(modules:IndexedSeq[CompiledShader]):IndexedSeq[VnShaderModule] = {
+    val dev = renderPass.swapChain.device
+    modules.map(c => new VnShaderModule(dev, c))
+  }
 
-    val stages = VkPipelineShaderStageCreateInfo.calloc(modules.length, stack)
-    for(i <- modules.indices){
-      val s = modules(i)
+  protected def initPipeline(modules:IndexedSeq[CompiledShader]): Long = MemoryStack.stackPush() | { stack =>
+    val shaderModules = createShaderModules(compiledShaders)
+
+    val stages = VkPipelineShaderStageCreateInfo.calloc(shaderModules.length, stack)
+    for(i <- shaderModules.indices){
+      val s = shaderModules(i)
       val nm = stack.UTF8(s.name)
 
       stages.get(i)
@@ -58,11 +60,9 @@ class VnPipeline( val renderPass: VnRenderPass, shaderModules:IndexedSeq[VnShade
       .minDepth(0f).maxDepth(1f)
 
     val scissors = VkRect2D.calloc(1, stack)
-    scissors.get(0).offset(((off: VkOffset2D) => {
-        off.x(0).y(0)
-      }):Consumer[VkOffset2D]).extent(((off: VkExtent2D) => {
-        off.width(dim.width).height(dim.height)
-      }):Consumer[VkExtent2D])
+    val scissor = scissors.get(0)
+    scissor.offset().x(0).y(0)
+    scissor.extent().width(dim.width).height(dim.height)
 
     val viewport = VkPipelineViewportStateCreateInfo.calloc(stack)
       .sType$Default()
@@ -113,16 +113,25 @@ class VnPipeline( val renderPass: VnRenderPass, shaderModules:IndexedSeq[VnShade
       .renderPass(renderPass.vkRenderPass)
 
     val pl = stack.callocLong(1)
-    vkCheck(VK10.vkCreateGraphicsPipelines(device.vkDevice, VK10.VK_NULL_HANDLE, info, null, pl))
+    vkCheck(VK10.vkCreateGraphicsPipelines(renderPass.swapChain.device.vkDevice, VK10.VK_NULL_HANDLE, info, null, pl))
     val pipeline = pl.get(0)
+
+    /** allowed to destroy the shader modules again as soon as pipeline creation is finished */
+    for (m <- shaderModules) m.close()
 
     pipeline
   }
 
-  val vkPipeline:Long = initPipeline(shaderModules)
+  val vkPipeline:Long = initPipeline(compiledShaders)
+
+  def bindPipeline(commandBuffer:VkCommandBuffer, compute:Boolean = false):Unit = {
+    VK10.vkCmdBindPipeline(commandBuffer, if(compute) VK10.VK_PIPELINE_BIND_POINT_COMPUTE else VK10.VK_PIPELINE_BIND_POINT_GRAPHICS, vkPipeline)
+  }
 
   override def close(): Unit = {
-    VK10.vkDestroyPipeline(device.vkDevice, vkPipeline, null)
-    VK10.vkDestroyPipelineLayout(device.vkDevice, vkPipelineLayout, null)
+    val vkDevice = renderPass.swapChain.device.vkDevice
+
+    VK10.vkDestroyPipeline(vkDevice, vkPipeline, null)
+    VK10.vkDestroyPipelineLayout(vkDevice, vkPipelineLayout, null)
   }
 }

@@ -3,9 +3,11 @@ package org.nxn.vulkan
 import org.lwjgl.system.MemoryStack
 import org.lwjgl.vulkan.{VK10, VkShaderModuleCreateInfo}
 import org.nxn.Extensions.*
+import org.nxn.vulkan.shader.CompiledShader
 
-/** allowed to destroy the shader modules again as soon as pipeline creation is finished */
-class VnShaderModule(val device: VnDevice, val stage:Int, val name:String, data:Array[Byte]) extends AutoCloseable{
+class VnShaderModule(val device: VnDevice, compiledShader: CompiledShader) extends AutoCloseable{
+  val stage: Int = compiledShader.stage
+  val name: String = compiledShader.name
 
   protected def initShaderModule(dt:Array[Byte]):Long = MemoryStack.stackPush()|{ stack =>
     val pCode = stack.calloc(dt.length).put(0, dt)
@@ -19,7 +21,7 @@ class VnShaderModule(val device: VnDevice, val stage:Int, val name:String, data:
     lp.get()
   }
 
-  val shaderModule:Long = initShaderModule(data)
+  val shaderModule:Long = initShaderModule(compiledShader.code)
 
   override def close(): Unit = {
     VK10.vkDestroyShaderModule(device.vkDevice, shaderModule, null)

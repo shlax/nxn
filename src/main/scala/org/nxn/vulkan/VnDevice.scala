@@ -1,6 +1,5 @@
 package org.nxn.vulkan
 
-import org.lwjgl.PointerBuffer
 import org.lwjgl.system.{MemoryStack, MemoryUtil}
 import org.lwjgl.vulkan.{KHRSwapchain, VK10, VkDevice, VkDeviceCreateInfo, VkDeviceQueueCreateInfo, VkPhysicalDeviceFeatures}
 import org.nxn.Extensions.*

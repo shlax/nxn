@@ -8,7 +8,11 @@ import java.util.function.Consumer
 
 class VnCommandBuffer(val commandPool: VnCommandPool, val primary:Boolean = true)(fn: Consumer[VkCommandBuffer]) extends AutoCloseable{
 
-  protected def initCommandBuffer():VkCommandBuffer = MemoryStack.stackPush() | { stack =>
+  def recording(f: Consumer[VkCommandBuffer]):VnRecording = {
+    new VnRecording(f)
+  }
+
+  protected def initCommandBuffer(f: Consumer[VkCommandBuffer]):VkCommandBuffer = MemoryStack.stackPush() | { stack =>
     val info = VkCommandBufferAllocateInfo.calloc(stack)
       .sType$Default()
       .commandPool(commandPool.vkCommandPool)
@@ -21,12 +25,13 @@ class VnCommandBuffer(val commandPool: VnCommandPool, val primary:Boolean = true
     vkCheck(VK10.vkAllocateCommandBuffers(vkDevice, info, buff))
     val cmdBuff = new VkCommandBuffer(buff.get(0), vkDevice)
 
-    fn.accept(cmdBuff)
+    val rec = recording(f)
+    rec.accept(cmdBuff)
 
     cmdBuff
   }
 
-  val vkCommandBuffer:VkCommandBuffer = initCommandBuffer()
+  val vkCommandBuffer:VkCommandBuffer = initCommandBuffer(fn)
 
   override def close(): Unit = {
     VK10.vkFreeCommandBuffers(commandPool.device.vkDevice, commandPool.vkCommandPool, vkCommandBuffer)

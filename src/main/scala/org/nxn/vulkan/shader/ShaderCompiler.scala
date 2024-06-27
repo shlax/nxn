@@ -1,16 +1,16 @@
-package org.nxn.vulkan
+package org.nxn.vulkan.shader
 
 import org.lwjgl.util.shaderc.Shaderc
-
-import scala.io.Source
 import org.nxn.Extensions.*
 
-class VnShaderCompiler extends AutoCloseable{
+import scala.io.Source
+
+class ShaderCompiler extends AutoCloseable{
 
   val compiler:Long = Shaderc.shaderc_compiler_initialize()
   val options: Long = Shaderc.shaderc_compile_options_initialize()
 
-  def compile(uri:String, shaderType:Int, entryPoint:String = "main"): Array[Byte] = {
+  def compile(uri:String, shaderType:Int, stage:Int, entryPoint:String = "main"): CompiledShader = {
     val src = this.getClass.getResourceAsStream(uri)|{ in =>
       Source.fromInputStream(in, "UTF-8").getLines().mkString("\n")
     }
@@ -23,7 +23,7 @@ class VnShaderCompiler extends AutoCloseable{
     val compiled = new Array[Byte](buff.remaining())
     buff.get(compiled)
 
-    compiled
+    CompiledShader(compiled, stage, entryPoint)
   }
 
   override def close(): Unit = {
