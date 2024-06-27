@@ -26,7 +26,7 @@ class VnPipeline(val renderPass: VnRenderPass, compiledShaders:IndexedSeq[Compil
 
   protected def createShaderModules(modules:IndexedSeq[CompiledShader]):IndexedSeq[VnShaderModule] = {
     val dev = renderPass.swapChain.device
-    modules.map(c => new VnShaderModule(dev, c))
+    for(c <- modules) yield new VnShaderModule(dev, c)
   }
 
   protected def initPipeline(modules:IndexedSeq[CompiledShader]): Long = MemoryStack.stackPush() | { stack =>

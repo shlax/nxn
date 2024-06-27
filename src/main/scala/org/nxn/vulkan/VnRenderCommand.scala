@@ -6,7 +6,7 @@ import org.lwjgl.vulkan.{VK10, VkClearValue, VkCommandBuffer, VkRect2D, VkRender
 import java.util.function.Consumer
 import org.nxn.Extensions.*
 
-class VnRender(val renderPass: VnRenderPass, val commandPool:VnCommandPool)(fn: Consumer[VkCommandBuffer]) extends AutoCloseable{
+class VnRenderCommand(val renderPass: VnRenderPass, val commandPool:VnCommandPool)(fn: Consumer[VkCommandBuffer]) extends AutoCloseable{
 
   protected def initCommandBuffers(f: Consumer[VkCommandBuffer]): IndexedSeq[VnCommandBuffer] = MemoryStack.stackPush() | { stack =>
 
