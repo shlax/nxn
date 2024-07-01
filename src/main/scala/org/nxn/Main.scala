@@ -20,10 +20,8 @@ object Main {
         ) }
 
       new VnSystem(true, "NXN", Dimension(1280, 720)) | { sys =>
-        val dev = sys.device
-
-        val graphicsQueue = dev.graphicsQueue
-        val presentQueue = dev.presentQueue
+        val graphicsQueue = sys.device.graphicsQueue
+        val presentQueue = sys.device.presentQueue
 
         new VnPipeline(sys.renderPass, shaders)|{ pipeline =>
           new VnRenderCommand(sys.renderPass)((buff: VkCommandBuffer) => {
