@@ -46,6 +46,9 @@ object Main extends Runnable{
             // >>
             while (sys.window.pullEvents()) {
 
+              inFlightFence.reset()
+              // ???
+              inFlightFence.await()
             }
             // <<
           }

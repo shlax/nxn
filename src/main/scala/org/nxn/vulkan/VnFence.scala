@@ -7,29 +7,27 @@ import org.nxn.utils.Using.*
 
 class VnFence(val device: VnDevice, val signaled:Boolean = true) extends AutoCloseable{
 
-  private val vkDevice = device.vkDevice
-
   protected def initFence():Long = MemoryStack.stackPush() | { stack =>
     val info = VkFenceCreateInfo.calloc(stack)
       .sType$Default()
       .flags(if(signaled) VK10.VK_FENCE_CREATE_SIGNALED_BIT else 0)
 
     val buff = stack.callocLong(1)
-    vkCheck(VK10.vkCreateFence(vkDevice, info, null, buff))
+    vkCheck(VK10.vkCreateFence(device.vkDevice, info, null, buff))
     buff.get(0)
   }
 
   val vkFence:Long = initFence()
 
   def await(waitAll:Boolean = true, timeout:Duration = device.physicalDevice.instance.system.timeout):Unit = {
-    vkCheck( VK10.vkWaitForFences(vkDevice, vkFence, waitAll, timeout.toNanos) )
+    vkCheck( VK10.vkWaitForFences(device.vkDevice, vkFence, waitAll, timeout.toNanos) )
   }
 
   def reset():Unit = {
-    vkCheck( VK10.vkResetFences(vkDevice, vkFence) )
+    vkCheck( VK10.vkResetFences(device.vkDevice, vkFence) )
   }
 
   override def close(): Unit = {
-    VK10.vkDestroyFence(vkDevice, vkFence, null)
+    VK10.vkDestroyFence(device.vkDevice, vkFence, null)
   }
 }
