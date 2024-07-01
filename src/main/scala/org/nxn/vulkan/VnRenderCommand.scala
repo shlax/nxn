@@ -6,7 +6,14 @@ import org.lwjgl.vulkan.{VK10, VkClearValue, VkCommandBuffer, VkRect2D, VkRender
 import java.util.function.Consumer
 import org.nxn.Extensions.*
 
-class VnRenderCommand(val renderPass: VnRenderPass, val commandPool:VnCommandPool)(fn: Consumer[VkCommandBuffer]) extends AutoCloseable{
+class VnRenderCommand(val renderPass: VnRenderPass)(fn: Consumer[VkCommandBuffer]) extends AutoCloseable{
+
+  protected def initCommandPool(): VnCommandPool = {
+    val dev = renderPass.swapChain.device
+    new VnCommandPool(dev, dev.physicalDevice.graphicsQueueIndex)
+  }
+
+  val commandPool:VnCommandPool = initCommandPool()
 
   protected def initCommandBuffers(f: Consumer[VkCommandBuffer]): IndexedSeq[VnCommandBuffer] = MemoryStack.stackPush() | { stack =>
 
@@ -43,6 +50,7 @@ class VnRenderCommand(val renderPass: VnRenderPass, val commandPool:VnCommandPoo
 
   override def close(): Unit = {
     for(c <- commandBuffers) c.close()
+    commandPool.close()
   }
 
 }

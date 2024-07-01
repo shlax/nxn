@@ -5,7 +5,7 @@ import org.lwjgl.vulkan.{VK10, VkCommandBuffer}
 import org.nxn.Extensions.*
 import org.nxn.utils.Dimension
 import org.nxn.vulkan.shader.ShaderCompiler
-import org.nxn.vulkan.{VnCommandPool, VnDevice, VnInstance, VnPhysicalDevice, VnPipeline, VnQueue, VnRenderCommand, VnRenderPass, VnSurface, VnSwapChain, VnSystem, VnWindow}
+import org.nxn.vulkan.{VnDevice, VnInstance, VnPhysicalDevice, VnPipeline, VnRenderCommand, VnRenderPass, VnSurface, VnSwapChain, VnSystem, VnWindow}
 
 import java.util.function.Consumer
 import scala.util.control.NonFatal
@@ -30,18 +30,17 @@ object Main {
                 new VnSwapChain(surf, dev)|{ swap =>
                   new VnRenderPass(swap)| { renderPass =>
                     new VnPipeline(renderPass, shaders)|{ pipeline =>
-                      new VnCommandPool(dev, psDev.graphicsQueueIndex) | { graphicsPool =>
-                        new VnRenderCommand(renderPass,graphicsPool)((buff: VkCommandBuffer) => {
-                          pipeline.bindPipeline(buff)
-                          VK10.vkCmdDraw(buff, 3, 1, 0, 0)
-                        }) | { render =>
-                          // >>
-                          while (win.pullEvents()) {
+                      new VnRenderCommand(renderPass)((buff: VkCommandBuffer) => {
+                        pipeline.bindPipeline(buff)
+                        VK10.vkCmdDraw(buff, 3, 1, 0, 0)
+                      }) | { render =>
+                        // >>
+                        while (win.pullEvents()) {
 
-                          }
-                          // <<
                         }
+                        // <<
                       }
+
                     }
                   }
                 }
