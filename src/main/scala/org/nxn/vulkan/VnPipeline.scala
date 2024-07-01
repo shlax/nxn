@@ -2,7 +2,7 @@ package org.nxn.vulkan
 
 import org.lwjgl.system.MemoryStack
 import org.lwjgl.vulkan.{VK10, VkCommandBuffer, VkGraphicsPipelineCreateInfo, VkPipelineColorBlendAttachmentState, VkPipelineColorBlendStateCreateInfo, VkPipelineDynamicStateCreateInfo, VkPipelineInputAssemblyStateCreateInfo, VkPipelineLayoutCreateInfo, VkPipelineMultisampleStateCreateInfo, VkPipelineRasterizationStateCreateInfo, VkPipelineShaderStageCreateInfo, VkPipelineVertexInputStateCreateInfo, VkPipelineViewportStateCreateInfo, VkRect2D, VkViewport}
-import org.nxn.Extensions.*
+import org.nxn.utils.Using.*
 import org.nxn.vulkan.shader.CompiledShader
 
 class VnPipeline(val renderPass: VnRenderPass, compiledShaders:IndexedSeq[CompiledShader],

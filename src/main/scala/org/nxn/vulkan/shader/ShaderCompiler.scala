@@ -1,7 +1,7 @@
 package org.nxn.vulkan.shader
 
 import org.lwjgl.util.shaderc.Shaderc
-import org.nxn.Extensions.*
+import org.nxn.utils.Using.*
 
 import scala.io.Source
 

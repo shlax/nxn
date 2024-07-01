@@ -4,7 +4,7 @@ import org.lwjgl.system.MemoryStack
 import org.lwjgl.vulkan.{VK10, VkCommandBuffer, VkCommandBufferBeginInfo}
 
 import java.util.function.Consumer
-import org.nxn.Extensions.*
+import org.nxn.utils.Using.*
 
 class VnRecording(fn: Consumer[VkCommandBuffer]) extends Consumer[VkCommandBuffer]{
 

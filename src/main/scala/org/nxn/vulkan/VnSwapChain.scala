@@ -3,7 +3,7 @@ package org.nxn.vulkan
 import org.lwjgl.system.{MemoryStack, MemoryUtil}
 import org.lwjgl.vulkan.{KHRSurface, KHRSwapchain, VK10, VkExtent2D, VkPresentInfoKHR, VkSurfaceCapabilitiesKHR, VkSurfaceFormatKHR, VkSwapchainCreateInfoKHR}
 import org.nxn.utils.Dimension
-import org.nxn.Extensions.*
+import org.nxn.utils.Using.*
 
 import scala.concurrent.duration.Duration
 

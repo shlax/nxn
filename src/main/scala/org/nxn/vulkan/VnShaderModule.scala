@@ -2,7 +2,7 @@ package org.nxn.vulkan
 
 import org.lwjgl.system.MemoryStack
 import org.lwjgl.vulkan.{VK10, VkShaderModuleCreateInfo}
-import org.nxn.Extensions.*
+import org.nxn.utils.Using.*
 import org.nxn.vulkan.shader.CompiledShader
 
 class VnShaderModule(val device: VnDevice, compiledShader: CompiledShader) extends AutoCloseable{

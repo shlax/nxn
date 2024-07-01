@@ -2,7 +2,7 @@ package org.nxn.vulkan
 
 import org.lwjgl.system.MemoryStack
 import org.lwjgl.vulkan.{KHRSwapchain, VK10, VkAttachmentDescription, VkAttachmentReference, VkRenderPassCreateInfo, VkSubpassDescription}
-import org.nxn.Extensions.*
+import org.nxn.utils.Using.*
 
 class VnRenderPass(val swapChain: VnSwapChain)  extends AutoCloseable{
 

@@ -4,7 +4,7 @@ import org.lwjgl.system.MemoryStack
 import org.lwjgl.vulkan.{VK10, VkClearValue, VkCommandBuffer, VkRect2D, VkRenderPassBeginInfo}
 
 import java.util.function.Consumer
-import org.nxn.Extensions.*
+import org.nxn.utils.Using.*
 
 class VnRenderCommand(val renderPass: VnRenderPass)(fn: Consumer[VkCommandBuffer]) extends AutoCloseable{
 

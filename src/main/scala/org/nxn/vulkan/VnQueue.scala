@@ -2,7 +2,7 @@ package org.nxn.vulkan
 
 import org.lwjgl.system.MemoryStack
 import org.lwjgl.vulkan.{VK10, VkQueue, VkSubmitInfo}
-import org.nxn.Extensions.*
+import org.nxn.utils.Using.*
 
 class VnQueue(val device:VnDevice, val familyIndex:Int, val index:Int) {
 

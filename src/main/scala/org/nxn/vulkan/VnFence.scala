@@ -3,7 +3,7 @@ package org.nxn.vulkan
 import org.lwjgl.system.MemoryStack
 import org.lwjgl.vulkan.{VK10, VkFenceCreateInfo}
 import scala.concurrent.duration.Duration
-import org.nxn.Extensions.*
+import org.nxn.utils.Using.*
 
 class VnFence(val device: VnDevice, val signaled:Boolean = true) extends AutoCloseable{
 

@@ -2,7 +2,7 @@ package org.nxn.vulkan
 
 import org.lwjgl.system.MemoryStack
 import org.lwjgl.vulkan.{VK10, VkSemaphoreCreateInfo}
-import org.nxn.Extensions.*
+import org.nxn.utils.Using.*
 
 class VnSemaphore(val device: VnDevice) extends AutoCloseable{
 

@@ -4,7 +4,7 @@ import org.lwjgl.system.MemoryStack
 import org.lwjgl.vulkan.{VK10, VkBufferCreateInfo, VkMemoryAllocateInfo, VkMemoryRequirements, VkPhysicalDeviceMemoryProperties}
 import java.util.function.BiConsumer
 
-import org.nxn.Extensions.*
+import org.nxn.utils.Using.*
 
 class VnBuffer(val device: VnDevice, val size:Long, val usage:Int, val reqMask:Int) extends AutoCloseable{
 

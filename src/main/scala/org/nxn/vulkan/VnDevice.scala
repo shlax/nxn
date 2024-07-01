@@ -2,7 +2,7 @@ package org.nxn.vulkan
 
 import org.lwjgl.system.{MemoryStack, MemoryUtil}
 import org.lwjgl.vulkan.{KHRSwapchain, VK10, VkDevice, VkDeviceCreateInfo, VkDeviceQueueCreateInfo, VkPhysicalDeviceFeatures}
-import org.nxn.Extensions.*
+import org.nxn.utils.Using.*
 
 class VnDevice(val instance: VnInstance, surface: VnSurface) extends AutoCloseable{
 
