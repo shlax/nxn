@@ -8,7 +8,6 @@ import org.nxn.vulkan.shader.ShaderCompiler
 import org.nxn.vulkan.{VnFence, VnPipeline, VnRenderCommand, VnSemaphore, VnSystem}
 
 import java.util.function.Consumer
-import scala.util.control.NonFatal
 
 object Main extends Runnable{
 
