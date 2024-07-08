@@ -37,7 +37,7 @@ object Main extends Runnable{
       using { use =>
         val imageAvailableSemaphore = use(new VnSemaphore(sys.device))
         val renderFinishedSemaphore = use(new VnSemaphore(sys.device))
-        val inFlightFence = use(new VnFence(sys.device, true))
+        val inFlightFence = use(new VnFence(sys.device))
 
         new VnPipeline(sys.renderPass, shaders) | { pipeline =>
           new VnRenderCommand(sys.renderPass)((buff: VkCommandBuffer) => {
@@ -46,8 +46,7 @@ object Main extends Runnable{
           }) | { render =>
             // >>
             while (sys.window.pullEvents()) {
-              inFlightFence.await()
-              inFlightFence.reset()
+              inFlightFence.await().reset()
 
               val next = sys.swapChain.acquireNextImage(imageAvailableSemaphore)
               val cmdBuff = render.commandBuffer(next)

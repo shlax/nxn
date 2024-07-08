@@ -19,8 +19,9 @@ class VnFence(val device: VnDevice, val signaled:Boolean = true) extends AutoClo
 
   val vkFence:Long = initFence()
 
-  def await(waitAll:Boolean = true, timeout:Duration = device.physicalDevice.instance.system.timeout):Unit = {
+  def await(waitAll:Boolean = true, timeout:Duration = device.physicalDevice.instance.system.timeout):this.type = {
     vkCheck( VK10.vkWaitForFences(device.vkDevice, vkFence, waitAll, timeout.toNanos) )
+    this
   }
 
   def reset():Unit = {
