@@ -16,7 +16,7 @@ object Main extends Runnable{
     try {
       run()
     }catch {
-      case NonFatal(e) =>
+      case e: Throwable =>
         e.printStackTrace()
     }
   }
@@ -47,8 +47,16 @@ object Main extends Runnable{
             while (sys.window.pullEvents()) {
               inFlightFence.await()
               inFlightFence.reset()
-              // ???
+
+              val next = sys.swapChain.acquireNextImage(imageAvailableSemaphore)
+
+              val cmdBuff = render.commandBuffer(next)
+
+              graphicsQueue.submit(cmdBuff, imageAvailableSemaphore, VK10.VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, renderFinishedSemaphore, Some(inFlightFence))
+              sys.swapChain.presentImage(presentQueue, next, renderFinishedSemaphore)
             }
+
+            sys.device.await()
             // <<
           }
         }

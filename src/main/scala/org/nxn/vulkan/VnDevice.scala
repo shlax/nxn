@@ -82,7 +82,11 @@ class VnDevice(val instance: VnInstance, surface: VnSurface) extends AutoCloseab
   }
 
   val presentQueue:VnQueue = initPresentQueue()
-
+  
+  def await():Unit = {
+    vkCheck(VK10.vkDeviceWaitIdle(vkDevice))
+  }
+  
   override def close(): Unit = {
     VK10.vkDestroyDevice(vkDevice, null)
   }

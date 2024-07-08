@@ -48,6 +48,10 @@ class VnRenderCommand(val renderPass: VnRenderPass)(fn: Consumer[VkCommandBuffer
 
   val commandBuffers: IndexedSeq[VnCommandBuffer] = initCommandBuffers(fn)
 
+  def commandBuffer(i:VnSwapChain#NextImage): VnCommandBuffer  = {
+    commandBuffers(i.index)
+  }
+
   override def close(): Unit = {
     for(c <- commandBuffers) c.close()
     commandPool.close()

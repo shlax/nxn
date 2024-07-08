@@ -1,7 +1,7 @@
 package org.nxn.vulkan
 
 import org.lwjgl.system.MemoryStack
-import org.lwjgl.vulkan.{KHRSwapchain, VK10, VkAttachmentDescription, VkAttachmentReference, VkRenderPassCreateInfo, VkSubpassDescription}
+import org.lwjgl.vulkan.{KHRSwapchain, VK10, VkAttachmentDescription, VkAttachmentReference, VkRenderPassCreateInfo, VkSubpassDependency, VkSubpassDescription}
 import org.nxn.utils.Using.*
 
 class VnRenderPass(val swapChain: VnSwapChain)  extends AutoCloseable{
@@ -28,10 +28,20 @@ class VnRenderPass(val swapChain: VnSwapChain)  extends AutoCloseable{
       .colorAttachmentCount(1)
       .pColorAttachments(colorRef)
 
+    val dep = VkSubpassDependency.calloc(1, stack)
+    dep.get(0)
+      .srcSubpass(VK10.VK_SUBPASS_EXTERNAL)
+      .srcStageMask(VK10.VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT)
+      .srcAccessMask(0)
+      .dstSubpass(0)
+      .dstStageMask(VK10.VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT)
+      .dstAccessMask(VK10.VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT)
+
     val info = VkRenderPassCreateInfo.calloc(stack)
       .sType$Default()
       .pSubpasses(subPasses)
       .pAttachments(attachments)
+      .pDependencies(dep)
 
     val buff = stack.callocLong(1)
     vkCheck(VK10.vkCreateRenderPass(swapChain.device.vkDevice, info, null, buff))

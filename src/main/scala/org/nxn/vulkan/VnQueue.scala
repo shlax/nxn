@@ -18,8 +18,8 @@ class VnQueue(val device:VnDevice, val familyIndex:Int, val index:Int) {
 
   val vkQueue:VkQueue = initQueue()
 
-  def submit(buffer: VnCommandBuffer, signalSemaphore: VnSemaphore, stageMasks: Int,
-             waitSemaphore: Option[VnSemaphore] = None, fence: Option[VnFence] = None): Unit = MemoryStack.stackPush() | { stack =>
+  def submit(buffer: VnCommandBuffer, waitSemaphore: VnSemaphore, stageMasks: Int,
+              signalSemaphore: VnSemaphore, signalFence: Option[VnFence] = None): Unit = MemoryStack.stackPush() | { stack =>
 
     val pb = stack.pointers(buffer.vkCommandBuffer)
     val ss = stack.longs(signalSemaphore.vkSemaphore)
@@ -31,14 +31,10 @@ class VnQueue(val device:VnDevice, val familyIndex:Int, val index:Int) {
       .pSignalSemaphores(ss)
       .pWaitDstStageMask(mi)
 
-    if(waitSemaphore.isDefined){
-      val vs = stack.longs(waitSemaphore.get.vkSemaphore)
-      info.waitSemaphoreCount(1).pWaitSemaphores(vs)
-    }else{
-      info.waitSemaphoreCount(0)
-    }
+    val vs = stack.longs(waitSemaphore.vkSemaphore)
+    info.waitSemaphoreCount(1).pWaitSemaphores(vs)
 
-    val f = fence.map(_.vkFence).getOrElse(VK10.VK_NULL_HANDLE)
+    val f = signalFence.map(_.vkFence).getOrElse(VK10.VK_NULL_HANDLE)
 
     vkCheck(VK10.vkQueueSubmit(vkQueue, info, f))
   }

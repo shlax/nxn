@@ -160,24 +160,6 @@ class VnSwapChain(val surface: VnSurface, val device: VnDevice, imageCount:Int =
     case outOfDate, suboptimal
   }
 
-  def presentImage(queue: VnQueue, index:Int, waitSemaphore:VnSemaphore):Option[PresentResult] = MemoryStack.stackPush() | { stack =>
-    if(index >= vkImages.length){
-      throw new IndexOutOfBoundsException(index)
-    }
-
-    val sem = waitSemaphore.vkSemaphore
-
-    val info = VkPresentInfoKHR.calloc(stack)
-      .sType$Default()
-      .pWaitSemaphores(stack.longs(sem))
-      .swapchainCount(1)
-      .pSwapchains(stack.longs(vkSwapChain))
-      .pImageIndices(stack.ints(index))
-
-    val err = KHRSwapchain.vkQueuePresentKHR(queue.vkQueue, info)
-    presentResult(err)
-  }
-
   case class NextImage(index:Int, presentResult:Option[PresentResult])
 
   def acquireNextImage(signalSemaphore: VnSemaphore, timeout:Duration = device.physicalDevice.instance.system.timeout):NextImage = MemoryStack.stackPush() | { stack =>
@@ -190,6 +172,24 @@ class VnSwapChain(val surface: VnSurface, val device: VnDevice, imageCount:Int =
     val ind = ip.get(0)
 
     NextImage(ind, res)
+  }
+
+  def presentImage(queue: VnQueue, index: NextImage, waitSemaphore: VnSemaphore): Option[PresentResult] = MemoryStack.stackPush() | { stack =>
+    if (index.index >= vkImages.length) {
+      throw new IndexOutOfBoundsException(index.index)
+    }
+
+    val sem = waitSemaphore.vkSemaphore
+
+    val info = VkPresentInfoKHR.calloc(stack)
+      .sType$Default()
+      .pWaitSemaphores(stack.longs(sem))
+      .swapchainCount(1)
+      .pSwapchains(stack.longs(vkSwapChain))
+      .pImageIndices(stack.ints(index.index))
+
+    val err = KHRSwapchain.vkQueuePresentKHR(queue.vkQueue, info)
+    presentResult(err)
   }
 
   override def close(): Unit = {

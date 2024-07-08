@@ -18,7 +18,9 @@ dependencies {
 
     runtimeOnly("org.lwjgl:lwjgl:3.3.3:natives-linux")
     runtimeOnly("org.lwjgl:lwjgl-glfw:3.3.3:natives-linux")
+    runtimeOnly("org.lwjgl:lwjgl-shaderc:3.3.3:natives-linux")
 
     runtimeOnly("org.lwjgl:lwjgl:3.3.3:natives-windows")
     runtimeOnly("org.lwjgl:lwjgl-glfw:3.3.3:natives-windows")
+    runtimeOnly("org.lwjgl:lwjgl-shaderc:3.3.3:natives-windows")
 }
