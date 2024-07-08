@@ -2,7 +2,7 @@ package org.nxn.vulkan
 
 import org.lwjgl.system.MemoryStack
 import org.lwjgl.vulkan.{VK10, VkClearValue, VkCommandBuffer, VkRect2D, VkRenderPassBeginInfo}
-
+import org.nxn.vulkan.frame.NextFrame
 import java.util.function.Consumer
 import org.nxn.utils.Using.*
 
@@ -48,7 +48,7 @@ class VnRenderCommand(val renderPass: VnRenderPass)(fn: Consumer[VkCommandBuffer
 
   val commandBuffers: IndexedSeq[VnCommandBuffer] = initCommandBuffers(fn)
 
-  def commandBuffer(i:VnSwapChain#NextImage): VnCommandBuffer  = {
+  def commandBuffer(i:NextFrame): VnCommandBuffer  = {
     commandBuffers(i.index)
   }
 

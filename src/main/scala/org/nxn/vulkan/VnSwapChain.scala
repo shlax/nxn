@@ -4,6 +4,8 @@ import org.lwjgl.system.{MemoryStack, MemoryUtil}
 import org.lwjgl.vulkan.{KHRSurface, KHRSwapchain, VK10, VkExtent2D, VkPresentInfoKHR, VkSurfaceCapabilitiesKHR, VkSurfaceFormatKHR, VkSwapchainCreateInfoKHR}
 import org.nxn.utils.Dimension
 import org.nxn.utils.Using.*
+import org.nxn.vulkan.frame.NextFrame
+import org.nxn.vulkan.frame.PresentResult
 
 import scala.concurrent.duration.Duration
 
@@ -156,13 +158,7 @@ class VnSwapChain(val surface: VnSurface, val device: VnDevice, imageCount:Int =
     res
   }
 
-  enum PresentResult {
-    case outOfDate, suboptimal
-  }
-
-  case class NextImage(index:Int, presentResult:Option[PresentResult])
-
-  def acquireNextImage(signalSemaphore: VnSemaphore, timeout:Duration = device.physicalDevice.instance.system.timeout):NextImage = MemoryStack.stackPush() | { stack =>
+  def acquireNextImage(signalSemaphore: VnSemaphore, timeout:Duration = device.physicalDevice.instance.system.timeout):NextFrame = MemoryStack.stackPush() | { stack =>
     val sem = signalSemaphore.vkSemaphore
 
     val ip = stack.callocInt(1)
@@ -171,10 +167,10 @@ class VnSwapChain(val surface: VnSurface, val device: VnDevice, imageCount:Int =
     val res = presentResult(err)
     val ind = ip.get(0)
 
-    NextImage(ind, res)
+    NextFrame(ind, res)
   }
 
-  def presentImage(queue: VnQueue, index: NextImage, waitSemaphore: VnSemaphore): Option[PresentResult] = MemoryStack.stackPush() | { stack =>
+  def presentImage(queue: VnQueue, index: NextFrame, waitSemaphore: VnSemaphore): Option[PresentResult] = MemoryStack.stackPush() | { stack =>
     if (index.index >= vkImages.length) {
       throw new IndexOutOfBoundsException(index.index)
     }
