@@ -18,12 +18,12 @@ object Using {
   class UsingManager extends AutoCloseable{
     private var toClose:List[? <: AutoCloseable] = Nil
 
-    inline def apply[T <: AutoCloseable](t:T):T = {
+    def apply[T <: AutoCloseable](t:T):T = {
       toClose = t :: toClose
       t
     }
 
-    inline override def close(): Unit = {
+    override def close(): Unit = {
       for(c <- toClose) c.close()
     }
   }
