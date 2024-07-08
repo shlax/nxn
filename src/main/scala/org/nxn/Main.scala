@@ -48,7 +48,6 @@ object Main extends Runnable{
               inFlightFence.reset()
 
               val next = sys.swapChain.acquireNextImage(imageAvailableSemaphore)
-
               val cmdBuff = render.commandBuffer(next)
 
               //graphicsQueue.submit(cmdBuff, imageAvailableSemaphore, VK10.VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, renderFinishedSemaphore, Some(inFlightFence))
