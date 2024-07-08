@@ -3,7 +3,7 @@ package org.nxn
 import org.lwjgl.util.shaderc.Shaderc
 import org.lwjgl.vulkan.{VK10, VkCommandBuffer}
 import org.nxn.utils.Using.*
-import org.nxn.utils.Dimension
+import org.nxn.utils.{Dimension, FpsCounter}
 import org.nxn.vulkan.shader.ShaderCompiler
 import org.nxn.vulkan.{VnFence, VnPipeline, VnRenderCommand, VnSemaphore, VnSystem}
 
@@ -21,6 +21,8 @@ object Main extends Runnable{
   }
 
   override def run(): Unit = {
+    val fps = new FpsCounter()
+
     val shaders = new ShaderCompiler() | { comp =>
       IndexedSeq(
         comp.compile("/shaders/shader.vert", Shaderc.shaderc_glsl_vertex_shader, VK10.VK_SHADER_STAGE_VERTEX_BIT),
@@ -50,9 +52,11 @@ object Main extends Runnable{
               val next = sys.swapChain.acquireNextImage(imageAvailableSemaphore)
               val cmdBuff = render.commandBuffer(next)
 
-              //graphicsQueue.submit(cmdBuff, imageAvailableSemaphore, VK10.VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, renderFinishedSemaphore, Some(inFlightFence))
-              graphicsQueue.submit(cmdBuff, imageAvailableSemaphore, VK10.VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, renderFinishedSemaphore, Some(inFlightFence))
+              graphicsQueue.submit(cmdBuff, imageAvailableSemaphore, VK10.VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, renderFinishedSemaphore, Some(inFlightFence))
+              //graphicsQueue.submit(cmdBuff, imageAvailableSemaphore, VK10.VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, renderFinishedSemaphore, Some(inFlightFence))
               sys.swapChain.presentImage(presentQueue, next, renderFinishedSemaphore)
+
+              fps{ f => println("fps: "+f) }
             }
 
             sys.device.await()
