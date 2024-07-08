@@ -56,7 +56,7 @@ object Main extends Runnable{
               //graphicsQueue.submit(cmdBuff, imageAvailableSemaphore, VK10.VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, renderFinishedSemaphore, Some(inFlightFence))
               sys.swapChain.presentImage(presentQueue, next, renderFinishedSemaphore)
 
-              fps{ f => println("fps: "+f) }
+              fps(f => println("fps: "+f))
             }
 
             sys.device.await()
