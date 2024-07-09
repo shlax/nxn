@@ -12,7 +12,7 @@ class VnBuffer(val device: VnDevice, val size:Long, val usage:Int, val reqMask:I
     val info = VkBufferCreateInfo.calloc(stack)
       .sType$Default()
       .size(size)
-      .usage(usage)
+      .usage(usage) 
       .sharingMode(VK10.VK_SHARING_MODE_EXCLUSIVE)
 
     val lp = stack.callocLong(1)
@@ -57,7 +57,7 @@ class VnBuffer(val device: VnDevice, val size:Long, val usage:Int, val reqMask:I
 
   val (buffer:Long,  memory:Long) = initBufferMemory()
 
-  def map(c:BiConsumer[Long, MemoryStack]):Unit = MemoryStack.stackPush() |{ stack =>
+  def map(c:BiConsumer[MemoryStack, Long]):Unit = MemoryStack.stackPush() |{ stack =>
     val vkDevice = device.vkDevice
 
     val pb = stack.callocPointer(1)
@@ -65,7 +65,7 @@ class VnBuffer(val device: VnDevice, val size:Long, val usage:Int, val reqMask:I
     val mappedMemory = pb.get(0)
 
     try {
-      c.accept(mappedMemory, stack)
+      c.accept(stack, mappedMemory)
     }finally {
       VK10.vkUnmapMemory(vkDevice, mappedMemory)
     }

@@ -49,11 +49,14 @@ object Main extends Runnable{
               inFlightFence.await().reset()
 
               val next = sys.swapChain.acquireNextImage(imageAvailableSemaphore)
+              for(q <- next.presentResult) println(q)
+
               val cmdBuff = render.commandBuffer(next)
 
               graphicsQueue.submit(cmdBuff, imageAvailableSemaphore, VK10.VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, renderFinishedSemaphore, Some(inFlightFence))
               //graphicsQueue.submit(cmdBuff, imageAvailableSemaphore, VK10.VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, renderFinishedSemaphore, Some(inFlightFence))
-              sys.swapChain.presentImage(presentQueue, next, renderFinishedSemaphore)
+              val res = sys.swapChain.presentImage(presentQueue, next, renderFinishedSemaphore)
+              for(q <- res) println(q)
 
               fps(f => println("fps: "+f))
             }
