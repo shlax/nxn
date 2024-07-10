@@ -3,7 +3,7 @@ package org.nxn.vulkan
 import org.lwjgl.system.MemoryStack
 import org.lwjgl.vulkan.{VK10, VkBufferCreateInfo, VkCommandBuffer, VkMemoryAllocateInfo, VkMemoryRequirements, VkPhysicalDeviceMemoryProperties}
 
-import java.util.function.BiConsumer
+import java.util.function.Consumer
 import org.nxn.utils.Using.*
 
 class VnBuffer(val device: VnDevice, val size:Int, val usage:Int, val reqMask:Int) extends AutoCloseable{
@@ -56,7 +56,7 @@ class VnBuffer(val device: VnDevice, val size:Int, val usage:Int, val reqMask:In
 
   case class MemoryBuffer(address:Long, capacity:Int)
 
-  def map(c:BiConsumer[MemoryStack, MemoryBuffer]):this.type = MemoryStack.stackPush() |{ stack =>
+  def map(c:Consumer[MemoryBuffer]):this.type = MemoryStack.stackPush() |{ stack =>
     val vkDevice = device.vkDevice
 
     val pb = stack.callocPointer(1)
@@ -64,7 +64,7 @@ class VnBuffer(val device: VnDevice, val size:Int, val usage:Int, val reqMask:In
     val mappedMemory = pb.get(0)
 
     try {
-      c.accept(stack, MemoryBuffer(mappedMemory, size))
+      c.accept(MemoryBuffer(mappedMemory, size))
     }finally {
       VK10.vkUnmapMemory(vkDevice, memory)
     }

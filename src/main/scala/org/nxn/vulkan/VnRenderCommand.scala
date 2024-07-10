@@ -16,7 +16,7 @@ class VnRenderCommand(val renderPass: VnRenderPass, count:Int = 1) extends AutoC
 
   val commandPool:VnCommandPool = initCommandPool()
 
-  protected def initCommandBuffers(cnt:Int): IndexedSeq[VnCommandBuffer] = MemoryStack.stackPush() | { stack =>
+  protected def initCommandBuffers(cnt:Int): IndexedSeq[VnCommandBuffer] = {
     for (i <- 0 until count) yield  new VnCommandBuffer(commandPool)
   }
 
