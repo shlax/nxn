@@ -40,10 +40,7 @@ object Main extends Runnable{
         val inFlightFence = use(new VnFence(sys.device))
 
         new VnPipeline(sys.renderPass, shaders) | { pipeline =>
-          new VnRenderCommand(sys.renderPass)((buff: VkCommandBuffer) => {
-            pipeline.bindPipeline(buff)
-            VK10.vkCmdDraw(buff, 3, 1, 0, 0)
-          }) | { render =>
+          new VnRenderCommand(sys.renderPass) | { render =>
             // >>
             while (sys.window.pullEvents()) {
               inFlightFence.await().reset()
@@ -51,7 +48,10 @@ object Main extends Runnable{
               val next = sys.swapChain.acquireNextImage(imageAvailableSemaphore)
               for(q <- next.presentResult) println(q)
 
-              val cmdBuff = render.commandBuffer(next)
+              val cmdBuff = render.record(next)((buff: VkCommandBuffer) => {
+                pipeline.bindPipeline(buff)
+                VK10.vkCmdDraw(buff, 3, 1, 0, 0)
+              })
 
               graphicsQueue.submit(cmdBuff, imageAvailableSemaphore, VK10.VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, renderFinishedSemaphore, Some(inFlightFence))
               //graphicsQueue.submit(cmdBuff, imageAvailableSemaphore, VK10.VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, renderFinishedSemaphore, Some(inFlightFence))
