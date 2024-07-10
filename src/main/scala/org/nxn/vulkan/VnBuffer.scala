@@ -1,9 +1,9 @@
 package org.nxn.vulkan
 
 import org.lwjgl.system.MemoryStack
-import org.lwjgl.vulkan.{VK10, VkBufferCreateInfo, VkMemoryAllocateInfo, VkMemoryRequirements, VkPhysicalDeviceMemoryProperties}
-import java.util.function.BiConsumer
+import org.lwjgl.vulkan.{VK10, VkBufferCreateInfo, VkCommandBuffer, VkMemoryAllocateInfo, VkMemoryRequirements, VkPhysicalDeviceMemoryProperties}
 
+import java.util.function.BiConsumer
 import org.nxn.utils.Using.*
 
 class VnBuffer(val device: VnDevice, val size:Int, val usage:Int, val reqMask:Int) extends AutoCloseable{
@@ -70,6 +70,10 @@ class VnBuffer(val device: VnDevice, val size:Int, val usage:Int, val reqMask:In
     }
 
     this
+  }
+
+  def bindBuffer(buff: VkCommandBuffer) : Unit = MemoryStack.stackPush() | { stack =>
+    VK10.vkCmdBindVertexBuffers(buff, 0, stack.longs(buffer), stack.longs(0L))
   }
 
   override def close(): Unit = {
