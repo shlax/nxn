@@ -1,7 +1,7 @@
 package org.nxn.vulkan
 
 import org.lwjgl.system.MemoryStack
-import org.lwjgl.vulkan.{KHRSurface, KHRSwapchain, VK10, VkExtensionProperties, VkPhysicalDevice, VkQueueFamilyProperties}
+import org.lwjgl.vulkan.{KHRSurface, KHRSwapchain, VK10, VkExtensionProperties, VkPhysicalDevice, VkPhysicalDeviceMemoryProperties, VkQueueFamilyProperties}
 import org.nxn.utils.Using.*
 
 class VnPhysicalDevice(val instance: VnInstance, val surface: VnSurface){
@@ -80,6 +80,18 @@ class VnPhysicalDevice(val instance: VnInstance, val surface: VnSurface){
   val (vkPhysicalDevice:VkPhysicalDevice,
     graphicsQueueIndex:Int, graphicsQueueIndexes:IndexedSeq[Int],
     presentQueueIndex:Int, presentQueueIndexes:IndexedSeq[Int]) = initPhysicalDeviceQueues()
+
+  case class MemoryType(propertyFlags:Int)
+
+  protected def initMemoryTypes(): IndexedSeq[MemoryType] = MemoryStack.stackPush() |{ stack =>
+    val memProps = VkPhysicalDeviceMemoryProperties.calloc(stack)
+    VK10.vkGetPhysicalDeviceMemoryProperties(vkPhysicalDevice, memProps)
+
+    val memTypes = memProps.memoryTypes()
+    for(i <- 0 until memProps.memoryTypeCount()) yield MemoryType(memTypes.get(i).propertyFlags())
+  }
+
+  val memoryTypes:IndexedSeq[MemoryType] = initMemoryTypes()
 
   def queuesFamilies() :IndexedSeq[Int] = {
     Set(graphicsQueueIndex, presentQueueIndex).toIndexedSeq

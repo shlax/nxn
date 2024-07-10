@@ -29,6 +29,11 @@ class VnPipeline(val renderPass: VnRenderPass, compiledShaders:IndexedSeq[Compil
     for(c <- modules) yield new VnShaderModule(dev, c)
   }
 
+  /** customize VkPipelineVertexInputStateCreateInfo */
+  protected def vertexInput(stack:MemoryStack, i: VkPipelineVertexInputStateCreateInfo):Unit = {
+    // customize VkPipelineVertexInputStateCreateInfo
+  }
+
   protected def initPipeline(modules:IndexedSeq[CompiledShader]): Long = MemoryStack.stackPush() | { stack =>
     val shaderModules = createShaderModules(compiledShaders)
 
@@ -44,8 +49,10 @@ class VnPipeline(val renderPass: VnRenderPass, compiledShaders:IndexedSeq[Compil
         .pName(nm)
     }
 
-    val vertexInput = VkPipelineVertexInputStateCreateInfo.calloc(stack)
+    val vertexInputInfo = VkPipelineVertexInputStateCreateInfo.calloc(stack)
       .sType$Default()
+
+    vertexInput(stack, vertexInputInfo)
 
     val inputAssembly = VkPipelineInputAssemblyStateCreateInfo.calloc(stack)
       .sType$Default()
@@ -102,7 +109,7 @@ class VnPipeline(val renderPass: VnRenderPass, compiledShaders:IndexedSeq[Compil
     val info = VkGraphicsPipelineCreateInfo.calloc(1, stack)
       .sType$Default()
       .pStages(stages)
-      .pVertexInputState(vertexInput)
+      .pVertexInputState(vertexInputInfo)
       .pInputAssemblyState(inputAssembly)
       .pViewportState(viewport)
       .pRasterizationState(rasterization)

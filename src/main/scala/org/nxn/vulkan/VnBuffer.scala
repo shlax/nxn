@@ -6,14 +6,16 @@ import java.util.function.BiConsumer
 
 import org.nxn.utils.Using.*
 
-class VnBuffer(val device: VnDevice, val size:Long, val usage:Int, val reqMask:Int) extends AutoCloseable{
+class VnBuffer(val device: VnDevice, val size:Int, val usage:Int, val reqMask:Int) extends AutoCloseable{
 
   protected def initBufferMemory(): (Long, Long) = MemoryStack.stackPush() |{ stack =>
+    val dev = device.physicalDevice
+
     val info = VkBufferCreateInfo.calloc(stack)
       .sType$Default()
+      .sharingMode(if(dev.graphicsQueueIndex == dev.presentQueueIndex) VK10.VK_SHARING_MODE_EXCLUSIVE else VK10.VK_SHARING_MODE_CONCURRENT)
+      .usage(usage)
       .size(size)
-      .usage(usage) 
-      .sharingMode(VK10.VK_SHARING_MODE_EXCLUSIVE)
 
     val lp = stack.callocLong(1)
     vkCheck(VK10.vkCreateBuffer(device.vkDevice, info, null, lp))
@@ -22,18 +24,13 @@ class VnBuffer(val device: VnDevice, val size:Long, val usage:Int, val reqMask:I
     val memReq = VkMemoryRequirements.calloc(stack)
     VK10.vkGetBufferMemoryRequirements(device.vkDevice, buff, memReq)
 
-    val memProps = VkPhysicalDeviceMemoryProperties.calloc(stack)
-    VK10.vkGetPhysicalDeviceMemoryProperties(device.physicalDevice.vkPhysicalDevice, memProps)
+    val typeBits = memReq.memoryTypeBits()
 
-    var typeBits = memReq.memoryTypeBits()
     var memoryTypeIndex = -1
-
-    val memoryTypes = memProps.memoryTypes()
-    for(i <- 0 until VK10.VK_MAX_MEMORY_TYPES if memoryTypeIndex == -1){
-      if ((typeBits & 1) == 1 && (memoryTypes.get(i).propertyFlags() & reqMask) == reqMask) {
+    val memTypes = dev.memoryTypes
+    for(i <- memTypes.indices if memoryTypeIndex == -1){
+      if((typeBits & (1 << i)) != 0 && (memTypes(i).propertyFlags & reqMask) == reqMask) {
         memoryTypeIndex = i
-      }else {
-        typeBits >>= 1
       }
     }
 
@@ -57,7 +54,9 @@ class VnBuffer(val device: VnDevice, val size:Long, val usage:Int, val reqMask:I
 
   val (buffer:Long,  memory:Long) = initBufferMemory()
 
-  def map(c:BiConsumer[MemoryStack, Long]):Unit = MemoryStack.stackPush() |{ stack =>
+  case class MemoryBuffer(address:Long, capacity:Int)
+
+  def map(c:BiConsumer[MemoryStack, MemoryBuffer]):this.type = MemoryStack.stackPush() |{ stack =>
     val vkDevice = device.vkDevice
 
     val pb = stack.callocPointer(1)
@@ -65,10 +64,12 @@ class VnBuffer(val device: VnDevice, val size:Long, val usage:Int, val reqMask:I
     val mappedMemory = pb.get(0)
 
     try {
-      c.accept(stack, mappedMemory)
+      c.accept(stack, MemoryBuffer(mappedMemory, size))
     }finally {
-      VK10.vkUnmapMemory(vkDevice, mappedMemory)
+      VK10.vkUnmapMemory(vkDevice, memory)
     }
+
+    this
   }
 
   override def close(): Unit = {

@@ -26,7 +26,7 @@ class VnCommandBuffer(val commandPool: VnCommandPool, primary:Boolean = true) ex
 
   val vkCommandBuffer:VkCommandBuffer = initCommandBuffer(primary)
 
-  protected def info(stack: MemoryStack, oneTimeSubmit:Boolean): VkCommandBufferBeginInfo = {
+  protected def createBeginInfo(stack: MemoryStack, oneTimeSubmit:Boolean): VkCommandBufferBeginInfo = {
     val info = VkCommandBufferBeginInfo.calloc(stack)
       .sType$Default()
 
@@ -38,7 +38,7 @@ class VnCommandBuffer(val commandPool: VnCommandPool, primary:Boolean = true) ex
   }
 
   def record(stack:MemoryStack, oneTimeSubmit:Boolean = false)(f: Consumer[VkCommandBuffer]):Unit = {
-    val i = info(stack, oneTimeSubmit)
+    val i = createBeginInfo(stack, oneTimeSubmit)
     vkCheck(VK10.vkBeginCommandBuffer(vkCommandBuffer, i))
     try {
       f.accept(vkCommandBuffer)
