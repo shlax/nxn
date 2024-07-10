@@ -1,6 +1,6 @@
 package org.nxn.vulkan
 
-object Constants {
+object VnConstants {
 
   val floatLength = 4
 

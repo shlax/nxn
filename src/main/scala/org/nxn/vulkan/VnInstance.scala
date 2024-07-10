@@ -13,7 +13,7 @@ class VnInstance(val system: VnSystem) extends VkDebugUtilsMessengerCallbackEXTI
 
   protected def initInstance() : VkInstance = MemoryStack.stackPush()|{ stack =>
     var requiredLayers:Option[PointerBuffer] = None
-    if(system.debug != LogLevel.none){ // validate layer
+    if(system.debug != VnLogLevel.none){ // validate layer
       val nBuff = stack.callocInt(1)
       vkCheck(VK10.vkEnumerateInstanceLayerProperties(nBuff, null))
       val n = nBuff.get(0)
@@ -38,7 +38,7 @@ class VnInstance(val system: VnSystem) extends VkDebugUtilsMessengerCallbackEXTI
     }
 
     var requiredExtension:Option[PointerBuffer] = None
-    if(system.debug != LogLevel.none) {
+    if(system.debug != VnLogLevel.none) {
       val nBuff = stack.callocInt(1)
       vkCheck(VK10.vkEnumerateInstanceExtensionProperties(null.asInstanceOf[CharSequence], nBuff, null))
       val n = nBuff.get(0)
@@ -86,7 +86,7 @@ class VnInstance(val system: VnSystem) extends VkDebugUtilsMessengerCallbackEXTI
       .flags(0)
 
     var dbgInfo:Option[VkDebugUtilsMessengerCreateInfoEXT] = None
-    if(system.debug != LogLevel.none){
+    if(system.debug != VnLogLevel.none){
       val f = VkDebugUtilsMessengerCallbackEXT.create(this)
       dbgFn = Some(f)
 

@@ -5,8 +5,9 @@ import org.lwjgl.util.shaderc.Shaderc
 import org.lwjgl.vulkan.{VK10, VkCommandBuffer, VkPipelineVertexInputStateCreateInfo, VkVertexInputAttributeDescription, VkVertexInputBindingDescription}
 import org.nxn.utils.Using.*
 import org.nxn.utils.{Dimension, FpsCounter}
+import org.nxn.vulkan.memory.MemoryBuffer
 import org.nxn.vulkan.shader.ShaderCompiler
-import org.nxn.vulkan.{Constants, VnBuffer, VnFence, VnPipeline, VnRenderCommand, VnSemaphore, VnSystem}
+import org.nxn.vulkan.{VnBuffer, VnConstants, VnFence, VnPipeline, VnRenderCommand, VnSemaphore, VnSystem}
 
 object Main extends Runnable{
 
@@ -39,8 +40,8 @@ object Main extends Runnable{
         val inFlightFence = use(new VnFence(sys.device))
 
         // vec2(0.0, -0.5), vec2(-0.5, 0.5), vec2(0.5, 0.5)
-        val points = use(new VnBuffer(sys.device, 3 * 2 * Constants.floatLength, VK10.VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
-          VK10.VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK10.VK_MEMORY_PROPERTY_HOST_COHERENT_BIT)).map((memory: VnBuffer#MemoryBuffer) => {
+        val points = use(new VnBuffer(sys.device, 3 * 2 * VnConstants.floatLength, VK10.VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
+          VK10.VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK10.VK_MEMORY_PROPERTY_HOST_COHERENT_BIT)).map((memory: MemoryBuffer) => {
           val b = MemoryUtil.memFloatBuffer(memory.address, memory.capacity)
 
           def vec2(x:Float, y:Float):Unit = {
@@ -58,7 +59,7 @@ object Main extends Runnable{
             val bindings = VkVertexInputBindingDescription.calloc(1, stack)
             bindings.get(0)
               .binding(0)
-              .stride(2 * Constants.floatLength)
+              .stride(2 * VnConstants.floatLength)
               .inputRate(VK10.VK_VERTEX_INPUT_RATE_VERTEX)
             info.pVertexBindingDescriptions(bindings)
 
