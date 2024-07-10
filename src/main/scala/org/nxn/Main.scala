@@ -42,7 +42,7 @@ object Main extends Runnable{
         // vec2(0.0, -0.5), vec2(-0.5, 0.5), vec2(0.5, 0.5)
         val points = use(new VnBuffer(sys.device, 3 * 2 * VnConstants.floatLength, VK10.VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
           VK10.VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK10.VK_MEMORY_PROPERTY_HOST_COHERENT_BIT)).map((memory: MemoryBuffer) => {
-          val b = MemoryUtil.memFloatBuffer(memory.address, memory.capacity)
+          val b = MemoryUtil.memFloatBuffer(memory.address, memory.size)
 
           def vec2(x:Float, y:Float):Unit = {
             b.put(x).put(y)
