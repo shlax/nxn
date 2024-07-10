@@ -1,5 +1,5 @@
 package org.nxn.vulkan.frame
 
-enum PresentResult {
+enum PresentResult extends Enum[PresentResult]{
   case outOfDate, suboptimal
 }

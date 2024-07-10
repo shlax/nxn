@@ -30,7 +30,7 @@ object Main extends Runnable{
       )
     }
 
-    new VnSystem(true, "NXN", Dimension(1280, 720)) | { sys =>
+    new VnSystem("NXN", Dimension(1280, 720)) | { sys =>
       val graphicsQueue = sys.device.graphicsQueue
       val presentQueue = sys.device.presentQueue
 
@@ -39,31 +39,32 @@ object Main extends Runnable{
         val renderFinishedSemaphore = use(new VnSemaphore(sys.device))
         val inFlightFence = use(new VnFence(sys.device))
 
-        new VnPipeline(sys.renderPass, shaders) | { pipeline =>
-          new VnRenderCommand(sys.renderPass) | { render =>
-            // >>
-            while (sys.window.pullEvents()) {
-              inFlightFence.await().reset()
+        val triangle = use(new VnPipeline(sys.renderPass, shaders))
 
-              val next = sys.swapChain.acquireNextImage(imageAvailableSemaphore)
-              for(q <- next.presentResult) println(q)
+        new VnRenderCommand(sys.renderPass) | { render =>
+          // >>
+          while (sys.window.pullEvents()) {
+            inFlightFence.await().reset()
 
-              val cmdBuff = render.record(next)((buff: VkCommandBuffer) => {
-                pipeline.bindPipeline(buff)
-                VK10.vkCmdDraw(buff, 3, 1, 0, 0)
-              })
+            val next = sys.swapChain.acquireNextImage(imageAvailableSemaphore)
+            for(q <- next.presentResult) println(q)
 
-              graphicsQueue.submit(cmdBuff, imageAvailableSemaphore, VK10.VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, renderFinishedSemaphore, Some(inFlightFence))
-              //graphicsQueue.submit(cmdBuff, imageAvailableSemaphore, VK10.VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, renderFinishedSemaphore, Some(inFlightFence))
-              val res = sys.swapChain.presentImage(presentQueue, next, renderFinishedSemaphore)
-              for(q <- res) println(q)
+            val cmdBuff = render.record(next)((buff: VkCommandBuffer) => {
+              triangle.bindPipeline(buff)
+              VK10.vkCmdDraw(buff, 3, 1, 0, 0)
+            })
 
-              fps(f => println("fps: "+f))
-            }
+            graphicsQueue.submit(cmdBuff, imageAvailableSemaphore, VK10.VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, renderFinishedSemaphore, Some(inFlightFence))
+            //graphicsQueue.submit(cmdBuff, imageAvailableSemaphore, VK10.VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, renderFinishedSemaphore, Some(inFlightFence))
+            val res = sys.swapChain.presentImage(presentQueue, next, renderFinishedSemaphore)
+            for(q <- res) println(q)
 
-            sys.device.await()
-            // <<
+            fps(f => println("fps: "+f))
           }
+
+          sys.device.await()
+          // <<
+
         }
 
       }

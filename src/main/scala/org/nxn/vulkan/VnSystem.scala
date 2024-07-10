@@ -6,7 +6,7 @@ import org.nxn.utils.Dimension
 import scala.concurrent.duration.Duration
 import scala.concurrent.duration.*
 
-class VnSystem(val debug :Boolean, val name:String, val windowSize:Dimension, val timeout:Duration = 1.second) extends AutoCloseable{
+class VnSystem(val name:String, val windowSize:Dimension, val debug :LogLevel = LogLevel.warning, val timeout:Duration = 1.second) extends AutoCloseable{
   GLFWErrorCallback.createPrint.set()
 
   if (!GLFW.glfwInit()){

@@ -13,7 +13,7 @@ class VnInstance(val system: VnSystem) extends VkDebugUtilsMessengerCallbackEXTI
 
   protected def initInstance() : VkInstance = MemoryStack.stackPush()|{ stack =>
     var requiredLayers:Option[PointerBuffer] = None
-    if(system.debug){ // validate layer
+    if(system.debug != LogLevel.none){ // validate layer
       val nBuff = stack.callocInt(1)
       vkCheck(VK10.vkEnumerateInstanceLayerProperties(nBuff, null))
       val n = nBuff.get(0)
@@ -38,7 +38,7 @@ class VnInstance(val system: VnSystem) extends VkDebugUtilsMessengerCallbackEXTI
     }
 
     var requiredExtension:Option[PointerBuffer] = None
-    if(system.debug) {
+    if(system.debug != LogLevel.none) {
       val nBuff = stack.callocInt(1)
       vkCheck(VK10.vkEnumerateInstanceExtensionProperties(null.asInstanceOf[CharSequence], nBuff, null))
       val n = nBuff.get(0)
@@ -86,16 +86,13 @@ class VnInstance(val system: VnSystem) extends VkDebugUtilsMessengerCallbackEXTI
       .flags(0)
 
     var dbgInfo:Option[VkDebugUtilsMessengerCreateInfoEXT] = None
-    if(system.debug){
+    if(system.debug != LogLevel.none){
       val f = VkDebugUtilsMessengerCallbackEXT.create(this)
       dbgFn = Some(f)
 
       val dbgInf = VkDebugUtilsMessengerCreateInfoEXT.calloc(stack)
         .sType$Default()
-        .messageSeverity(EXTDebugUtils.VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT
-          | EXTDebugUtils.VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT
-          | EXTDebugUtils.VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT
-          | EXTDebugUtils.VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT)
+        .messageSeverity(system.debug.bits)
         .messageType(EXTDebugUtils.VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT
           | EXTDebugUtils.VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT
           | EXTDebugUtils.VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT)
