@@ -52,7 +52,6 @@ class VnRenderCommand(val renderPass: VnRenderPass, count:Int = 1) extends AutoC
       VK10.vkCmdEndRenderPass(vkCommandBuffer)
     })
 
-    cmdBuff
   }
 
   override def close(): Unit = {

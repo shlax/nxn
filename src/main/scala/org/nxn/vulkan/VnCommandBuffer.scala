@@ -37,14 +37,17 @@ class VnCommandBuffer(val commandPool: VnCommandPool, primary:Boolean = true) ex
     info
   }
 
-  def record(stack:MemoryStack, oneTimeSubmit:Boolean = false)(f: Consumer[VkCommandBuffer]):Unit = {
+  def record(stack:MemoryStack, oneTimeSubmit:Boolean = false)(f: Consumer[VkCommandBuffer]):this.type = {
     val i = createBeginInfo(stack, oneTimeSubmit)
     vkCheck(VK10.vkBeginCommandBuffer(vkCommandBuffer, i))
+
     try {
       f.accept(vkCommandBuffer)
     } finally {
       vkCheck(VK10.vkEndCommandBuffer(vkCommandBuffer))
     }
+
+    this
   }
 
   override def close(): Unit = {
