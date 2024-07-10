@@ -72,7 +72,7 @@ class VnBuffer(val device: VnDevice, val size:Int, val usage:Int, val reqMask:In
     this
   }
 
-  def bindBuffer(buff: VkCommandBuffer) : Unit = MemoryStack.stackPush() | { stack =>
+  def bindVertexBuffer(buff: VkCommandBuffer) : Unit = MemoryStack.stackPush() | { stack =>
     VK10.vkCmdBindVertexBuffers(buff, 0, stack.longs(buffer), stack.longs(0L))
   }
 

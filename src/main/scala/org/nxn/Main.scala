@@ -83,7 +83,7 @@ object Main extends Runnable{
 
             val cmdBuff = render.record(next)((buff: VkCommandBuffer) => {
               triangle.bindPipeline(buff)
-              points.bindBuffer(buff)
+              points.bindVertexBuffer(buff)
               VK10.vkCmdDraw(buff, 3, 1, 0, 0)
             })
 
