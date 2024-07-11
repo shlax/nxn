@@ -4,7 +4,7 @@ import org.lwjgl.system.MemoryStack
 import org.lwjgl.vulkan.{VK10, VkClearValue, VkCommandBuffer, VkRect2D, VkRenderPassBeginInfo}
 import org.nxn.vulkan.frame.NextFrame
 
-import java.util.function.Consumer
+import java.util.function.{BiConsumer, Consumer}
 import org.nxn.utils.Using.*
 
 class RenderCommand(val renderPass: RenderPass, count:Int = 1) extends AutoCloseable{
@@ -22,7 +22,7 @@ class RenderCommand(val renderPass: RenderPass, count:Int = 1) extends AutoClose
 
   val commandBuffers: IndexedSeq[CommandBuffer] = initCommandBuffers(count)
 
-  def record(frame:NextFrame, index:Int = 0)(fn: Consumer[VkCommandBuffer]): CommandBuffer  = MemoryStack.stackPush() | { stack =>
+  def record(frame:NextFrame, index:Int = 0)(fn: BiConsumer[MemoryStack, VkCommandBuffer]): CommandBuffer  = MemoryStack.stackPush() | { stack =>
     val dim = renderPass.swapChain.dimension
 
     val clearValues = VkClearValue.calloc(1, stack).apply(0, (v: VkClearValue) => {
@@ -48,7 +48,7 @@ class RenderCommand(val renderPass: RenderPass, count:Int = 1) extends AutoClose
 
     cmdBuff.record(stack)({ (vkCommandBuffer:VkCommandBuffer) =>
       VK10.vkCmdBeginRenderPass(vkCommandBuffer, info, VK10.VK_SUBPASS_CONTENTS_INLINE)
-      fn.accept(vkCommandBuffer)
+      fn.accept(stack, vkCommandBuffer)
       VK10.vkCmdEndRenderPass(vkCommandBuffer)
     })
 

@@ -87,9 +87,9 @@ object Main extends Runnable{
             val next = sys.swapChain.acquireNextImage(imageAvailableSemaphore)
             for(q <- next.presentResult) println(q)
 
-            val cmdBuff = render.record(next)((buff: VkCommandBuffer) => {
+            val cmdBuff = render.record(next)((stack:MemoryStack, buff: VkCommandBuffer) => {
               triangle.bindPipeline(buff)
-              points.bindVertexBuffer(buff)
+              VK10.vkCmdBindVertexBuffers(buff, 0, stack.longs(points.buffer), stack.longs(0L))
               //VK10.vkCmdDraw(buff, 3, 1, 0, 0)
 
               VK10.vkCmdBindIndexBuffer(buff, indexes.buffer, 0, VK10.VK_INDEX_TYPE_UINT32)

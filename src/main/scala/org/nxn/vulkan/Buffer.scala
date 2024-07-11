@@ -1,7 +1,7 @@
 package org.nxn.vulkan
 
 import org.lwjgl.system.MemoryStack
-import org.lwjgl.vulkan.{VK10, VkBufferCreateInfo, VkCommandBuffer, VkMemoryAllocateInfo, VkMemoryRequirements}
+import org.lwjgl.vulkan.{VK10, VkBufferCreateInfo, VkMemoryAllocateInfo, VkMemoryRequirements}
 
 import java.util.function.Consumer
 import org.nxn.vulkan.memory.MemoryBuffer
@@ -70,10 +70,6 @@ class Buffer(val device: Device, val size:Int, val usage:Int, val reqMask:Int) e
     }
 
     this
-  }
-
-  def bindVertexBuffer(buff: VkCommandBuffer) : Unit = MemoryStack.stackPush() | { stack =>
-    VK10.vkCmdBindVertexBuffers(buff, 0, stack.longs(buffer), stack.longs(0L))
   }
 
   override def close(): Unit = {
