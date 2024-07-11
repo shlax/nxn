@@ -2,7 +2,7 @@ package org.nxn
 
 import org.lwjgl.system.{MemoryStack, MemoryUtil}
 import org.lwjgl.util.shaderc.Shaderc
-import org.lwjgl.vulkan.{VK10, VkCommandBuffer, VkDescriptorSetLayoutBinding, VkDescriptorSetLayoutCreateInfo, VkPipelineLayoutCreateInfo, VkPipelineVertexInputStateCreateInfo, VkVertexInputAttributeDescription, VkVertexInputBindingDescription}
+import org.lwjgl.vulkan.{VK10, VkCommandBuffer, VkDescriptorSetLayoutBinding, VkDescriptorSetLayoutCreateInfo, VkPipelineLayoutCreateInfo, VkPipelineVertexInputStateCreateInfo, VkPushConstantRange, VkVertexInputAttributeDescription, VkVertexInputBindingDescription}
 import org.nxn.utils.Using.*
 import org.nxn.utils.{Dimension, FpsCounter}
 import org.nxn.vulkan.memory.MemoryBuffer
@@ -77,6 +77,14 @@ object Main extends Runnable{
         val triangle = use(new Pipeline(sys.renderPass, shaders){
 
           override protected def pipelineLayout(stack: MemoryStack, info: VkPipelineLayoutCreateInfo): Unit = {
+            val ranges = VkPushConstantRange.calloc(1, stack)
+              .stageFlags(VK10.VK_SHADER_STAGE_VERTEX_BIT)
+              .offset(0)
+              .size(4 * 4 * TypeLength.floatLength.size)
+
+            info.pPushConstantRanges(ranges)
+
+            /* pSetLayouts
             val desc = VkDescriptorSetLayoutBinding.calloc(1, stack)
             desc.get(0)
               .descriptorType(VK10.VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER)
@@ -92,7 +100,7 @@ object Main extends Runnable{
             vkCheck(VK10.vkCreateDescriptorSetLayout(renderPass.swapChain.device.vkDevice, layoutInfo, null, descriptorSetLayout))
             descriptorSetLayout.flip()
 
-            info.pSetLayouts(descriptorSetLayout)
+            info.pSetLayouts(descriptorSetLayout) */
           }
 
           // layout(location = 0) in vec2 inPosition
@@ -124,6 +132,15 @@ object Main extends Runnable{
 
             val cmdBuff = render.record(next)((stack:MemoryStack, buff: VkCommandBuffer) => {
               triangle.bindPipeline(buff)
+
+              val viewMatrix = stack.callocFloat(4 * 4)
+              viewMatrix.put(1f).put(0f).put(0f).put(0f)
+              viewMatrix.put(0f).put(1f).put(0f).put(0f)
+              viewMatrix.put(0f).put(0f).put(1f).put(0f)
+              viewMatrix.put(0f).put(0f).put(0f).put(1f)
+              viewMatrix.flip()
+
+              VK10.vkCmdPushConstants(buff, triangle.vkPipelineLayout, VK10.VK_SHADER_STAGE_VERTEX_BIT, 0, viewMatrix)
 
               VK10.vkCmdBindVertexBuffers(buff, 0, stack.longs(points.buffer), stack.longs(0L))
               VK10.vkCmdBindIndexBuffer(buff, indexes.buffer, 0, VK10.VK_INDEX_TYPE_UINT32) //VK10.vkCmdDraw(buff, 3, 1, 0, 0)

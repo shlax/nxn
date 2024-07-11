@@ -1,7 +1,7 @@
 package org.nxn.vulkan
 
 import org.lwjgl.system.MemoryStack
-import org.lwjgl.vulkan.{VK10, VkDescriptorPoolCreateInfo, VkDescriptorPoolSize, VkDescriptorSetAllocateInfo, VkDescriptorSetLayoutBinding, VkDescriptorSetLayoutCreateInfo}
+import org.lwjgl.vulkan.{VK10, VkDescriptorPoolCreateInfo, VkDescriptorPoolSize}
 import org.nxn.utils.Using.*
 
 /** poolTypes : Map(VK10.VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER -> 1) */
