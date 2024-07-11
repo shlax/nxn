@@ -7,7 +7,7 @@ import org.nxn.utils.Using.*
 import org.nxn.utils.{Dimension, FpsCounter}
 import org.nxn.vulkan.memory.MemoryBuffer
 import org.nxn.vulkan.shader.ShaderCompiler
-import org.nxn.vulkan.{VnBuffer, VnConstants, VnFence, VnPipeline, VnRenderCommand, VnSemaphore, VnSystem}
+import org.nxn.vulkan.{VnBuffer, TypeLength, VnFence, VnPipeline, VnRenderCommand, VnSemaphore, VnSystem}
 
 object Main extends Runnable{
 
@@ -40,7 +40,7 @@ object Main extends Runnable{
         val inFlightFence = use(new VnFence(sys.device))
 
         // vec2(0.0, -0.5), vec2(-0.5, 0.5), vec2(0.5, 0.5)
-        val points = use(new VnBuffer(sys.device, 3 * 2 * VnConstants.floatLength, VK10.VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
+        val points = use(new VnBuffer(sys.device, 3 * 2 * TypeLength.floatLength.size, VK10.VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
             VK10.VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK10.VK_MEMORY_PROPERTY_HOST_COHERENT_BIT)).map((memory: MemoryBuffer) => {
           val b = MemoryUtil.memFloatBuffer(memory.address, memory.size)
 
@@ -53,13 +53,19 @@ object Main extends Runnable{
           vec2(0.5, 0.5)
         })
 
+        val indexes = use(new VnBuffer(sys.device, 3 * TypeLength.intLength.size, VK10.VK_BUFFER_USAGE_INDEX_BUFFER_BIT,
+          VK10.VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK10.VK_MEMORY_PROPERTY_HOST_COHERENT_BIT)).map((memory: MemoryBuffer) => {
+          val b = MemoryUtil.memIntBuffer(memory.address, memory.size)
+          b.put(0).put(1).put(2)
+        })
+
         val triangle = use(new VnPipeline(sys.renderPass, shaders){
           // layout(location = 0) in vec2 inPosition
           override protected def vertexInput(stack: MemoryStack, info:VkPipelineVertexInputStateCreateInfo):Unit = {
             val bindings = VkVertexInputBindingDescription.calloc(1, stack)
             bindings.get(0)
               .binding(0)
-              .stride(2 * VnConstants.floatLength)
+              .stride(2 * TypeLength.floatLength.size)
               .inputRate(VK10.VK_VERTEX_INPUT_RATE_VERTEX)
             info.pVertexBindingDescriptions(bindings)
 
@@ -84,7 +90,10 @@ object Main extends Runnable{
             val cmdBuff = render.record(next)((buff: VkCommandBuffer) => {
               triangle.bindPipeline(buff)
               points.bindVertexBuffer(buff)
-              VK10.vkCmdDraw(buff, 3, 1, 0, 0)
+              //VK10.vkCmdDraw(buff, 3, 1, 0, 0)
+
+              VK10.vkCmdBindIndexBuffer(buff, indexes.buffer, 0, VK10.VK_INDEX_TYPE_UINT32)
+              VK10.vkCmdDrawIndexed(buff, 3, 1, 0, 0, 0)
             })
 
             graphicsQueue.submit(cmdBuff, imageAvailableSemaphore, VK10.VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, renderFinishedSemaphore, Some(inFlightFence))
