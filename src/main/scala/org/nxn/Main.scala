@@ -7,7 +7,7 @@ import org.nxn.utils.Using.*
 import org.nxn.utils.{Dimension, FpsCounter}
 import org.nxn.vulkan.memory.MemoryBuffer
 import org.nxn.vulkan.shader.ShaderCompiler
-import org.nxn.vulkan.{Buffer, Fence, Pipeline, RenderCommand, Semaphore, TypeLength, VulkanSystem}
+import org.nxn.vulkan.{Buffer, Fence, Pipeline, PipelineLayout, RenderCommand, Semaphore, TypeLength, VulkanSystem}
 
 object Main extends Runnable{
 
@@ -59,8 +59,8 @@ object Main extends Runnable{
           b.put(0).put(1).put(2)
         })
 
-        val triangle = use(new Pipeline(sys.renderPass, shaders){
-
+        // layout(push_constant) uniform Transformations { mat4 viewMatrix; } transformations;
+        val layout = use(new PipelineLayout(sys.device){
           override protected def pipelineLayout(stack: MemoryStack, info: VkPipelineLayoutCreateInfo): Unit = {
             val ranges = VkPushConstantRange.calloc(1, stack)
               .stageFlags(VK10.VK_SHADER_STAGE_VERTEX_BIT)
@@ -69,6 +69,9 @@ object Main extends Runnable{
 
             info.pPushConstantRanges(ranges)
           }
+        })
+
+        val triangle = use(new Pipeline(layout, sys.renderPass, shaders){
 
           // layout(location = 0) in vec2 inPosition
           override protected def vertexInput(stack: MemoryStack, info:VkPipelineVertexInputStateCreateInfo):Unit = {
@@ -107,7 +110,7 @@ object Main extends Runnable{
               viewMatrix.put(0f).put(0f).put(0f).put(1f)
               viewMatrix.flip()
 
-              VK10.vkCmdPushConstants(buff, triangle.vkPipelineLayout, VK10.VK_SHADER_STAGE_VERTEX_BIT, 0, viewMatrix)
+              VK10.vkCmdPushConstants(buff, layout.vkPipelineLayout, VK10.VK_SHADER_STAGE_VERTEX_BIT, 0, viewMatrix)
 
               VK10.vkCmdBindVertexBuffers(buff, 0, stack.longs(points.buffer), stack.longs(0L))
               VK10.vkCmdBindIndexBuffer(buff, indexes.buffer, 0, VK10.VK_INDEX_TYPE_UINT32) //VK10.vkCmdDraw(buff, 3, 1, 0, 0)
