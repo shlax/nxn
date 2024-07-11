@@ -5,20 +5,20 @@ import org.lwjgl.vulkan.{VK10, VkDescriptorPoolCreateInfo, VkDescriptorPoolSize,
 import org.nxn.utils.Using.*
 
 /** poolTypes : Map(VK10.VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER -> 1) */
-class DescriptorPool(val device: Device, poolTypes:Map[Int,Int], maxSets:Int = 1) extends AutoCloseable{
+class DescriptorPool(val device: Device, poolSizes:Map[Int,Int], maxSets:Int = 1) extends AutoCloseable{
 
-  protected def initDescriptorPool(types:Map[Int,Int], sets:Int):Long = MemoryStack.stackPush() | { stack =>
-    val poolSizes = VkDescriptorPoolSize.calloc(types.size, stack)
-    for(i <- types.zipWithIndex) {
+  protected def initDescriptorPool(sizes:Map[Int,Int], sets:Int):Long = MemoryStack.stackPush() | { stack =>
+    val pools = VkDescriptorPoolSize.calloc(sizes.size, stack)
+    for(i <- sizes.zipWithIndex) {
       val e = i._1
-      poolSizes.get(i._2) // index
+      pools.get(i._2)
         .`type`(e._1)
         .descriptorCount(e._2)
     }
 
     val info = VkDescriptorPoolCreateInfo.calloc(stack)
       .sType$Default()
-      .pPoolSizes(poolSizes)
+      .pPoolSizes(pools)
       .maxSets(sets)
 
     val lb = stack.callocLong(1)
@@ -26,7 +26,7 @@ class DescriptorPool(val device: Device, poolTypes:Map[Int,Int], maxSets:Int = 1
     lb.get(0)
   }
 
-  val vkDescriptorPool:Long = initDescriptorPool(poolTypes, maxSets)
+  val vkDescriptorPool:Long = initDescriptorPool(poolSizes, maxSets)
 
   override def close(): Unit = {
     VK10.vkDestroyDescriptorPool(device.vkDevice, vkDescriptorPool, null)
