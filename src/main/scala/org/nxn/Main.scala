@@ -2,12 +2,12 @@ package org.nxn
 
 import org.lwjgl.system.{MemoryStack, MemoryUtil}
 import org.lwjgl.util.shaderc.Shaderc
-import org.lwjgl.vulkan.{VK10, VkCommandBuffer, VkPipelineVertexInputStateCreateInfo, VkVertexInputAttributeDescription, VkVertexInputBindingDescription}
+import org.lwjgl.vulkan.{VK10, VkCommandBuffer, VkDescriptorSetLayoutBinding, VkDescriptorSetLayoutCreateInfo, VkPipelineLayoutCreateInfo, VkPipelineVertexInputStateCreateInfo, VkVertexInputAttributeDescription, VkVertexInputBindingDescription}
 import org.nxn.utils.Using.*
 import org.nxn.utils.{Dimension, FpsCounter}
 import org.nxn.vulkan.memory.MemoryBuffer
 import org.nxn.vulkan.shader.ShaderCompiler
-import org.nxn.vulkan.{Buffer, TypeLength, Fence, Pipeline, RenderCommand, Semaphore, VulkanSystem}
+import org.nxn.vulkan.{Buffer, DescriptorPool, Fence, Pipeline, RenderCommand, Semaphore, TypeLength, VulkanSystem, vkCheck}
 
 object Main extends Runnable{
 
@@ -59,7 +59,42 @@ object Main extends Runnable{
           b.put(0).put(1).put(2)
         })
 
+        /* layout(binding = 0) uniform UniformBufferObject{
+            mat4 viewMatrix;
+          } ubo;
+
+        val descPool = use(new DescriptorPool(sys.device, Map(VK10.VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER -> 1)))
+
+        val uniform = use(new Buffer(sys.device, 4 * 4 * TypeLength.floatLength.size, VK10.VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
+          VK10.VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK10.VK_MEMORY_PROPERTY_HOST_COHERENT_BIT)).map((memory: MemoryBuffer) => {
+          val b = MemoryUtil.memFloatBuffer(memory.address, memory.size)
+          b.put(1f).put(0f).put(0f).put(1f)
+          b.put(0f).put(1f).put(0f).put(1f)
+          b.put(0f).put(0f).put(1f).put(1f)
+          b.put(0f).put(0f).put(0f).put(1f)
+        }) */
+
         val triangle = use(new Pipeline(sys.renderPass, shaders){
+
+          override protected def pipelineLayout(stack: MemoryStack, info: VkPipelineLayoutCreateInfo): Unit = {
+            val desc = VkDescriptorSetLayoutBinding.calloc(1, stack)
+            desc.get(0)
+              .descriptorType(VK10.VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER)
+              .stageFlags(VK10.VK_SHADER_STAGE_VERTEX_BIT)
+              .descriptorCount(1)
+              .binding(0)
+
+            val layoutInfo = VkDescriptorSetLayoutCreateInfo.calloc(stack)
+              .sType$Default()
+              .pBindings(desc)
+
+            val descriptorSetLayout = stack.callocLong(1)
+            vkCheck(VK10.vkCreateDescriptorSetLayout(renderPass.swapChain.device.vkDevice, layoutInfo, null, descriptorSetLayout))
+            descriptorSetLayout.flip()
+
+            info.pSetLayouts(descriptorSetLayout)
+          }
+
           // layout(location = 0) in vec2 inPosition
           override protected def vertexInput(stack: MemoryStack, info:VkPipelineVertexInputStateCreateInfo):Unit = {
             val bindings = VkVertexInputBindingDescription.calloc(1, stack)
@@ -84,15 +119,14 @@ object Main extends Runnable{
           while (sys.window.pullEvents()) {
             inFlightFence.await().reset()
 
-            val next = sys.swapChain.acquireNextImage(imageAvailableSemaphore)
+            val next = sys.swapChain.acquireNextImage(imageAvailableSemaphore) // waiting
             for(q <- next.presentResult) println(q)
 
             val cmdBuff = render.record(next)((stack:MemoryStack, buff: VkCommandBuffer) => {
               triangle.bindPipeline(buff)
-              VK10.vkCmdBindVertexBuffers(buff, 0, stack.longs(points.buffer), stack.longs(0L))
-              //VK10.vkCmdDraw(buff, 3, 1, 0, 0)
 
-              VK10.vkCmdBindIndexBuffer(buff, indexes.buffer, 0, VK10.VK_INDEX_TYPE_UINT32)
+              VK10.vkCmdBindVertexBuffers(buff, 0, stack.longs(points.buffer), stack.longs(0L))
+              VK10.vkCmdBindIndexBuffer(buff, indexes.buffer, 0, VK10.VK_INDEX_TYPE_UINT32) //VK10.vkCmdDraw(buff, 3, 1, 0, 0)
               VK10.vkCmdDrawIndexed(buff, 3, 1, 0, 0, 0)
             })
 

@@ -11,15 +11,18 @@ class Pipeline(val renderPass: RenderPass, compiledShaders:IndexedSeq[CompiledSh
                val cullMode:Int = VK10.VK_CULL_MODE_BACK_BIT, val frontFace:Int = VK10.VK_FRONT_FACE_COUNTER_CLOCKWISE,
                val colorAttachmentsCount:Int = 1 ) extends AutoCloseable{
 
+  /** customize VkPipelineLayoutCreateInfo */
+  protected def pipelineLayout(stack:MemoryStack, info:VkPipelineLayoutCreateInfo):Unit = { }
+
   protected def initPipelineLayout():Long = MemoryStack.stackPush() | { stack =>
     val layout = VkPipelineLayoutCreateInfo.calloc(stack)
       .sType$Default()
 
+    pipelineLayout(stack, layout)
+
     val lp = stack.callocLong(1)
     vkCheck(VK10.vkCreatePipelineLayout(renderPass.swapChain.device.vkDevice, layout, null, lp))
-    val pipelineLayout = lp.get(0)
-
-    pipelineLayout
+    lp.get(0)
   }
 
   val vkPipelineLayout:Long = initPipelineLayout()
@@ -30,9 +33,7 @@ class Pipeline(val renderPass: RenderPass, compiledShaders:IndexedSeq[CompiledSh
   }
 
   /** customize VkPipelineVertexInputStateCreateInfo */
-  protected def vertexInput(stack:MemoryStack, i: VkPipelineVertexInputStateCreateInfo):Unit = {
-    // customize VkPipelineVertexInputStateCreateInfo
-  }
+  protected def vertexInput(stack:MemoryStack, info:VkPipelineVertexInputStateCreateInfo):Unit = { }
 
   protected def initPipeline(modules:IndexedSeq[CompiledShader]): Long = MemoryStack.stackPush() | { stack =>
     val shaderModules = createShaderModules(compiledShaders)
