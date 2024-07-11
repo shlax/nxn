@@ -6,14 +6,14 @@ import org.lwjgl.system.{MemoryStack, MemoryUtil}
 import org.lwjgl.vulkan.{EXTDebugUtils, VK, VK10, VkApplicationInfo, VkDebugUtilsMessengerCallbackDataEXT, VkDebugUtilsMessengerCallbackEXT, VkDebugUtilsMessengerCallbackEXTI, VkDebugUtilsMessengerCreateInfoEXT, VkExtensionProperties, VkInstance, VkInstanceCreateInfo, VkLayerProperties}
 import org.nxn.utils.Using.*
 
-class VnInstance(val system: VnSystem) extends VkDebugUtilsMessengerCallbackEXTI, AutoCloseable{
+class Instance(val system: VulkanSystem) extends VkDebugUtilsMessengerCallbackEXTI, AutoCloseable{
 
   private var dbgFn:Option[VkDebugUtilsMessengerCallbackEXT] = None
   private var dbgCallBack:Option[Long] = None
 
   protected def initInstance() : VkInstance = MemoryStack.stackPush()|{ stack =>
     var requiredLayers:Option[PointerBuffer] = None
-    if(system.debug != VnLogLevel.none){ // validate layer
+    if(system.debug != LogLevel.none){ // validate layer
       val nBuff = stack.callocInt(1)
       vkCheck(VK10.vkEnumerateInstanceLayerProperties(nBuff, null))
       val n = nBuff.get(0)
@@ -38,7 +38,7 @@ class VnInstance(val system: VnSystem) extends VkDebugUtilsMessengerCallbackEXTI
     }
 
     var requiredExtension:Option[PointerBuffer] = None
-    if(system.debug != VnLogLevel.none) {
+    if(system.debug != LogLevel.none) {
       val nBuff = stack.callocInt(1)
       vkCheck(VK10.vkEnumerateInstanceExtensionProperties(null.asInstanceOf[CharSequence], nBuff, null))
       val n = nBuff.get(0)
@@ -86,7 +86,7 @@ class VnInstance(val system: VnSystem) extends VkDebugUtilsMessengerCallbackEXTI
       .flags(0)
 
     var dbgInfo:Option[VkDebugUtilsMessengerCreateInfoEXT] = None
-    if(system.debug != VnLogLevel.none){
+    if(system.debug != LogLevel.none){
       val f = VkDebugUtilsMessengerCallbackEXT.create(this)
       dbgFn = Some(f)
 

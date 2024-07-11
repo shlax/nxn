@@ -7,22 +7,22 @@ import org.nxn.vulkan.frame.NextFrame
 import java.util.function.Consumer
 import org.nxn.utils.Using.*
 
-class VnRenderCommand(val renderPass: VnRenderPass, count:Int = 1) extends AutoCloseable{
+class RenderCommand(val renderPass: RenderPass, count:Int = 1) extends AutoCloseable{
 
-  protected def initCommandPool(): VnCommandPool = {
+  protected def initCommandPool(): CommandPool = {
     val dev = renderPass.swapChain.device
-    new VnCommandPool(dev, dev.physicalDevice.graphicsQueueIndex, true)
+    new CommandPool(dev, dev.physicalDevice.graphicsQueueIndex, true)
   }
 
-  val commandPool:VnCommandPool = initCommandPool()
+  val commandPool:CommandPool = initCommandPool()
 
-  protected def initCommandBuffers(cnt:Int): IndexedSeq[VnCommandBuffer] = {
-    for (i <- 0 until count) yield  new VnCommandBuffer(commandPool)
+  protected def initCommandBuffers(cnt:Int): IndexedSeq[CommandBuffer] = {
+    for (i <- 0 until count) yield  new CommandBuffer(commandPool)
   }
 
-  val commandBuffers: IndexedSeq[VnCommandBuffer] = initCommandBuffers(count)
+  val commandBuffers: IndexedSeq[CommandBuffer] = initCommandBuffers(count)
 
-  def record(frame:NextFrame, index:Int = 0)(fn: Consumer[VkCommandBuffer]): VnCommandBuffer  = MemoryStack.stackPush() | { stack =>
+  def record(frame:NextFrame, index:Int = 0)(fn: Consumer[VkCommandBuffer]): CommandBuffer  = MemoryStack.stackPush() | { stack =>
     val dim = renderPass.swapChain.dimension
 
     val clearValues = VkClearValue.calloc(1, stack).apply(0, (v: VkClearValue) => {

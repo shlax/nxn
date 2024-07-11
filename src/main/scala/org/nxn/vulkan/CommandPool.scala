@@ -4,7 +4,7 @@ import org.lwjgl.system.MemoryStack
 import org.lwjgl.vulkan.{VK10, VkCommandPoolCreateInfo}
 import org.nxn.utils.Using.*
 
-class VnCommandPool(val device: VnDevice, val queueFamilyIndex:Int, createReset: Boolean = true) extends AutoCloseable{
+class CommandPool(val device: Device, val queueFamilyIndex:Int, createReset: Boolean = true) extends AutoCloseable{
 
   protected def initCommandPool(reset: Boolean): Long = MemoryStack.stackPush() | { stack =>
     val info = VkCommandPoolCreateInfo.calloc(stack)

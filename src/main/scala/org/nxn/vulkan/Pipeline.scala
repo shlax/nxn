@@ -5,11 +5,11 @@ import org.lwjgl.vulkan.{VK10, VkCommandBuffer, VkGraphicsPipelineCreateInfo, Vk
 import org.nxn.utils.Using.*
 import org.nxn.vulkan.shader.CompiledShader
 
-class VnPipeline(val renderPass: VnRenderPass, compiledShaders:IndexedSeq[CompiledShader],
-                  val topology:Int = VK10.VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST,
-                  val polygonMode:Int = VK10.VK_POLYGON_MODE_FILL,
-                  val cullMode:Int = VK10.VK_CULL_MODE_BACK_BIT, val frontFace:Int = VK10.VK_FRONT_FACE_COUNTER_CLOCKWISE,
-                  val colorAttachmentsCount:Int = 1 ) extends AutoCloseable{
+class Pipeline(val renderPass: RenderPass, compiledShaders:IndexedSeq[CompiledShader],
+               val topology:Int = VK10.VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST,
+               val polygonMode:Int = VK10.VK_POLYGON_MODE_FILL,
+               val cullMode:Int = VK10.VK_CULL_MODE_BACK_BIT, val frontFace:Int = VK10.VK_FRONT_FACE_COUNTER_CLOCKWISE,
+               val colorAttachmentsCount:Int = 1 ) extends AutoCloseable{
 
   protected def initPipelineLayout():Long = MemoryStack.stackPush() | { stack =>
     val layout = VkPipelineLayoutCreateInfo.calloc(stack)
@@ -24,9 +24,9 @@ class VnPipeline(val renderPass: VnRenderPass, compiledShaders:IndexedSeq[Compil
 
   val vkPipelineLayout:Long = initPipelineLayout()
 
-  protected def createShaderModules(modules:IndexedSeq[CompiledShader]):IndexedSeq[VnShaderModule] = {
+  protected def createShaderModules(modules:IndexedSeq[CompiledShader]):IndexedSeq[ShaderModule] = {
     val dev = renderPass.swapChain.device
-    for(c <- modules) yield new VnShaderModule(dev, c)
+    for(c <- modules) yield new ShaderModule(dev, c)
   }
 
   /** customize VkPipelineVertexInputStateCreateInfo */

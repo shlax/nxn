@@ -5,7 +5,7 @@ import org.lwjgl.vulkan.{VK10, VkShaderModuleCreateInfo}
 import org.nxn.utils.Using.*
 import org.nxn.vulkan.shader.CompiledShader
 
-class VnShaderModule(val device: VnDevice, compiledShader: CompiledShader) extends AutoCloseable{
+class ShaderModule(val device: Device, compiledShader: CompiledShader) extends AutoCloseable{
   val stage: Int = compiledShader.stage
   val name: String = compiledShader.name
 

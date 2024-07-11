@@ -4,7 +4,7 @@ import org.lwjgl.glfw.Callbacks
 import org.lwjgl.glfw.GLFW
 import org.lwjgl.system.MemoryUtil
 
-class VnWindow(val system:VnSystem) extends  AutoCloseable{
+class GlfwWindow(val system:VulkanSystem) extends  AutoCloseable{
 
   GLFW.glfwWindowHint(GLFW.GLFW_CLIENT_API, GLFW.GLFW_NO_API)
   GLFW.glfwWindowHint(GLFW.GLFW_RESIZABLE, GLFW.GLFW_FALSE)

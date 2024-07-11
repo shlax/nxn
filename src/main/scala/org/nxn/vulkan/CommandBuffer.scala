@@ -6,7 +6,7 @@ import org.nxn.utils.Using.*
 
 import java.util.function.Consumer
 
-class VnCommandBuffer(val commandPool: VnCommandPool, primary:Boolean = true) extends AutoCloseable{
+class CommandBuffer(val commandPool: CommandPool, primary:Boolean = true) extends AutoCloseable{
 
   protected def initCommandBuffer(levelPrimary:Boolean):VkCommandBuffer = MemoryStack.stackPush() | { stack =>
     val info = VkCommandBufferAllocateInfo.calloc(stack)

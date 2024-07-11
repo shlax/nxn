@@ -7,7 +7,7 @@ import org.nxn.utils.Using.*
 import org.nxn.utils.{Dimension, FpsCounter}
 import org.nxn.vulkan.memory.MemoryBuffer
 import org.nxn.vulkan.shader.ShaderCompiler
-import org.nxn.vulkan.{VnBuffer, TypeLength, VnFence, VnPipeline, VnRenderCommand, VnSemaphore, VnSystem}
+import org.nxn.vulkan.{Buffer, TypeLength, Fence, Pipeline, RenderCommand, Semaphore, VulkanSystem}
 
 object Main extends Runnable{
 
@@ -30,17 +30,17 @@ object Main extends Runnable{
       )
     }
 
-    new VnSystem("NXN", Dimension(1280, 720)) | { sys =>
+    new VulkanSystem("NXN", Dimension(1280, 720)) | { sys =>
       val graphicsQueue = sys.device.graphicsQueue
       val presentQueue = sys.device.presentQueue
 
       using { use =>
-        val imageAvailableSemaphore = use(new VnSemaphore(sys.device))
-        val renderFinishedSemaphore = use(new VnSemaphore(sys.device))
-        val inFlightFence = use(new VnFence(sys.device))
+        val imageAvailableSemaphore = use(new Semaphore(sys.device))
+        val renderFinishedSemaphore = use(new Semaphore(sys.device))
+        val inFlightFence = use(new Fence(sys.device))
 
         // vec2(0.0, -0.5), vec2(-0.5, 0.5), vec2(0.5, 0.5)
-        val points = use(new VnBuffer(sys.device, 3 * 2 * TypeLength.floatLength.size, VK10.VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
+        val points = use(new Buffer(sys.device, 3 * 2 * TypeLength.floatLength.size, VK10.VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
             VK10.VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK10.VK_MEMORY_PROPERTY_HOST_COHERENT_BIT)).map((memory: MemoryBuffer) => {
           val b = MemoryUtil.memFloatBuffer(memory.address, memory.size)
 
@@ -53,13 +53,13 @@ object Main extends Runnable{
           vec2(0.5, 0.5)
         })
 
-        val indexes = use(new VnBuffer(sys.device, 3 * TypeLength.intLength.size, VK10.VK_BUFFER_USAGE_INDEX_BUFFER_BIT,
+        val indexes = use(new Buffer(sys.device, 3 * TypeLength.intLength.size, VK10.VK_BUFFER_USAGE_INDEX_BUFFER_BIT,
           VK10.VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK10.VK_MEMORY_PROPERTY_HOST_COHERENT_BIT)).map((memory: MemoryBuffer) => {
           val b = MemoryUtil.memIntBuffer(memory.address, memory.size)
           b.put(0).put(1).put(2)
         })
 
-        val triangle = use(new VnPipeline(sys.renderPass, shaders){
+        val triangle = use(new Pipeline(sys.renderPass, shaders){
           // layout(location = 0) in vec2 inPosition
           override protected def vertexInput(stack: MemoryStack, info:VkPipelineVertexInputStateCreateInfo):Unit = {
             val bindings = VkVertexInputBindingDescription.calloc(1, stack)
@@ -79,7 +79,7 @@ object Main extends Runnable{
           }
         })
 
-        new VnRenderCommand(sys.renderPass) | { render =>
+        new RenderCommand(sys.renderPass) | { render =>
           // >>
           while (sys.window.pullEvents()) {
             inFlightFence.await().reset()

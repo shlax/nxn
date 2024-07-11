@@ -8,7 +8,7 @@ import org.nxn.vulkan.memory.MemoryBuffer
 
 import org.nxn.utils.Using.*
 
-class VnBuffer(val device: VnDevice, val size:Int, val usage:Int, val reqMask:Int) extends AutoCloseable{
+class Buffer(val device: Device, val size:Int, val usage:Int, val reqMask:Int) extends AutoCloseable{
 
   protected def initBufferMemory(): (Long, Long) = MemoryStack.stackPush() |{ stack =>
     val dev = device.physicalDevice

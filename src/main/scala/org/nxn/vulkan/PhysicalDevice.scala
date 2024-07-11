@@ -4,7 +4,7 @@ import org.lwjgl.system.MemoryStack
 import org.lwjgl.vulkan.{KHRSurface, KHRSwapchain, VK10, VkExtensionProperties, VkPhysicalDevice, VkPhysicalDeviceMemoryProperties, VkQueueFamilyProperties}
 import org.nxn.utils.Using.*
 
-class VnPhysicalDevice(val instance: VnInstance, val surface: VnSurface){
+class PhysicalDevice(val instance: Instance, val surface: Surface){
 
   /** vkPhysicalDevice:VkPhysicalDevice,
    graphicsQueueIndex:Int, graphicsQueueIndexes:IndexedSeq[Int],

@@ -4,13 +4,13 @@ import org.lwjgl.system.{MemoryStack, MemoryUtil}
 import org.lwjgl.vulkan.{KHRSwapchain, VK10, VkDevice, VkDeviceCreateInfo, VkDeviceQueueCreateInfo, VkPhysicalDeviceFeatures}
 import org.nxn.utils.Using.*
 
-class VnDevice(val instance: VnInstance, surface: VnSurface) extends AutoCloseable{
+class Device(val instance: Instance, surface: Surface) extends AutoCloseable{
 
-  protected def initPhysicalDevice():VnPhysicalDevice = {
-    new VnPhysicalDevice(instance, surface)
+  protected def initPhysicalDevice():PhysicalDevice = {
+    new PhysicalDevice(instance, surface)
   }
 
-  val physicalDevice:VnPhysicalDevice = initPhysicalDevice()
+  val physicalDevice:PhysicalDevice = initPhysicalDevice()
 
   val queuesFamilies:IndexedSeq[Int] = physicalDevice.queuesFamilies()
 
@@ -67,21 +67,21 @@ class VnDevice(val instance: VnInstance, surface: VnSurface) extends AutoCloseab
     deviceFeatures
   }
 
-  protected def initGraphicsQueue():VnQueue = {
-    new VnQueue(this, physicalDevice.graphicsQueueIndex, 0)
+  protected def initGraphicsQueue():Queue = {
+    new Queue(this, physicalDevice.graphicsQueueIndex, 0)
   }
 
-  val graphicsQueue:VnQueue = initGraphicsQueue()
+  val graphicsQueue:Queue = initGraphicsQueue()
 
-  protected def initPresentQueue(): VnQueue = {
+  protected def initPresentQueue(): Queue = {
     if(physicalDevice.graphicsQueueIndex == physicalDevice.presentQueueIndex){
       graphicsQueue
     }else {
-      new VnQueue(this, physicalDevice.presentQueueIndex, 0)
+      new Queue(this, physicalDevice.presentQueueIndex, 0)
     }
   }
 
-  val presentQueue:VnQueue = initPresentQueue()
+  val presentQueue:Queue = initPresentQueue()
   
   def await():Unit = {
     vkCheck(VK10.vkDeviceWaitIdle(vkDevice))

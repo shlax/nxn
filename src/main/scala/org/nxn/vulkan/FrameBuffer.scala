@@ -4,7 +4,7 @@ import org.lwjgl.system.MemoryStack
 import org.lwjgl.vulkan.{VK10, VkFramebufferCreateInfo}
 import org.nxn.utils.Using.*
 
-class VnFrameBuffer(val renderPass: VnRenderPass, val imageView:VnImageView) extends AutoCloseable {
+class FrameBuffer(val renderPass: RenderPass, val imageView:ImageView) extends AutoCloseable {
 
   protected def initFrameBuffer():Long = MemoryStack.stackPush() | { stack =>
     val swapChain = renderPass.swapChain

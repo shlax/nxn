@@ -5,7 +5,7 @@ import org.lwjgl.vulkan.{VK10, VkFenceCreateInfo}
 import scala.concurrent.duration.Duration
 import org.nxn.utils.Using.*
 
-class VnFence(val device: VnDevice, val signaled:Boolean = true) extends AutoCloseable{
+class Fence(val device: Device, val signaled:Boolean = true) extends AutoCloseable{
 
   protected def initFence():Long = MemoryStack.stackPush() | { stack =>
     val info = VkFenceCreateInfo.calloc(stack)

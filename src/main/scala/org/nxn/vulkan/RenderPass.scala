@@ -4,7 +4,7 @@ import org.lwjgl.system.MemoryStack
 import org.lwjgl.vulkan.{KHRSwapchain, VK10, VkAttachmentDescription, VkAttachmentReference, VkRenderPassCreateInfo, VkSubpassDependency, VkSubpassDescription}
 import org.nxn.utils.Using.*
 
-class VnRenderPass(val swapChain: VnSwapChain)  extends AutoCloseable{
+class RenderPass(val swapChain: SwapChain)  extends AutoCloseable{
 
   protected def initRenderPass(): Long = MemoryStack.stackPush() | { stack =>
     val attachments = VkAttachmentDescription.calloc(1, stack)
@@ -50,11 +50,11 @@ class VnRenderPass(val swapChain: VnSwapChain)  extends AutoCloseable{
 
   val vkRenderPass: Long = initRenderPass()
 
-  protected def initFrameBuffers():IndexedSeq[VnFrameBuffer] = {
-    for(i <- swapChain.imageViews) yield new VnFrameBuffer(this, i)
+  protected def initFrameBuffers():IndexedSeq[FrameBuffer] = {
+    for(i <- swapChain.imageViews) yield new FrameBuffer(this, i)
   }
 
-  val frameBuffers:IndexedSeq[VnFrameBuffer] = initFrameBuffers()
+  val frameBuffers:IndexedSeq[FrameBuffer] = initFrameBuffers()
 
   override def close(): Unit = {
     for(i <- frameBuffers) i.close()

@@ -9,7 +9,7 @@ import org.nxn.vulkan.frame.PresentResult
 
 import scala.concurrent.duration.Duration
 
-class VnSwapChain(val surface: VnSurface, val device: VnDevice, imageCount:Int = 0) extends AutoCloseable{
+class SwapChain(val surface: Surface, val device: Device, imageCount:Int = 0) extends AutoCloseable{
 
   /** (vkSwapChain : Long,
    vkImages: IndexedSeq[Long], format:Int,
@@ -138,11 +138,11 @@ class VnSwapChain(val surface: VnSurface, val device: VnDevice, imageCount:Int =
     vkImages: IndexedSeq[Long], format:Int,
     dimension: Dimension) = initSwapChain()
 
-  protected def initImageViews(): IndexedSeq[VnImageView] = {
-    for(i <- vkImages.zipWithIndex) yield new VnImageView(this, i._2)
+  protected def initImageViews(): IndexedSeq[ImageView] = {
+    for(i <- vkImages.zipWithIndex) yield new ImageView(this, i._2)
   }
 
-  val imageViews: IndexedSeq[VnImageView] = initImageViews()
+  val imageViews: IndexedSeq[ImageView] = initImageViews()
 
   def presentResult(err:Int) : Option[PresentResult] = {
     var res:Option[PresentResult] = None
@@ -158,7 +158,7 @@ class VnSwapChain(val surface: VnSurface, val device: VnDevice, imageCount:Int =
     res
   }
 
-  def acquireNextImage(signalSemaphore: VnSemaphore, timeout:Duration = device.physicalDevice.instance.system.timeout):NextFrame = MemoryStack.stackPush() | { stack =>
+  def acquireNextImage(signalSemaphore: Semaphore, timeout:Duration = device.physicalDevice.instance.system.timeout):NextFrame = MemoryStack.stackPush() | { stack =>
     val sem = signalSemaphore.vkSemaphore
 
     val ip = stack.callocInt(1)
@@ -170,7 +170,7 @@ class VnSwapChain(val surface: VnSurface, val device: VnDevice, imageCount:Int =
     NextFrame(ind, res)
   }
 
-  def presentImage(queue: VnQueue, index: NextFrame, waitSemaphore: VnSemaphore): Option[PresentResult] = MemoryStack.stackPush() | { stack =>
+  def presentImage(queue: Queue, index: NextFrame, waitSemaphore: Semaphore): Option[PresentResult] = MemoryStack.stackPush() | { stack =>
     if (index.index >= vkImages.length) {
       throw new IndexOutOfBoundsException(index.index)
     }
