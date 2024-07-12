@@ -5,9 +5,9 @@ import org.lwjgl.vulkan.{VK10, VkFenceCreateInfo}
 import scala.concurrent.duration.Duration
 import org.nxn.utils.Using.*
 
-class Fence(val device: Device, val signaled:Boolean = true) extends AutoCloseable{
+class Fence(val device: Device, signaled:Boolean = true) extends AutoCloseable{
 
-  protected def initFence():Long = MemoryStack.stackPush() | { stack =>
+  protected def initFence(signaled:Boolean):Long = MemoryStack.stackPush() | { stack =>
     val info = VkFenceCreateInfo.calloc(stack)
       .sType$Default()
       .flags(if(signaled) VK10.VK_FENCE_CREATE_SIGNALED_BIT else 0)
@@ -17,7 +17,7 @@ class Fence(val device: Device, val signaled:Boolean = true) extends AutoCloseab
     buff.get(0)
   }
 
-  val vkFence:Long = initFence()
+  val vkFence:Long = initFence(signaled)
 
   def await(waitAll:Boolean = true, timeout:Duration = device.physicalDevice.instance.system.timeout):this.type = {
     vkCheck( VK10.vkWaitForFences(device.vkDevice, vkFence, waitAll, timeout.toNanos) )

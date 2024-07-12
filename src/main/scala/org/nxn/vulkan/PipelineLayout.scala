@@ -4,7 +4,7 @@ import org.lwjgl.system.MemoryStack
 import org.lwjgl.vulkan.{VK10, VkPipelineLayoutCreateInfo}
 import org.nxn.utils.Using.*
 
-class PipelineLayout(device: Device) extends AutoCloseable{
+class PipelineLayout(val device: Device) extends AutoCloseable{
 
   /** customize VkPipelineLayoutCreateInfo */
   protected def pipelineLayout(stack: MemoryStack, info: VkPipelineLayoutCreateInfo): Unit = {}

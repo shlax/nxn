@@ -8,11 +8,11 @@ import java.util.function.Consumer
 
 class CommandBuffer(val commandPool: CommandPool, primary:Boolean = true) extends AutoCloseable{
 
-  protected def initCommandBuffer(levelPrimary:Boolean):VkCommandBuffer = MemoryStack.stackPush() | { stack =>
+  protected def initCommandBuffer(primary:Boolean):VkCommandBuffer = MemoryStack.stackPush() | { stack =>
     val info = VkCommandBufferAllocateInfo.calloc(stack)
       .sType$Default()
       .commandPool(commandPool.vkCommandPool)
-      .level(if(levelPrimary) VK10.VK_COMMAND_BUFFER_LEVEL_PRIMARY else VK10.VK_COMMAND_BUFFER_LEVEL_SECONDARY)
+      .level(if(primary) VK10.VK_COMMAND_BUFFER_LEVEL_PRIMARY else VK10.VK_COMMAND_BUFFER_LEVEL_SECONDARY)
       .commandBufferCount(1)
 
     val vkDevice = commandPool.device.vkDevice

@@ -6,10 +6,10 @@ import org.nxn.utils.Using.*
 
 class CommandPool(val device: Device, val queueFamilyIndex:Int, createReset: Boolean = true) extends AutoCloseable{
 
-  protected def initCommandPool(reset: Boolean): Long = MemoryStack.stackPush() | { stack =>
+  protected def initCommandPool(createReset: Boolean): Long = MemoryStack.stackPush() | { stack =>
     val info = VkCommandPoolCreateInfo.calloc(stack)
       .sType$Default()
-      .flags(if(reset) VK10.VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT else 0)
+      .flags(if(createReset) VK10.VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT else 0)
       .queueFamilyIndex(queueFamilyIndex)
 
     val buff = stack.callocLong(1)

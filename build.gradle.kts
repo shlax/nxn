@@ -12,6 +12,8 @@ dependencies {
     implementation("org.scala-lang:scala3-library_3:3.4.2")
     implementation("org.antlr:antlr4-runtime:4.13.1")
 
+    implementation("org.l33tlabs.twl:pngdecoder:1.0")
+
     implementation("org.lwjgl:lwjgl-glfw:3.3.3")
     implementation("org.lwjgl:lwjgl-vulkan:3.3.3")
     implementation("org.lwjgl:lwjgl-shaderc:3.3.3")

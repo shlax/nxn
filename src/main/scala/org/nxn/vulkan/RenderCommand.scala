@@ -16,7 +16,7 @@ class RenderCommand(val renderPass: RenderPass, count:Int = 1) extends AutoClose
 
   val commandPool:CommandPool = initCommandPool()
 
-  protected def initCommandBuffers(cnt:Int): IndexedSeq[CommandBuffer] = {
+  protected def initCommandBuffers(count:Int): IndexedSeq[CommandBuffer] = {
     for (i <- 0 until count) yield  new CommandBuffer(commandPool)
   }
 

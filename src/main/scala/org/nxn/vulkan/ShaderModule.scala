@@ -9,8 +9,8 @@ class ShaderModule(val device: Device, compiledShader: CompiledShader) extends A
   val stage: Int = compiledShader.stage
   val name: String = compiledShader.name
 
-  protected def initShaderModule(dt:Array[Byte]):Long = MemoryStack.stackPush()|{ stack =>
-    val pCode = stack.calloc(dt.length).put(0, dt)
+  protected def initShaderModule(code:Array[Byte]):Long = MemoryStack.stackPush()|{ stack =>
+    val pCode = stack.calloc(code.length).put(0, code)
 
     val info = VkShaderModuleCreateInfo.calloc(stack)
       .sType$Default()

@@ -14,7 +14,7 @@ class SwapChain(val surface: Surface, val device: Device, imageCount:Int = 0) ex
   /** (vkSwapChain : Long,
    vkImages: IndexedSeq[Long], format:Int,
    dimension: Dimension) */
-  protected def initSwapChain(): (Long, IndexedSeq[Long], Int, Dimension) = MemoryStack.stackPush() | { stack =>
+  protected def initSwapChain(imageCount:Int): (Long, IndexedSeq[Long], Int, Dimension) = MemoryStack.stackPush() | { stack =>
     val vkPhysicalDevice = device.physicalDevice.vkPhysicalDevice
 
     val surfCapabilities = VkSurfaceCapabilitiesKHR.calloc(stack)
@@ -136,7 +136,7 @@ class SwapChain(val surface: Surface, val device: Device, imageCount:Int = 0) ex
 
   val (vkSwapChain : Long,
     vkImages: IndexedSeq[Long], format:Int,
-    dimension: Dimension) = initSwapChain()
+    dimension: Dimension) = initSwapChain(imageCount)
 
   protected def initImageViews(): IndexedSeq[ImageView] = {
     for(i <- vkImages.zipWithIndex) yield new ImageView(this, i._2)

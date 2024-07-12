@@ -1,5 +1,6 @@
 package org.nxn
 
+import de.matthiasmann.twl.utils.PNGDecoder
 import org.lwjgl.system.{MemoryStack, MemoryUtil}
 import org.lwjgl.util.shaderc.Shaderc
 import org.lwjgl.vulkan.{VK10, VkCommandBuffer, VkPipelineLayoutCreateInfo, VkPipelineVertexInputStateCreateInfo, VkPushConstantRange, VkVertexInputAttributeDescription, VkVertexInputBindingDescription}
@@ -7,7 +8,7 @@ import org.nxn.utils.Using.*
 import org.nxn.utils.{Dimension, FpsCounter}
 import org.nxn.vulkan.memory.MemoryBuffer
 import org.nxn.vulkan.shader.ShaderCompiler
-import org.nxn.vulkan.{Buffer, Fence, Pipeline, PipelineLayout, RenderCommand, Semaphore, TypeLength, VulkanSystem}
+import org.nxn.vulkan.{Buffer, Fence, Image, Pipeline, PipelineLayout, RenderCommand, Semaphore, TypeLength, VulkanSystem}
 
 object Main extends Runnable{
 
@@ -92,7 +93,21 @@ object Main extends Runnable{
           }
         })
 
+        // 512 x 512 [24bit]
+        val texture = use(new Image(sys.device, Dimension(512, 512),
+            VK10.VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK10.VK_MEMORY_PROPERTY_HOST_COHERENT_BIT)).map((memory: MemoryBuffer) => {
+          val b = MemoryUtil.memByteBuffer(memory.address, memory.size)
+
+          // 512 x 512 [24bit]
+          Main.getClass.getResourceAsStream("/textures/sand.png") | { is =>
+            val dec = new PNGDecoder(is)
+            dec.decodeFlipped(b, 512 * 3, PNGDecoder.Format.RGB)
+          }
+
+        })
+
         new RenderCommand(sys.renderPass) | { render =>
+
           // >>
           while (sys.window.pullEvents()) {
             inFlightFence.await().reset()
@@ -112,8 +127,8 @@ object Main extends Runnable{
 
               VK10.vkCmdPushConstants(buff, layout.vkPipelineLayout, VK10.VK_SHADER_STAGE_VERTEX_BIT, 0, viewMatrix)
 
-              VK10.vkCmdBindVertexBuffers(buff, 0, stack.longs(points.buffer), stack.longs(0L))
-              VK10.vkCmdBindIndexBuffer(buff, indexes.buffer, 0, VK10.VK_INDEX_TYPE_UINT32) //VK10.vkCmdDraw(buff, 3, 1, 0, 0)
+              VK10.vkCmdBindVertexBuffers(buff, 0, stack.longs(points.vkBuffer), stack.longs(0L))
+              VK10.vkCmdBindIndexBuffer(buff, indexes.vkBuffer, 0, VK10.VK_INDEX_TYPE_UINT32) //VK10.vkCmdDraw(buff, 3, 1, 0, 0)
               VK10.vkCmdDrawIndexed(buff, 3, 1, 0, 0, 0)
             })
 
