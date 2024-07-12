@@ -101,7 +101,7 @@ object Main extends Runnable{
           // 512 x 512 [24bit]
           Main.getClass.getResourceAsStream("/textures/sand.png") | { is =>
             val dec = new PNGDecoder(is)
-            dec.decodeFlipped(b, 512 * 3, PNGDecoder.Format.RGB)
+            dec.decode(b, 512 * 4, PNGDecoder.Format.RGBA)
           }
 
         })

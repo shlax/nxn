@@ -1,7 +1,7 @@
 package org.nxn.vulkan
 
 import org.lwjgl.system.MemoryStack
-import org.lwjgl.vulkan.{VK10, VkExtent3D, VkImageCreateInfo, VkMemoryRequirements}
+import org.lwjgl.vulkan.{VK10, VkExtent3D, VkImageCreateInfo, VkImageFormatProperties, VkMemoryRequirements}
 import org.nxn.utils.Dimension
 import org.nxn.utils.Using.*
 
@@ -11,17 +11,20 @@ object Image{
 
   def depth(format:Int):Int = {
     format match {
-      case VK10.VK_FORMAT_R8G8B8_SRGB => 3
+      case VK10.VK_FORMAT_R8G8B8A8_SRGB => 4
     }
   }
 
 }
 
 class Image(device: Device, size:Dimension, reqMask:Int,
-              format:Int = VK10.VK_FORMAT_R8G8B8_SRGB, mipLevels:Int = 1) extends Memory(device, size.size(Image.depth(format))){
+              format:Int = VK10.VK_FORMAT_R8G8B8A8_SRGB, mipLevels:Int = 1) extends Memory(device, size.size(Image.depth(format))){
 
   protected def initInage(size:Dimension, format:Int, mipLevels:Int):Long = MemoryStack.stackPush() | { stack =>
     val dev = device.physicalDevice
+
+    val props = VkImageFormatProperties.calloc(stack)
+    vkCheck(VK10.vkGetPhysicalDeviceImageFormatProperties(dev.vkPhysicalDevice, format, VK10.VK_IMAGE_TYPE_2D, VK10.VK_IMAGE_TILING_OPTIMAL, VK10.VK_IMAGE_USAGE_SAMPLED_BIT, 0, props))
 
     val ext = new Consumer[VkExtent3D]{
       override def accept(e: VkExtent3D): Unit = {
