@@ -139,7 +139,7 @@ class SwapChain(val surface: Surface, val device: Device, imageCount:Int = 0) ex
     dimension: Dimension) = initSwapChain(imageCount)
 
   protected def initImageViews(): IndexedSeq[ImageView] = {
-    for(i <- vkImages.zipWithIndex) yield new ImageView(this, i._2)
+    for(i <- vkImages.zipWithIndex) yield new ImageView(device, i._1, format)
   }
 
   val imageViews: IndexedSeq[ImageView] = initImageViews()
@@ -189,7 +189,7 @@ class SwapChain(val surface: Surface, val device: Device, imageCount:Int = 0) ex
   }
 
   override def close(): Unit = {
-    for(i <- imageViews) i.close()
     KHRSwapchain.vkDestroySwapchainKHR(device.vkDevice, vkSwapChain, null)
+    for(i <- imageViews) i.close()
   }
 }

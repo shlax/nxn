@@ -6,18 +6,14 @@ import org.nxn.utils.Using.*
 
 import java.util.function.Consumer
 
-class ImageView(val swapChain: SwapChain, val index:Int) extends AutoCloseable{
+class ImageView(val device: Device, image:Long, format:Int) extends AutoCloseable{
 
-  if(index >= swapChain.vkImages.size){
-    throw new IndexOutOfBoundsException(index)
-  }
-
-  protected def initImageView() : Long = MemoryStack.stackPush() | { stack =>
+  protected def initImageView(image:Long, format:Int) : Long = MemoryStack.stackPush() | { stack =>
     val info = VkImageViewCreateInfo.calloc(stack)
       .sType$Default()
-      .image(swapChain.vkImages(index))
+      .image(image)
       .viewType(VK10.VK_IMAGE_VIEW_TYPE_2D)
-      .format(swapChain.format)
+      .format(format)
       .subresourceRange( (r: VkImageSubresourceRange) => {
         r.aspectMask(VK10.VK_IMAGE_ASPECT_COLOR_BIT)
           .baseMipLevel(0)
@@ -27,14 +23,14 @@ class ImageView(val swapChain: SwapChain, val index:Int) extends AutoCloseable{
       }:Unit )
 
     val lp = stack.callocLong(1)
-    vkCheck(VK10.vkCreateImageView(swapChain.device.vkDevice, info, null, lp))
+    vkCheck(VK10.vkCreateImageView(device.vkDevice, info, null, lp))
     lp.get(0)
   }
 
-  val vkImageView: Long = initImageView()
+  val vkImageView: Long = initImageView(image, format)
 
   override def close(): Unit = {
-    VK10.vkDestroyImageView(swapChain.device.vkDevice, vkImageView, null)
+    VK10.vkDestroyImageView(device.vkDevice, vkImageView, null)
   }
 
 }
