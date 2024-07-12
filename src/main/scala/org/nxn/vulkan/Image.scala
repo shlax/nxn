@@ -17,7 +17,8 @@ object Image{
 
 }
 
-class Image(device: Device, size:Dimension, reqMask:Int, format:Int = VK10.VK_FORMAT_R8G8B8_SRGB, mipLevels:Int = 1) extends Memory(device, size.size(Image.depth(format))){
+class Image(device: Device, size:Dimension, reqMask:Int,
+              format:Int = VK10.VK_FORMAT_R8G8B8_SRGB, mipLevels:Int = 1) extends Memory(device, size.size(Image.depth(format))){
 
   protected def initInage(size:Dimension, format:Int, mipLevels:Int):Long = MemoryStack.stackPush() | { stack =>
     val dev = device.physicalDevice
@@ -57,7 +58,14 @@ class Image(device: Device, size:Dimension, reqMask:Int, format:Int = VK10.VK_FO
     }
   })
 
+  protected def initImageView(format:Int):ImageView = {
+    new ImageView(device, vkImage, format)
+  }
+
+  val imageView: ImageView = initImageView(format)
+
   override def close(): Unit = {
+    imageView.close()
     VK10.vkDestroyImage(device.vkDevice, vkImage, null)
     super.close()
   }
