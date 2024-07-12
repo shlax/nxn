@@ -5,10 +5,12 @@ import org.lwjgl.vulkan.{VK10, VkCommandBuffer, VkGraphicsPipelineCreateInfo, Vk
 import org.nxn.utils.Using.*
 import org.nxn.vulkan.shader.CompiledShader
 
-class Pipeline(val pipelineLayout: PipelineLayout, val renderPass: RenderPass, compiledShaders:IndexedSeq[CompiledShader],
+class Pipeline(val pipelineLayout: PipelineLayout, val renderPass: RenderPass,
+               compiledShaders:IndexedSeq[CompiledShader],
                topology:Int = VK10.VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST,
                polygonMode:Int = VK10.VK_POLYGON_MODE_FILL,
-               cullMode:Int = VK10.VK_CULL_MODE_BACK_BIT, val frontFace:Int = VK10.VK_FRONT_FACE_COUNTER_CLOCKWISE,
+               cullMode:Int = VK10.VK_CULL_MODE_BACK_BIT,
+               frontFace:Int = VK10.VK_FRONT_FACE_COUNTER_CLOCKWISE,
                colorAttachmentsCount:Int = 1 ) extends AutoCloseable{
 
   protected def createShaderModules(modules:IndexedSeq[CompiledShader]):IndexedSeq[ShaderModule] = {
@@ -20,7 +22,7 @@ class Pipeline(val pipelineLayout: PipelineLayout, val renderPass: RenderPass, c
   protected def vertexInput(stack:MemoryStack, info:VkPipelineVertexInputStateCreateInfo):Unit = { }
 
   protected def initPipeline(compiledShaders:IndexedSeq[CompiledShader],
-       topology:Int, polygonMode:Int, cullMode:Int, colorAttachmentsCount:Int): Long = MemoryStack.stackPush() | { stack =>
+       topology:Int, polygonMode:Int, cullMode:Int, frontFace:Int, colorAttachmentsCount:Int): Long = MemoryStack.stackPush() | { stack =>
     val shaderModules = createShaderModules(compiledShaders)
 
     val stages = VkPipelineShaderStageCreateInfo.calloc(shaderModules.length, stack)
@@ -115,7 +117,7 @@ class Pipeline(val pipelineLayout: PipelineLayout, val renderPass: RenderPass, c
     pipeline
   }
 
-  val vkPipeline:Long = initPipeline(compiledShaders, topology, polygonMode, cullMode, colorAttachmentsCount)
+  val vkPipeline:Long = initPipeline(compiledShaders, topology, polygonMode, cullMode, frontFace, colorAttachmentsCount)
 
   def bindPipeline(commandBuffer:VkCommandBuffer, compute:Boolean = false):Unit = {
     VK10.vkCmdBindPipeline(commandBuffer, if(compute) VK10.VK_PIPELINE_BIND_POINT_COMPUTE else VK10.VK_PIPELINE_BIND_POINT_GRAPHICS, vkPipeline)
