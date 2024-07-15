@@ -60,25 +60,39 @@ object Main extends Runnable{
           b.put(0).put(1).put(2)
         })
 
+        val sampler = use(new Sampler(sys.device))
+
+        val descriptorPool = use(new DescriptorPool(sys.device, Map(VK10.VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER -> 1)))
+        val layout = use(new DescriptorSetLayout(sys.device, 0, VK10.VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK10.VK_SHADER_STAGE_FRAGMENT_BIT))
+        val descriptorSet = use(new DescriptorSet(descriptorPool, IndexedSeq(layout)))
+
+        // 512 x 512 [24bit]
+        val texture = use(new Image(sys.device, Dimension(512, 512),
+          VK10.VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK10.VK_MEMORY_PROPERTY_HOST_COHERENT_BIT)).map((memory: MemoryBuffer) => {
+          val b = MemoryUtil.memByteBuffer(memory.address, memory.size)
+
+          // 512 x 512 [24bit]
+          Main.getClass.getResourceAsStream("/textures/sand.png") | { is =>
+            val dec = new PNGDecoder(is)
+            dec.decode(b, 512 * 4, PNGDecoder.Format.RGBA)
+          }
+
+        })
+
         // layout(push_constant) uniform Transformations { mat4 viewMatrix; } transformations;
-        val layout = use(new PipelineLayout(sys.device){
+        val pipelineLayout = use(new PipelineLayout(sys.device){
           override protected def pipelineLayout(stack: MemoryStack, info: VkPipelineLayoutCreateInfo): Unit = {
             val ranges = VkPushConstantRange.calloc(1, stack)
               .stageFlags(VK10.VK_SHADER_STAGE_VERTEX_BIT)
               .offset(0)
               .size(4 * 4 * TypeLength.floatLength.size)
-
             info.pPushConstantRanges(ranges)
+
+            info.pSetLayouts(stack.longs(layout.vkDescriptorLayout))
           }
         })
 
-        val sampler = use(new Sampler(sys.device))
-
-        val descPool = use(new DescriptorPool(sys.device, Map(VK10.VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER -> 1)))
-        val setLayout = use(new DescriptorSetLayout(sys.device, 0, VK10.VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK10.VK_SHADER_STAGE_FRAGMENT_BIT))
-        val descSet = use(new DescriptorSet(descPool, IndexedSeq(setLayout)))
-
-        val triangle = use(new Pipeline(layout, sys.renderPass, shaders){
+        val triangle = use(new Pipeline(pipelineLayout, sys.renderPass, shaders){
 
           // layout(location = 0) in vec2 inPosition
           override protected def vertexInput(stack: MemoryStack, info:VkPipelineVertexInputStateCreateInfo):Unit = {
@@ -97,19 +111,6 @@ object Main extends Runnable{
               .offset(0)
             info.pVertexAttributeDescriptions(attributes)
           }
-        })
-
-        // 512 x 512 [24bit]
-        val texture = use(new Image(sys.device, Dimension(512, 512),
-            VK10.VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK10.VK_MEMORY_PROPERTY_HOST_COHERENT_BIT)).map((memory: MemoryBuffer) => {
-          val b = MemoryUtil.memByteBuffer(memory.address, memory.size)
-
-          // 512 x 512 [24bit]
-          Main.getClass.getResourceAsStream("/textures/sand.png") | { is =>
-            val dec = new PNGDecoder(is)
-            dec.decode(b, 512 * 4, PNGDecoder.Format.RGBA)
-          }
-
         })
 
         new RenderCommand(sys.renderPass) | { render =>
@@ -131,7 +132,7 @@ object Main extends Runnable{
               viewMatrix.put(0f).put(0f).put(0f).put(1f)
               viewMatrix.flip()
 
-              VK10.vkCmdPushConstants(buff, layout.vkPipelineLayout, VK10.VK_SHADER_STAGE_VERTEX_BIT, 0, viewMatrix)
+              VK10.vkCmdPushConstants(buff, pipelineLayout.vkPipelineLayout, VK10.VK_SHADER_STAGE_VERTEX_BIT, 0, viewMatrix)
 
               VK10.vkCmdBindVertexBuffers(buff, 0, stack.longs(points.vkBuffer), stack.longs(0L))
               VK10.vkCmdBindIndexBuffer(buff, indexes.vkBuffer, 0, VK10.VK_INDEX_TYPE_UINT32) //VK10.vkCmdDraw(buff, 3, 1, 0, 0)
