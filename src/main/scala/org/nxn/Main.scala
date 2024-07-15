@@ -8,7 +8,7 @@ import org.nxn.utils.Using.*
 import org.nxn.utils.{Dimension, FpsCounter}
 import org.nxn.vulkan.memory.MemoryBuffer
 import org.nxn.vulkan.shader.ShaderCompiler
-import org.nxn.vulkan.{Buffer, Fence, Image, Pipeline, PipelineLayout, RenderCommand, Semaphore, TypeLength, VulkanSystem}
+import org.nxn.vulkan.{Buffer, DescriptorPool, DescriptorSet, DescriptorSetLayout, Fence, Image, Pipeline, PipelineLayout, RenderCommand, Sampler, Semaphore, TypeLength, VulkanSystem}
 
 object Main extends Runnable{
 
@@ -71,6 +71,12 @@ object Main extends Runnable{
             info.pPushConstantRanges(ranges)
           }
         })
+
+        val sampler = use(new Sampler(sys.device))
+
+        val descPool = use(new DescriptorPool(sys.device, Map(VK10.VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER -> 1)))
+        val setLayout = use(new DescriptorSetLayout(sys.device, 0, VK10.VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK10.VK_SHADER_STAGE_FRAGMENT_BIT))
+        val descSet = use(new DescriptorSet(descPool, IndexedSeq(setLayout)))
 
         val triangle = use(new Pipeline(layout, sys.renderPass, shaders){
 

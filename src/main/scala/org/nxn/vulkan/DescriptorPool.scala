@@ -4,7 +4,7 @@ import org.lwjgl.system.MemoryStack
 import org.lwjgl.vulkan.{VK10, VkDescriptorPoolCreateInfo, VkDescriptorPoolSize}
 import org.nxn.utils.Using.*
 
-/** poolTypes : Map(VK10.VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER -> 1) */
+/** poolTypes : Map(VK10.VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER -> 1) */
 class DescriptorPool(val device: Device, poolSizes:Map[Int,Int], maxSets:Int = 1) extends AutoCloseable{
 
   protected def initDescriptorPool(poolSizes:Map[Int,Int], maxSets:Int):Long = MemoryStack.stackPush() | { stack =>
@@ -18,6 +18,7 @@ class DescriptorPool(val device: Device, poolSizes:Map[Int,Int], maxSets:Int = 1
 
     val info = VkDescriptorPoolCreateInfo.calloc(stack)
       .sType$Default()
+      .flags(VK10.VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT)
       .pPoolSizes(pools)
       .maxSets(maxSets)
 

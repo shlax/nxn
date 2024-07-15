@@ -4,24 +4,25 @@ import org.lwjgl.system.MemoryStack
 import org.lwjgl.vulkan.{VK10, VkDescriptorSetAllocateInfo}
 import org.nxn.utils.Using.*
 
-class DescriptorSet(val pool:DescriptorPool) extends AutoCloseable{
+class DescriptorSet(val pool:DescriptorPool, layouts:IndexedSeq[DescriptorSetLayout]) extends AutoCloseable{
 
-  protected def initDescriptorLayout():Long = MemoryStack.stackPush() | { stack =>
-
+  protected def initDescriptorSet(layouts:IndexedSeq[DescriptorSetLayout]):Long = MemoryStack.stackPush() | { stack =>
+    val setLayouts = stack.callocLong(layouts.size)
+    for(i <- layouts.zipWithIndex) setLayouts.put(i._2, i._1.vkDescriptorLayout)
 
     val info = VkDescriptorSetAllocateInfo.calloc(stack)
       .sType$Default()
       .descriptorPool(pool.vkDescriptorPool)
-      .pSetLayouts(???)
+      .pSetLayouts(setLayouts)
 
     val lb = stack.callocLong(1)
     vkCheck(VK10.vkAllocateDescriptorSets(pool.device.vkDevice, info, lb))
     lb.get(0)
   }
 
-  val vkDescriptorLayout:Long = initDescriptorLayout()
+  val vkDescriptorSet:Long = initDescriptorSet(layouts)
 
   override def close(): Unit = {
-    VK10.vkDestroyDescriptorSetLayout(pool.device.vkDevice, vkDescriptorLayout, null)
+    vkCheck( VK10.vkFreeDescriptorSets(pool.device.vkDevice, pool.vkDescriptorPool, vkDescriptorSet) )
   }
 }
