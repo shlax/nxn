@@ -72,7 +72,7 @@ object Main extends Runnable{
           val b = MemoryUtil.memByteBuffer(memory.address, memory.size)
 
           // 512 x 512 [24bit]
-          Main.getClass.getResourceAsStream("/textures/sand.png") | { is =>
+          Main.getClass.getResourceAsStream("/textures/checker.png") | { is =>
             val dec = new PNGDecoder(is)
             dec.decode(b, 512 * 4, PNGDecoder.Format.RGBA)
           }
