@@ -41,7 +41,7 @@ object Main extends Runnable{
 
         // vec2(0.0, -0.5), vec2(-0.5, 0.5), vec2(0.5, 0.5)
         val points = use(new Buffer(sys.device, 3 * 2 * TypeLength.floatLength.size, VK10.VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
-            VK10.VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK10.VK_MEMORY_PROPERTY_HOST_COHERENT_BIT)).map{ memory =>
+            VK10.VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK10.VK_MEMORY_PROPERTY_HOST_COHERENT_BIT)).mapMemory{ memory =>
           val b = MemoryUtil.memFloatBuffer(memory.address, memory.size)
 
           def vec2(x:Float, y:Float):Unit = {
@@ -54,7 +54,7 @@ object Main extends Runnable{
         }
 
         val indexes = use(new Buffer(sys.device, 3 * TypeLength.intLength.size, VK10.VK_BUFFER_USAGE_INDEX_BUFFER_BIT,
-          VK10.VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK10.VK_MEMORY_PROPERTY_HOST_COHERENT_BIT)).map{ memory =>
+          VK10.VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK10.VK_MEMORY_PROPERTY_HOST_COHERENT_BIT)).mapMemory{ memory =>
           val b = MemoryUtil.memIntBuffer(memory.address, memory.size)
           b.put(0).put(1).put(2)
         }
@@ -108,7 +108,7 @@ object Main extends Runnable{
             new Buffer(sys.device, 512 * 512 * 4, VK10.VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
               VK10.VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK10.VK_MEMORY_PROPERTY_HOST_COHERENT_BIT) |{ stageBuffer =>
 
-              stageBuffer.map{ memory =>
+              stageBuffer.mapMemory{ memory =>
                 val b = MemoryUtil.memByteBuffer(memory.address, memory.size)
 
                 Main.getClass.getResourceAsStream("/textures/checker.png") | { is =>

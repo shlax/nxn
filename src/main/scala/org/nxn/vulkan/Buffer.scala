@@ -34,7 +34,7 @@ class Buffer(device: Device, size:Int, usage:Int, reqMask:Int) extends Memory(de
     }
   })
 
-  def map(c: Consumer[MemoryBuffer]): this.type = MemoryStack.stackPush() | { stack =>
+  def mapMemory(c: Consumer[MemoryBuffer]): this.type = MemoryStack.stackPush() | { stack =>
 
     val pb = stack.callocPointer(1)
     vkCheck(VK10.vkMapMemory(device.vkDevice, vkMemory, 0, size, 0, pb))
