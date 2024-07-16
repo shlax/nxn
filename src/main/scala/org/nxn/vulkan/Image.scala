@@ -34,8 +34,8 @@ class Image(device: Device, size:Dimension, reqMask:Int,
       .usage(VK10.VK_IMAGE_USAGE_SAMPLED_BIT)
       .sharingMode(if(dev.graphicsQueueIndex == dev.presentQueueIndex) VK10.VK_SHARING_MODE_EXCLUSIVE else VK10.VK_SHARING_MODE_CONCURRENT)
       .extent(((e: VkExtent3D) => {
-        e.width(size.width).height(size.height).depth(1)
-      }):Consumer[VkExtent3D])
+          e.width(size.width).height(size.height).depth(1)
+        }):Consumer[VkExtent3D])
       .format(format)
       .arrayLayers(1)
       .mipLevels(1)
