@@ -33,7 +33,6 @@ object Main extends Runnable{
 
     new VulkanSystem("NXN", Dimension(1280, 720)) | { sys =>
       val graphicsQueue = sys.device.graphicsQueue
-      val presentQueue = sys.device.presentQueue
 
       using { use =>
         val imageAvailableSemaphore = use(new Semaphore(sys.device))
@@ -129,7 +128,7 @@ object Main extends Runnable{
             val next = sys.swapChain.acquireNextImage(imageAvailableSemaphore) // waiting
             for(q <- next.presentResult) println(q)
 
-            val cmdBuff = render.record(next)((stack:MemoryStack, buff: VkCommandBuffer) => {
+            val cmdBuff = render.record(next){ (stack:MemoryStack, buff: VkCommandBuffer) =>
               triangle.bindPipeline(buff)
 
               val viewMatrix = stack.callocFloat(4 * 4)
@@ -146,11 +145,11 @@ object Main extends Runnable{
               VK10.vkCmdBindVertexBuffers(buff, 0, stack.longs(points.vkBuffer), stack.longs(0L))
               VK10.vkCmdBindIndexBuffer(buff, indexes.vkBuffer, 0, VK10.VK_INDEX_TYPE_UINT32) //VK10.vkCmdDraw(buff, 3, 1, 0, 0)
               VK10.vkCmdDrawIndexed(buff, 3, 1, 0, 0, 0)
-            })
+            }
 
             graphicsQueue.submit(cmdBuff, imageAvailableSemaphore, VK10.VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, renderFinishedSemaphore, inFlightFence)
             //graphicsQueue.submit(cmdBuff, imageAvailableSemaphore, VK10.VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, renderFinishedSemaphore, Some(inFlightFence))
-            val res = sys.swapChain.presentImage(presentQueue, next, renderFinishedSemaphore)
+            val res = sys.swapChain.presentImage(next, renderFinishedSemaphore)
             for(q <- res) println(q)
 
             fps(f => println("fps: "+f))

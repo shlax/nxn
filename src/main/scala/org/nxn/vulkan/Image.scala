@@ -54,7 +54,7 @@ class Image(device: Device, val size:Dimension, format:Int = VK10.VK_FORMAT_R8G8
 
   def copyBufferToImage(buffer: Buffer, commandPool: CommandPool, fence: Fence, graphicsQueue:Queue = device.graphicsQueue):Fence = MemoryStack.stackPush() | { stack =>
     new CommandBuffer(commandPool) | { buff =>
-      buff.record(stack, true)({ rec =>
+      buff.record(stack, true){ rec =>
 
         val region = VkBufferImageCopy.calloc(1, stack)
           .bufferOffset(0)
@@ -65,17 +65,17 @@ class Image(device: Device, val size:Dimension, format:Int = VK10.VK_FORMAT_R8G8
               .mipLevel(0)
               .baseArrayLayer(0)
               .layerCount(1)
-          }): Consumer[VkImageSubresourceLayers])
+          }):Consumer[VkImageSubresourceLayers])
           .imageOffset(((t: VkOffset3D) => {
             t.x(0).y(0).z(0)
-          }): Consumer[VkOffset3D])
+          }):Consumer[VkOffset3D])
           .imageExtent(((t: VkExtent3D) => {
             t.width(size.width).height(size.height).depth(1)
-          }): Consumer[VkExtent3D])
+          }):Consumer[VkExtent3D])
 
         VK10.vkCmdCopyBufferToImage(rec, buffer.vkBuffer, vkImage, VK10.VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, region)
 
-      })
+      }
 
       graphicsQueue.submit(buff, fence)
     }

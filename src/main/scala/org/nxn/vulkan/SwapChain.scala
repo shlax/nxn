@@ -170,16 +170,14 @@ class SwapChain(val surface: Surface, val device: Device, imageCount:Int = 0) ex
     NextFrame(ind, res)
   }
 
-  def presentImage(queue: Queue, index: NextFrame, waitSemaphore: Semaphore): Option[PresentResult] = MemoryStack.stackPush() | { stack =>
+  def presentImage(index: NextFrame, waitSemaphore: Semaphore, queue: Queue = device.presentQueue): Option[PresentResult] = MemoryStack.stackPush() | { stack =>
     if (index.index >= vkImages.length) {
       throw new IndexOutOfBoundsException(index.index)
     }
 
-    val sem = waitSemaphore.vkSemaphore
-
     val info = VkPresentInfoKHR.calloc(stack)
       .sType$Default()
-      .pWaitSemaphores(stack.longs(sem))
+      .pWaitSemaphores(stack.longs(waitSemaphore.vkSemaphore))
       .swapchainCount(1)
       .pSwapchains(stack.longs(vkSwapChain))
       .pImageIndices(stack.ints(index.index))

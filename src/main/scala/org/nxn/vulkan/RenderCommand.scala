@@ -46,11 +46,11 @@ class RenderCommand(val renderPass: RenderPass, count:Int = 1) extends AutoClose
 
     val cmdBuff = commandBuffers(index)
 
-    cmdBuff.record(stack)({ (vkCommandBuffer:VkCommandBuffer) =>
+    cmdBuff.record(stack){ (vkCommandBuffer:VkCommandBuffer) =>
       VK10.vkCmdBeginRenderPass(vkCommandBuffer, info, VK10.VK_SUBPASS_CONTENTS_INLINE)
       fn.accept(stack, vkCommandBuffer)
       VK10.vkCmdEndRenderPass(vkCommandBuffer)
-    })
+    }
 
   }
 
