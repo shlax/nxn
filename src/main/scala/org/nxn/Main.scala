@@ -41,7 +41,7 @@ object Main extends Runnable{
 
         // vec2(0.0, -0.5), vec2(-0.5, 0.5), vec2(0.5, 0.5)
         val points = use(new Buffer(sys.device, 3 * 2 * TypeLength.floatLength.size, VK10.VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
-            VK10.VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK10.VK_MEMORY_PROPERTY_HOST_COHERENT_BIT)).map((memory: MemoryBuffer) => {
+            VK10.VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK10.VK_MEMORY_PROPERTY_HOST_COHERENT_BIT)).map{ memory =>
           val b = MemoryUtil.memFloatBuffer(memory.address, memory.size)
 
           def vec2(x:Float, y:Float):Unit = {
@@ -51,13 +51,13 @@ object Main extends Runnable{
           vec2(0.0, -0.5)
           vec2(-0.5, 0.5)
           vec2(0.5, 0.5)
-        })
+        }
 
         val indexes = use(new Buffer(sys.device, 3 * TypeLength.intLength.size, VK10.VK_BUFFER_USAGE_INDEX_BUFFER_BIT,
-          VK10.VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK10.VK_MEMORY_PROPERTY_HOST_COHERENT_BIT)).map((memory: MemoryBuffer) => {
+          VK10.VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK10.VK_MEMORY_PROPERTY_HOST_COHERENT_BIT)).map{ memory =>
           val b = MemoryUtil.memIntBuffer(memory.address, memory.size)
           b.put(0).put(1).put(2)
-        })
+        }
 
         val sampler = use(new Sampler(sys.device))
 
@@ -108,14 +108,14 @@ object Main extends Runnable{
             new Buffer(sys.device, 512 * 512 * 4, VK10.VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
               VK10.VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK10.VK_MEMORY_PROPERTY_HOST_COHERENT_BIT) |{ stageBuffer =>
 
-              stageBuffer.map((memory: MemoryBuffer) => {
+              stageBuffer.map{ memory =>
                 val b = MemoryUtil.memByteBuffer(memory.address, memory.size)
 
                 Main.getClass.getResourceAsStream("/textures/checker.png") | { is =>
                   val dec = new PNGDecoder(is)
                   dec.decode(b, 512 * 4, PNGDecoder.Format.RGBA)
                 }
-              })
+              }
 
               texture.copyBufferToImage(stageBuffer, render.commandPool, fence).await()
             }
@@ -128,7 +128,7 @@ object Main extends Runnable{
             val next = sys.swapChain.acquireNextImage(imageAvailableSemaphore) // waiting
             for(q <- next.presentResult) println(q)
 
-            val cmdBuff = render.record(next){ (stack:MemoryStack, buff: VkCommandBuffer) =>
+            val cmdBuff = render.record(next){ (stack, buff) =>
               triangle.bindPipeline(buff)
 
               val viewMatrix = stack.callocFloat(4 * 4)
