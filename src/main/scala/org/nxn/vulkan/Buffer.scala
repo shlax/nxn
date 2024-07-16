@@ -2,10 +2,12 @@ package org.nxn.vulkan
 
 import org.lwjgl.system.MemoryStack
 import org.lwjgl.vulkan.{VK10, VkBufferCreateInfo, VkMemoryRequirements}
-
 import org.nxn.utils.Using.*
+import org.nxn.vulkan.memory.MemoryBuffer
 
-class Buffer(device: Device, size:Int, usage:Int, reqMask:Int) extends Memory(device, size){
+import java.util.function.Consumer
+
+class Buffer(device: Device, size:Int, usage:Int, reqMask:Int) extends Memory(device){
 
   protected def initBufferMemory(size:Int, usage:Int, reqMask:Int): Long = MemoryStack.stackPush() | { stack =>
     val dev = device.physicalDevice
@@ -31,6 +33,21 @@ class Buffer(device: Device, size:Int, usage:Int, reqMask:Int) extends Memory(de
       vkCheck(VK10.vkBindBufferMemory(device.vkDevice, vkBuffer, mem, 0))
     }
   })
+
+  def map(c: Consumer[MemoryBuffer]): this.type = MemoryStack.stackPush() | { stack =>
+
+    val pb = stack.callocPointer(1)
+    vkCheck(VK10.vkMapMemory(device.vkDevice, vkMemory, 0, size, 0, pb))
+    val mappedMemory = pb.get(0)
+
+    try {
+      c.accept(MemoryBuffer(mappedMemory, size))
+    } finally {
+      VK10.vkUnmapMemory(device.vkDevice, vkMemory)
+    }
+
+    this
+  }
 
   override def close(): Unit = {
     VK10.vkDestroyBuffer(device.vkDevice, vkBuffer, null)

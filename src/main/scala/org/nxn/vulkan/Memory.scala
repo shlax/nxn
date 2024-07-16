@@ -7,7 +7,7 @@ import org.nxn.vulkan.memory.MemoryBuffer
 
 import java.util.function.Consumer
 
-abstract class Memory(val device: Device, val size:Int) extends AutoCloseable{
+abstract class Memory(val device: Device) extends AutoCloseable{
 
   trait MemoryCallback{
     def requirements(memReq:VkMemoryRequirements):Unit
@@ -46,21 +46,6 @@ abstract class Memory(val device: Device, val size:Int) extends AutoCloseable{
     val mem = lp.get(0)
     fn.bind(mem)
     mem
-  }
-
-  def map(c:Consumer[MemoryBuffer]):this.type = MemoryStack.stackPush() | { stack =>
-
-    val pb = stack.callocPointer(1)
-    vkCheck(VK10.vkMapMemory(device.vkDevice, vkMemory, 0, size, 0, pb))
-    val mappedMemory = pb.get(0)
-
-    try {
-      c.accept(MemoryBuffer(mappedMemory, size))
-    }finally {
-      VK10.vkUnmapMemory(device.vkDevice, vkMemory)
-    }
-
-    this
   }
 
   override def close(): Unit = {

@@ -67,19 +67,6 @@ object Main extends Runnable{
 
         val descriptorSet = use(new DescriptorSet(descriptorPool, IndexedSeq(layout)))
 
-        // 512 x 512 [24bit]
-        val texture = use(new Image(sys.device, Dimension(512, 512),
-          VK10.VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK10.VK_MEMORY_PROPERTY_HOST_COHERENT_BIT)).map((memory: MemoryBuffer) => {
-          val b = MemoryUtil.memByteBuffer(memory.address, memory.size)
-
-          // 512 x 512 [24bit]
-          Main.getClass.getResourceAsStream("/textures/checker.png") | { is =>
-            val dec = new PNGDecoder(is)
-            dec.decode(b, 512 * 4, PNGDecoder.Format.RGBA)
-          }
-
-        }).updateDescriptorSet(descriptorSet, 0, sampler)
-
         // layout(push_constant) uniform Transformations { mat4 viewMatrix; } transformations;
         val pipelineLayout = use(new PipelineLayout(sys.device){
           override protected def pipelineLayout(stack: MemoryStack, info: VkPipelineLayoutCreateInfo): Unit = {
@@ -116,8 +103,23 @@ object Main extends Runnable{
 
         new RenderCommand(sys.renderPass) | { render =>
 
+          val texture = use(new Image(sys.device, Dimension(512, 512))).updateDescriptorSet(descriptorSet, 0, sampler)
+
           new Fence(sys.device, false) | { fence =>
-            texture.toShaderLayout(render.commandPool, graphicsQueue, fence)
+            new Buffer(sys.device, 512 * 512 * 4, VK10.VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+              VK10.VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK10.VK_MEMORY_PROPERTY_HOST_COHERENT_BIT) |{ stageBuffer =>
+
+              stageBuffer.map((memory: MemoryBuffer) => {
+                val b = MemoryUtil.memByteBuffer(memory.address, memory.size)
+
+                Main.getClass.getResourceAsStream("/textures/checker.png") | { is =>
+                  val dec = new PNGDecoder(is)
+                  dec.decode(b, 512 * 4, PNGDecoder.Format.RGBA)
+                }
+              })
+
+              texture.update(stageBuffer, render.commandPool, graphicsQueue, fence)
+            }
           }
 
           // >>

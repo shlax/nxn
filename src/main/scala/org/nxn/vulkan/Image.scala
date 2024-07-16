@@ -1,37 +1,26 @@
 package org.nxn.vulkan
 
 import org.lwjgl.system.MemoryStack
-import org.lwjgl.vulkan.{VK10, VkDescriptorImageInfo, VkExtent3D, VkImageCreateInfo, VkImageFormatProperties, VkImageMemoryBarrier, VkImageSubresourceRange, VkMemoryRequirements, VkWriteDescriptorSet}
+import org.lwjgl.vulkan.{VK10, VkBufferImageCopy, VkDescriptorImageInfo, VkExtent3D, VkImageCreateInfo, VkImageFormatProperties, VkImageMemoryBarrier, VkImageSubresourceLayers, VkImageSubresourceRange, VkMemoryRequirements, VkOffset3D, VkWriteDescriptorSet}
 import org.nxn.utils.Dimension
 import org.nxn.utils.Using.*
 
 import java.util.function.Consumer
 
-object Image{
-
-  def depth(format:Int):Int = {
-    format match {
-      case VK10.VK_FORMAT_R8G8B8A8_SRGB => 4
-    }
-  }
-
-}
-
-class Image(device: Device, size:Dimension, reqMask:Int,
-              format:Int = VK10.VK_FORMAT_R8G8B8A8_SRGB) extends Memory(device, size.size(Image.depth(format))){
+class Image(device: Device, val size:Dimension, format:Int = VK10.VK_FORMAT_R8G8B8A8_SRGB) extends Memory(device){
 
   protected def initInage(size:Dimension, format:Int):Long = MemoryStack.stackPush() | { stack =>
     val dev = device.physicalDevice
 
     val props = VkImageFormatProperties.calloc(stack)
-    vkCheck(VK10.vkGetPhysicalDeviceImageFormatProperties(dev.vkPhysicalDevice, format, VK10.VK_IMAGE_TYPE_2D, VK10.VK_IMAGE_TILING_LINEAR, VK10.VK_IMAGE_USAGE_SAMPLED_BIT, 0, props))
+    vkCheck(VK10.vkGetPhysicalDeviceImageFormatProperties(dev.vkPhysicalDevice, format, VK10.VK_IMAGE_TYPE_2D, VK10.VK_IMAGE_TILING_OPTIMAL, VK10.VK_IMAGE_USAGE_SAMPLED_BIT, 0, props))
 
     val info = VkImageCreateInfo.calloc(stack)
       .sType$Default()
       .imageType(VK10.VK_IMAGE_TYPE_2D)
-      .tiling(VK10.VK_IMAGE_TILING_LINEAR)
+      .tiling(VK10.VK_IMAGE_TILING_OPTIMAL)
       .initialLayout(VK10.VK_IMAGE_LAYOUT_UNDEFINED)
-      .usage(VK10.VK_IMAGE_USAGE_SAMPLED_BIT)
+      .usage(VK10.VK_IMAGE_USAGE_SAMPLED_BIT | VK10.VK_IMAGE_USAGE_TRANSFER_DST_BIT)
       .sharingMode(if(dev.graphicsQueueIndex == dev.presentQueueIndex) VK10.VK_SHARING_MODE_EXCLUSIVE else VK10.VK_SHARING_MODE_CONCURRENT)
       .extent(((e: VkExtent3D) => {
           e.width(size.width).height(size.height).depth(1)
@@ -48,7 +37,7 @@ class Image(device: Device, size:Dimension, reqMask:Int,
 
   val vkImage:Long = initInage(size, format)
 
-  override val vkMemory:Long = initMemory(reqMask)(new MemoryCallback{
+  override val vkMemory:Long = initMemory(VK10.VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT)(new MemoryCallback{
     override def requirements(memReq: VkMemoryRequirements): Unit = {
       VK10.vkGetImageMemoryRequirements(device.vkDevice, vkImage, memReq)
     }
@@ -63,35 +52,68 @@ class Image(device: Device, size:Dimension, reqMask:Int,
 
   val imageView: ImageView = initImageView(format)
 
-  def toShaderLayout(commandPool: CommandPool, graphicsQueue:Queue, fence: Fence): Unit = {
+  def update(buffer: Buffer, commandPool: CommandPool, graphicsQueue:Queue, fence: Fence):Unit = {
     MemoryStack.stackPush() | { stack =>
-
       new CommandBuffer(commandPool) | { buff =>
         buff.record(stack, true)({ rec =>
-          val barrier = VkImageMemoryBarrier.calloc(1, stack)
-          barrier.get(0)
-            .sType$Default()
-            .oldLayout(VK10.VK_IMAGE_LAYOUT_UNDEFINED)
-            .newLayout(VK10.VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL)
-            .srcQueueFamilyIndex(VK10.VK_QUEUE_FAMILY_IGNORED)
-            .dstQueueFamilyIndex(VK10.VK_QUEUE_FAMILY_IGNORED)
-            .image(vkImage)
-            .subresourceRange(((t: VkImageSubresourceRange) => {
+
+          val subresourceRange = new Consumer[VkImageSubresourceRange] {
+            override def accept(t: VkImageSubresourceRange): Unit = {
               t.aspectMask(VK10.VK_IMAGE_ASPECT_COLOR_BIT)
                 .baseMipLevel(0)
                 .levelCount(1)
                 .baseArrayLayer(0)
                 .layerCount(1)
-            }):Consumer[VkImageSubresourceRange])
+            }
+          }
 
-          VK10.vkCmdPipelineBarrier(buff.vkCommandBuffer, VK10.VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK10.VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT, 0, null, null, barrier)
+          val barrier1 = VkImageMemoryBarrier.calloc(1, stack)
+          barrier1.get(0)
+            .sType$Default()
+            .oldLayout(VK10.VK_IMAGE_LAYOUT_UNDEFINED)
+            .newLayout(VK10.VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL)
+            .srcQueueFamilyIndex(VK10.VK_QUEUE_FAMILY_IGNORED)
+            .dstQueueFamilyIndex(VK10.VK_QUEUE_FAMILY_IGNORED)
+            .image(vkImage)
+            .subresourceRange(subresourceRange)
+
+          VK10.vkCmdPipelineBarrier(buff.vkCommandBuffer, VK10.VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK10.VK_PIPELINE_STAGE_TRANSFER_BIT, 0, null, null, barrier1)
+
+          val region = VkBufferImageCopy.calloc(1, stack)
+            .bufferOffset(0)
+            .bufferRowLength(0)
+            .bufferImageHeight(0)
+            .imageSubresource(((t: VkImageSubresourceLayers) => {
+              t.aspectMask(VK10.VK_IMAGE_ASPECT_COLOR_BIT)
+                .mipLevel(0)
+                .baseArrayLayer(0)
+                .layerCount(1)
+            }): Consumer[VkImageSubresourceLayers])
+            .imageOffset(((t: VkOffset3D) => {
+              t.x(0).y(0).z(0)
+            }): Consumer[VkOffset3D])
+            .imageExtent(((t: VkExtent3D) => {
+              t.width(size.width).height(size.height).depth(1)
+            }): Consumer[VkExtent3D])
+
+          VK10.vkCmdCopyBufferToImage(rec, buffer.vkBuffer, vkImage, VK10.VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, region)
+
+          val barrier2 = VkImageMemoryBarrier.calloc(1, stack)
+          barrier2.get(0)
+            .sType$Default()
+            .oldLayout(VK10.VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL)
+            .newLayout(VK10.VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL)
+            .srcQueueFamilyIndex(VK10.VK_QUEUE_FAMILY_IGNORED)
+            .dstQueueFamilyIndex(VK10.VK_QUEUE_FAMILY_IGNORED)
+            .image(vkImage)
+            .subresourceRange(subresourceRange)
+
+          VK10.vkCmdPipelineBarrier(buff.vkCommandBuffer, VK10.VK_PIPELINE_STAGE_TRANSFER_BIT, VK10.VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT, 0, null, null, barrier2)
         })
 
         graphicsQueue.submit(buff, fence)
         fence.await()
-
       }
-
     }
   }
 
