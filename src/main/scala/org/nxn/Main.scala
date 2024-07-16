@@ -64,6 +64,7 @@ object Main extends Runnable{
 
         val descriptorPool = use(new DescriptorPool(sys.device, Map(VK10.VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER -> 1)))
         val layout = use(new DescriptorSetLayout(sys.device, 0, VK10.VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK10.VK_SHADER_STAGE_FRAGMENT_BIT))
+
         val descriptorSet = use(new DescriptorSet(descriptorPool, IndexedSeq(layout)))
 
         // 512 x 512 [24bit]
@@ -77,7 +78,7 @@ object Main extends Runnable{
             dec.decode(b, 512 * 4, PNGDecoder.Format.RGBA)
           }
 
-        })
+        }).updateDescriptorSet(descriptorSet, 0, sampler)
 
         // layout(push_constant) uniform Transformations { mat4 viewMatrix; } transformations;
         val pipelineLayout = use(new PipelineLayout(sys.device){
@@ -115,6 +116,10 @@ object Main extends Runnable{
 
         new RenderCommand(sys.renderPass) | { render =>
 
+          new Fence(sys.device, false) | { fence =>
+            texture.toShaderLayout(render.commandPool, graphicsQueue, fence)
+          }
+
           // >>
           while (sys.window.pullEvents()) {
             inFlightFence.await().reset()
@@ -134,12 +139,14 @@ object Main extends Runnable{
 
               VK10.vkCmdPushConstants(buff, pipelineLayout.vkPipelineLayout, VK10.VK_SHADER_STAGE_VERTEX_BIT, 0, viewMatrix)
 
+              VK10.vkCmdBindDescriptorSets(buff, VK10.VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout.vkPipelineLayout, 0, stack.longs(descriptorSet.vkDescriptorSet), null)
+
               VK10.vkCmdBindVertexBuffers(buff, 0, stack.longs(points.vkBuffer), stack.longs(0L))
               VK10.vkCmdBindIndexBuffer(buff, indexes.vkBuffer, 0, VK10.VK_INDEX_TYPE_UINT32) //VK10.vkCmdDraw(buff, 3, 1, 0, 0)
               VK10.vkCmdDrawIndexed(buff, 3, 1, 0, 0, 0)
             })
 
-            graphicsQueue.submit(cmdBuff, imageAvailableSemaphore, VK10.VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, renderFinishedSemaphore, Some(inFlightFence))
+            graphicsQueue.submit(cmdBuff, imageAvailableSemaphore, VK10.VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, renderFinishedSemaphore, inFlightFence)
             //graphicsQueue.submit(cmdBuff, imageAvailableSemaphore, VK10.VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, renderFinishedSemaphore, Some(inFlightFence))
             val res = sys.swapChain.presentImage(presentQueue, next, renderFinishedSemaphore)
             for(q <- res) println(q)
