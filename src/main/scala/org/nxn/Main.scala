@@ -117,7 +117,10 @@ object Main extends Runnable{
                 }
               }
 
-              texture.copyBufferToImage(stageBuffer, render.commandPool, fence).await()
+              texture.copyBufferToImage(stageBuffer, render.commandPool, fence)|{ _ =>
+                fence.await()
+              }
+
             }
           }
 
