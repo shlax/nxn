@@ -37,7 +37,7 @@ class CommandBuffer(val commandPool: CommandPool, primary:Boolean = true) extend
     info
   }
 
-  def record(stack:MemoryStack, oneTimeSubmit:Boolean = false)(f: Consumer[VkCommandBuffer]):this.type = {
+  def record(stack:MemoryStack, oneTimeSubmit:Boolean = true)(f: Consumer[VkCommandBuffer]):this.type = {
     val i = createBeginInfo(stack, oneTimeSubmit)
     vkCheck(VK10.vkBeginCommandBuffer(vkCommandBuffer, i))
 

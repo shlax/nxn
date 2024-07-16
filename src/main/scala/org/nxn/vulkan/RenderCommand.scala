@@ -22,14 +22,14 @@ class RenderCommand(val renderPass: RenderPass, count:Int = 1) extends AutoClose
 
   val commandBuffers: IndexedSeq[CommandBuffer] = initCommandBuffers(count)
 
-  def record(frame:NextFrame, index:Int = 0)(fn: BiConsumer[MemoryStack, VkCommandBuffer]): CommandBuffer  = MemoryStack.stackPush() | { stack =>
+  def record(frame:NextFrame, oneTimeSubmit:Boolean = true, index:Int = 0)(fn: BiConsumer[MemoryStack, VkCommandBuffer]): CommandBuffer  = MemoryStack.stackPush() | { stack =>
     val dim = renderPass.swapChain.dimension
 
     val info = VkRenderPassBeginInfo.calloc(stack)
       .sType$Default()
       .renderPass(renderPass.vkRenderPass)
       .pClearValues(VkClearValue.calloc(1, stack).apply(0, { v =>
-          v.color().float32(0, 0f).float32(1, 0f).float32(2, 0f).float32(3, 1f)
+          v.color().float32(0, 0f).float32(1, 0f).float32(2, 0f).float32(3, 0f)
         }))
       .clearValueCount(1)
       .renderArea({ a =>
@@ -40,7 +40,7 @@ class RenderCommand(val renderPass: RenderPass, count:Int = 1) extends AutoClose
 
     val cmdBuff = commandBuffers(index)
 
-    cmdBuff.record(stack){ (vkCommandBuffer:VkCommandBuffer) =>
+    cmdBuff.record(stack, oneTimeSubmit){ (vkCommandBuffer:VkCommandBuffer) =>
       VK10.vkCmdBeginRenderPass(vkCommandBuffer, info, VK10.VK_SUBPASS_CONTENTS_INLINE)
       fn.accept(stack, vkCommandBuffer)
       VK10.vkCmdEndRenderPass(vkCommandBuffer)

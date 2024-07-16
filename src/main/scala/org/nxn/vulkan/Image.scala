@@ -55,7 +55,7 @@ class Image(device: Device, val size:Dimension, format:Int = VK10.VK_FORMAT_R8G8
   def copyBufferToImage(buffer: Buffer, commandPool: CommandPool, fence: Fence, graphicsQueue:Queue = device.graphicsQueue):CommandBuffer = MemoryStack.stackPush() | { stack =>
     val buff = new CommandBuffer(commandPool)
 
-    buff.record(stack, true){ rec =>
+    buff.record(stack){ rec =>
 
       val subresourceRange = new Consumer[VkImageSubresourceRange] {
         override def accept(t: VkImageSubresourceRange): Unit = {
