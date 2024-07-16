@@ -52,7 +52,7 @@ class Image(device: Device, val size:Dimension, format:Int = VK10.VK_FORMAT_R8G8
 
   val imageView: ImageView = initImageView(format)
 
-  def copyBufferToImage(buffer: Buffer, commandPool: CommandPool, fence: Fence, graphicsQueue:Queue = device.graphicsQueue):Unit = MemoryStack.stackPush() | { stack =>
+  def copyBufferToImage(buffer: Buffer, commandPool: CommandPool, fence: Fence, graphicsQueue:Queue = device.graphicsQueue):Fence = MemoryStack.stackPush() | { stack =>
     new CommandBuffer(commandPool) | { buff =>
       buff.record(stack, true)({ rec =>
 
@@ -78,8 +78,8 @@ class Image(device: Device, val size:Dimension, format:Int = VK10.VK_FORMAT_R8G8
       })
 
       graphicsQueue.submit(buff, fence)
-      fence.await()
     }
+    fence
   }
 
   def updateDescriptorSet(descriptorSet: DescriptorSet, binding:Int, sampler: Sampler):this.type = MemoryStack.stackPush() | { stack =>
