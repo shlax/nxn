@@ -22,9 +22,9 @@ class Image(device: Device, val size:Dimension, format:Int = VK10.VK_FORMAT_R8G8
       .initialLayout(VK10.VK_IMAGE_LAYOUT_UNDEFINED)
       .usage(VK10.VK_IMAGE_USAGE_SAMPLED_BIT | VK10.VK_IMAGE_USAGE_TRANSFER_DST_BIT)
       .sharingMode(if(dev.graphicsQueueIndex == dev.presentQueueIndex) VK10.VK_SHARING_MODE_EXCLUSIVE else VK10.VK_SHARING_MODE_CONCURRENT)
-      .extent(((e: VkExtent3D) => {
+      .extent({ e =>
           e.width(size.width).height(size.height).depth(1)
-        }):Consumer[VkExtent3D])
+        }:Consumer[VkExtent3D])
       .format(format)
       .arrayLayers(1)
       .mipLevels(1)
@@ -60,18 +60,18 @@ class Image(device: Device, val size:Dimension, format:Int = VK10.VK_FORMAT_R8G8
           .bufferOffset(0)
           .bufferRowLength(0)
           .bufferImageHeight(0)
-          .imageSubresource(((t: VkImageSubresourceLayers) => {
+          .imageSubresource({ t =>
             t.aspectMask(VK10.VK_IMAGE_ASPECT_COLOR_BIT)
               .mipLevel(0)
               .baseArrayLayer(0)
               .layerCount(1)
-          }):Consumer[VkImageSubresourceLayers])
-          .imageOffset(((t: VkOffset3D) => {
+          }:Consumer[VkImageSubresourceLayers])
+          .imageOffset({ t =>
             t.x(0).y(0).z(0)
-          }):Consumer[VkOffset3D])
-          .imageExtent(((t: VkExtent3D) => {
+          }:Consumer[VkOffset3D])
+          .imageExtent({ t =>
             t.width(size.width).height(size.height).depth(1)
-          }):Consumer[VkExtent3D])
+          }:Consumer[VkExtent3D])
 
         VK10.vkCmdCopyBufferToImage(rec, buffer.vkBuffer, vkImage, VK10.VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, region)
 

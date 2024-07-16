@@ -25,23 +25,17 @@ class RenderCommand(val renderPass: RenderPass, count:Int = 1) extends AutoClose
   def record(frame:NextFrame, index:Int = 0)(fn: BiConsumer[MemoryStack, VkCommandBuffer]): CommandBuffer  = MemoryStack.stackPush() | { stack =>
     val dim = renderPass.swapChain.dimension
 
-    val clearValues = VkClearValue.calloc(1, stack).apply(0, (v: VkClearValue) => {
-        v.color().float32(0, 0f).float32(1, 0f).float32(2, 0f).float32(3, 1f)
-      })
-
-    val areaFn = new Consumer[VkRect2D] {
-      override def accept(a: VkRect2D): Unit = {
-        a.offset().x(0).y(0)
-        a.extent().width(dim.width).height(dim.height)
-      }
-    }
-
     val info = VkRenderPassBeginInfo.calloc(stack)
       .sType$Default()
       .renderPass(renderPass.vkRenderPass)
-      .pClearValues(clearValues)
+      .pClearValues(VkClearValue.calloc(1, stack).apply(0, { v =>
+          v.color().float32(0, 0f).float32(1, 0f).float32(2, 0f).float32(3, 1f)
+        }))
       .clearValueCount(1)
-      .renderArea(areaFn)
+      .renderArea({ a =>
+          a.offset().x(0).y(0)
+          a.extent().width(dim.width).height(dim.height)
+        }:Consumer[VkRect2D])
       .framebuffer(renderPass.frameBuffers(frame.index).vkFrameBuffer)
 
     val cmdBuff = commandBuffers(index)
