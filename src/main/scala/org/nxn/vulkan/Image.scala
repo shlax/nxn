@@ -75,6 +75,8 @@ class Image(device: Device, val size:Dimension, format:Int = VK10.VK_FORMAT_R8G8
           .dstQueueFamilyIndex(VK10.VK_QUEUE_FAMILY_IGNORED)
           .image(vkImage)
           .subresourceRange(subresourceRange)
+          .srcAccessMask(0)
+          .dstAccessMask(VK10.VK_ACCESS_TRANSFER_WRITE_BIT)
 
         VK10.vkCmdPipelineBarrier(buff.vkCommandBuffer, VK10.VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK10.VK_PIPELINE_STAGE_TRANSFER_BIT, 0, null, null, barrier1)
 
@@ -106,6 +108,8 @@ class Image(device: Device, val size:Dimension, format:Int = VK10.VK_FORMAT_R8G8
           .dstQueueFamilyIndex(VK10.VK_QUEUE_FAMILY_IGNORED)
           .image(vkImage)
           .subresourceRange(subresourceRange)
+          .srcAccessMask(VK10.VK_ACCESS_TRANSFER_WRITE_BIT)
+          .dstAccessMask(VK10.VK_ACCESS_SHADER_READ_BIT)
 
         VK10.vkCmdPipelineBarrier(buff.vkCommandBuffer, VK10.VK_PIPELINE_STAGE_TRANSFER_BIT, VK10.VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT, 0, null, null, barrier2)
       })
