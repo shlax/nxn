@@ -52,7 +52,7 @@ class Image(device: Device, val size:Dimension, format:Int = VK10.VK_FORMAT_R8G8
 
   val imageView: ImageView = initImageView(format)
 
-  def update(buffer: Buffer, commandPool: CommandPool, graphicsQueue:Queue, fence: Fence):Unit = MemoryStack.stackPush() | { stack =>
+  def copyBufferToImage(buffer: Buffer, commandPool: CommandPool, graphicsQueue:Queue, fence: Fence):Unit = MemoryStack.stackPush() | { stack =>
     new CommandBuffer(commandPool) | { buff =>
       buff.record(stack, true)({ rec =>
 

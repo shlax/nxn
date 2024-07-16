@@ -118,7 +118,7 @@ object Main extends Runnable{
                 }
               })
 
-              texture.update(stageBuffer, render.commandPool, graphicsQueue, fence)
+              texture.copyBufferToImage(stageBuffer, render.commandPool, graphicsQueue, fence)
             }
           }
 
