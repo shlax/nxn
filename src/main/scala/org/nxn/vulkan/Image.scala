@@ -24,7 +24,7 @@ class Image(device: Device, size:Dimension, reqMask:Int,
     val dev = device.physicalDevice
 
     val props = VkImageFormatProperties.calloc(stack)
-    vkCheck(VK10.vkGetPhysicalDeviceImageFormatProperties(dev.vkPhysicalDevice, format, VK10.VK_IMAGE_TYPE_2D, VK10.VK_IMAGE_TILING_OPTIMAL, VK10.VK_IMAGE_USAGE_SAMPLED_BIT, 0, props))
+    vkCheck(VK10.vkGetPhysicalDeviceImageFormatProperties(dev.vkPhysicalDevice, format, VK10.VK_IMAGE_TYPE_2D, VK10.VK_IMAGE_TILING_LINEAR, VK10.VK_IMAGE_USAGE_SAMPLED_BIT, 0, props))
 
     val info = VkImageCreateInfo.calloc(stack)
       .sType$Default()
