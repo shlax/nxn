@@ -60,8 +60,8 @@ object Main extends Runnable{
         val indexes = use(new Buffer(sys.device, 6 * TypeLength.intLength.size, VK10.VK_BUFFER_USAGE_INDEX_BUFFER_BIT,
           VK10.VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK10.VK_MEMORY_PROPERTY_HOST_COHERENT_BIT)).mapMemory{ memory =>
           val b = MemoryUtil.memIntBuffer(memory.address, memory.size)
-          b.put(2).put(1).put(0)
-          b.put(3).put(4).put(5)
+          b.put(0).put(1).put(2)
+          b.put(5).put(4).put(3)
         }
 
         val sampler = use(new Sampler(sys.device))
