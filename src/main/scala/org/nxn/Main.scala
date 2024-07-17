@@ -8,7 +8,7 @@ import org.nxn.utils.Using.*
 import org.nxn.utils.{Dimension, FpsCounter}
 import org.nxn.vulkan.memory.MemoryBuffer
 import org.nxn.vulkan.shader.ShaderCompiler
-import org.nxn.vulkan.{Buffer, DescriptorPool, DescriptorSet, DescriptorSetLayout, Fence, Image, Pipeline, PipelineLayout, RenderCommand, Sampler, Semaphore, TypeLength, VulkanSystem}
+import org.nxn.vulkan.{Buffer, CommandBuffer, DescriptorPool, DescriptorSet, DescriptorSetLayout, Fence, Image, Pipeline, PipelineLayout, RenderCommand, Sampler, Semaphore, TypeLength, VulkanSystem}
 
 object Main extends Runnable{
 
@@ -122,8 +122,8 @@ object Main extends Runnable{
                 }
               }
 
-              texture.copyBufferToImage(stageBuffer, render.commandPool, fence)|{ _ =>
-                fence.await()
+              new CommandBuffer(render.commandPool) | { commandBuffer =>
+                graphicsQueue.submit(texture.copyBufferToImage(stageBuffer, commandBuffer), fence).await()
               }
 
             }

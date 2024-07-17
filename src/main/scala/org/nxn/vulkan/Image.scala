@@ -52,73 +52,71 @@ class Image(device: Device, val size:Dimension, format:Int = VK10.VK_FORMAT_R8G8
 
   val imageView: ImageView = initImageView(format)
 
-  def copyBufferToImage(buffer: Buffer, commandPool: CommandPool, fence: Fence, graphicsQueue:Queue = device.graphicsQueue):CommandBuffer = MemoryStack.stackPush() | { stack =>
-    val buff = new CommandBuffer(commandPool)
+  def copyBufferToImage(buffer: Buffer, commandBuffer: CommandBuffer):CommandBuffer = {
+    MemoryStack.stackPush() | { stack =>
+      commandBuffer.record(stack){ rec =>
 
-    buff.record(stack){ rec =>
-
-      val subresourceRange = new Consumer[VkImageSubresourceRange] {
-        override def accept(t: VkImageSubresourceRange): Unit = {
-          t.aspectMask(VK10.VK_IMAGE_ASPECT_COLOR_BIT)
-            .baseMipLevel(0)
-            .levelCount(1)
-            .baseArrayLayer(0)
-            .layerCount(1)
+        val subresourceRange = new Consumer[VkImageSubresourceRange] {
+          override def accept(t: VkImageSubresourceRange): Unit = {
+            t.aspectMask(VK10.VK_IMAGE_ASPECT_COLOR_BIT)
+              .baseMipLevel(0)
+              .levelCount(1)
+              .baseArrayLayer(0)
+              .layerCount(1)
+          }
         }
+
+        val barrier1 = VkImageMemoryBarrier.calloc(1, stack)
+        barrier1.get(0)
+          .sType$Default()
+          .oldLayout(VK10.VK_IMAGE_LAYOUT_UNDEFINED)
+          .newLayout(VK10.VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL)
+          .srcQueueFamilyIndex(VK10.VK_QUEUE_FAMILY_IGNORED)
+          .dstQueueFamilyIndex(VK10.VK_QUEUE_FAMILY_IGNORED)
+          .image(vkImage)
+          .subresourceRange(subresourceRange)
+          .srcAccessMask(0)
+          .dstAccessMask(VK10.VK_ACCESS_TRANSFER_WRITE_BIT)
+
+        VK10.vkCmdPipelineBarrier(commandBuffer.vkCommandBuffer, VK10.VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK10.VK_PIPELINE_STAGE_TRANSFER_BIT, 0, null, null, barrier1)
+
+        val region = VkBufferImageCopy.calloc(1, stack)
+          .bufferOffset(0)
+          .bufferRowLength(0)
+          .bufferImageHeight(0)
+          .imageSubresource({ t =>
+            t.aspectMask(VK10.VK_IMAGE_ASPECT_COLOR_BIT)
+              .mipLevel(0)
+              .baseArrayLayer(0)
+              .layerCount(1)
+          }:Consumer[VkImageSubresourceLayers])
+          .imageOffset({ t =>
+            t.x(0).y(0).z(0)
+          }:Consumer[VkOffset3D])
+          .imageExtent({ t =>
+            t.width(size.width).height(size.height).depth(1)
+          }:Consumer[VkExtent3D])
+
+        VK10.vkCmdCopyBufferToImage(rec, buffer.vkBuffer, vkImage, VK10.VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, region)
+
+        val barrier2 = VkImageMemoryBarrier.calloc(1, stack)
+        barrier2.get(0)
+          .sType$Default()
+          .oldLayout(VK10.VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL)
+          .newLayout(VK10.VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL)
+          .srcQueueFamilyIndex(VK10.VK_QUEUE_FAMILY_IGNORED)
+          .dstQueueFamilyIndex(VK10.VK_QUEUE_FAMILY_IGNORED)
+          .image(vkImage)
+          .subresourceRange(subresourceRange)
+          .srcAccessMask(VK10.VK_ACCESS_TRANSFER_WRITE_BIT)
+          .dstAccessMask(VK10.VK_ACCESS_SHADER_READ_BIT)
+
+        VK10.vkCmdPipelineBarrier(commandBuffer.vkCommandBuffer, VK10.VK_PIPELINE_STAGE_TRANSFER_BIT, VK10.VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT, 0, null, null, barrier2)
+
       }
-
-      val barrier1 = VkImageMemoryBarrier.calloc(1, stack)
-      barrier1.get(0)
-        .sType$Default()
-        .oldLayout(VK10.VK_IMAGE_LAYOUT_UNDEFINED)
-        .newLayout(VK10.VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL)
-        .srcQueueFamilyIndex(VK10.VK_QUEUE_FAMILY_IGNORED)
-        .dstQueueFamilyIndex(VK10.VK_QUEUE_FAMILY_IGNORED)
-        .image(vkImage)
-        .subresourceRange(subresourceRange)
-        .srcAccessMask(0)
-        .dstAccessMask(VK10.VK_ACCESS_TRANSFER_WRITE_BIT)
-
-      VK10.vkCmdPipelineBarrier(buff.vkCommandBuffer, VK10.VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK10.VK_PIPELINE_STAGE_TRANSFER_BIT, 0, null, null, barrier1)
-
-      val region = VkBufferImageCopy.calloc(1, stack)
-        .bufferOffset(0)
-        .bufferRowLength(0)
-        .bufferImageHeight(0)
-        .imageSubresource({ t =>
-          t.aspectMask(VK10.VK_IMAGE_ASPECT_COLOR_BIT)
-            .mipLevel(0)
-            .baseArrayLayer(0)
-            .layerCount(1)
-        }:Consumer[VkImageSubresourceLayers])
-        .imageOffset({ t =>
-          t.x(0).y(0).z(0)
-        }:Consumer[VkOffset3D])
-        .imageExtent({ t =>
-          t.width(size.width).height(size.height).depth(1)
-        }:Consumer[VkExtent3D])
-
-      VK10.vkCmdCopyBufferToImage(rec, buffer.vkBuffer, vkImage, VK10.VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, region)
-
-      val barrier2 = VkImageMemoryBarrier.calloc(1, stack)
-      barrier2.get(0)
-        .sType$Default()
-        .oldLayout(VK10.VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL)
-        .newLayout(VK10.VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL)
-        .srcQueueFamilyIndex(VK10.VK_QUEUE_FAMILY_IGNORED)
-        .dstQueueFamilyIndex(VK10.VK_QUEUE_FAMILY_IGNORED)
-        .image(vkImage)
-        .subresourceRange(subresourceRange)
-        .srcAccessMask(VK10.VK_ACCESS_TRANSFER_WRITE_BIT)
-        .dstAccessMask(VK10.VK_ACCESS_SHADER_READ_BIT)
-
-      VK10.vkCmdPipelineBarrier(buff.vkCommandBuffer, VK10.VK_PIPELINE_STAGE_TRANSFER_BIT, VK10.VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT, 0, null, null, barrier2)
-
     }
 
-    graphicsQueue.submit(buff, fence)
-
-    buff
+    commandBuffer
   }
 
   def updateDescriptorSet(descriptorSet: DescriptorSet, binding:Int, sampler: Sampler):this.type = MemoryStack.stackPush() | { stack =>

@@ -18,7 +18,7 @@ class Queue(val device:Device, val familyIndex:Int, val index:Int) {
 
   val vkQueue:VkQueue = initQueue()
 
-  def submit(buffer: CommandBuffer, signalFence: Fence): Unit = MemoryStack.stackPush() | { stack =>
+  def submit(buffer: CommandBuffer, signalFence: Fence): Fence = MemoryStack.stackPush() | { stack =>
 
     val pb = stack.pointers(buffer.vkCommandBuffer)
 
@@ -29,10 +29,12 @@ class Queue(val device:Device, val familyIndex:Int, val index:Int) {
       .pSignalSemaphores(null)
 
     vkCheck(VK10.vkQueueSubmit(vkQueue, info, signalFence.vkFence))
+    
+    signalFence
   }
 
   def submit(buffer: CommandBuffer, waitSemaphore: Semaphore, stageMasks: Int,
-             signalSemaphore: Semaphore, signalFence: Fence): Unit = MemoryStack.stackPush() | { stack =>
+             signalSemaphore: Semaphore, signalFence: Fence): Fence = MemoryStack.stackPush() | { stack =>
 
     val pb = stack.pointers(buffer.vkCommandBuffer)
     val ss = stack.longs(signalSemaphore.vkSemaphore)
@@ -48,6 +50,8 @@ class Queue(val device:Device, val familyIndex:Int, val index:Int) {
     info.waitSemaphoreCount(1).pWaitSemaphores(vs)
 
     vkCheck(VK10.vkQueueSubmit(vkQueue, info, signalFence.vkFence))
+    
+    signalFence
   }
 
 }
