@@ -7,9 +7,8 @@ import org.nxn.utils.Using.*
 class RenderPass(val swapChain: SwapChain)  extends AutoCloseable{
 
   protected def initRenderPass(): Long = MemoryStack.stackPush() | { stack =>
-    val attachments = VkAttachmentDescription.calloc(1, stack)
+    val attachments = VkAttachmentDescription.calloc(2, stack)
     attachments.get(0)
-      .flags(0)
       .format(swapChain.format)
       .samples(VK10.VK_SAMPLE_COUNT_1_BIT)
       .loadOp(VK10.VK_ATTACHMENT_LOAD_OP_CLEAR)
@@ -19,23 +18,38 @@ class RenderPass(val swapChain: SwapChain)  extends AutoCloseable{
       .initialLayout(VK10.VK_IMAGE_LAYOUT_UNDEFINED)
       .finalLayout(KHRSwapchain.VK_IMAGE_LAYOUT_PRESENT_SRC_KHR)
 
+    attachments.get(1)
+      .format(swapChain.depthImageFormat)
+      .samples(VK10.VK_SAMPLE_COUNT_1_BIT)
+      .initialLayout(VK10.VK_IMAGE_LAYOUT_UNDEFINED)
+      .finalLayout(VK10.VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL)
+      .stencilLoadOp(VK10.VK_ATTACHMENT_LOAD_OP_DONT_CARE)
+      .stencilStoreOp(VK10.VK_ATTACHMENT_STORE_OP_DONT_CARE)
+      .storeOp(VK10.VK_ATTACHMENT_STORE_OP_DONT_CARE)
+      .loadOp(VK10.VK_ATTACHMENT_LOAD_OP_CLEAR)
+
     val colorRef = VkAttachmentReference.calloc(1, stack)
       .layout(VK10.VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL)
       .attachment(0)
+
+    val depthRef = VkAttachmentReference.calloc(stack)
+      .layout(VK10.VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL)
+      .attachment(1)
 
     val subPasses = VkSubpassDescription.calloc(1, stack)
       .pipelineBindPoint(VK10.VK_PIPELINE_BIND_POINT_GRAPHICS)
       .colorAttachmentCount(1)
       .pColorAttachments(colorRef)
+      .pDepthStencilAttachment(depthRef)
 
     val dep = VkSubpassDependency.calloc(1, stack)
     dep.get(0)
       .srcSubpass(VK10.VK_SUBPASS_EXTERNAL)
-      .srcStageMask(VK10.VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT)
+      .srcStageMask(VK10.VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT | VK10.VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT)
       .srcAccessMask(0)
       .dstSubpass(0)
-      .dstStageMask(VK10.VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT)
-      .dstAccessMask(VK10.VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT)
+      .dstStageMask(VK10.VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT | VK10.VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT)
+      .dstAccessMask(VK10.VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT | VK10.VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT);
 
     val info = VkRenderPassCreateInfo.calloc(stack)
       .sType$Default()

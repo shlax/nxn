@@ -1,7 +1,7 @@
 package org.nxn.vulkan
 
 import org.lwjgl.system.MemoryStack
-import org.lwjgl.vulkan.{VK10, VkCommandBuffer, VkGraphicsPipelineCreateInfo, VkPipelineColorBlendAttachmentState, VkPipelineColorBlendStateCreateInfo, VkPipelineDynamicStateCreateInfo, VkPipelineInputAssemblyStateCreateInfo, VkPipelineMultisampleStateCreateInfo, VkPipelineRasterizationStateCreateInfo, VkPipelineShaderStageCreateInfo, VkPipelineVertexInputStateCreateInfo, VkPipelineViewportStateCreateInfo, VkRect2D, VkViewport}
+import org.lwjgl.vulkan.{VK10, VkCommandBuffer, VkGraphicsPipelineCreateInfo, VkPipelineColorBlendAttachmentState, VkPipelineColorBlendStateCreateInfo, VkPipelineDepthStencilStateCreateInfo, VkPipelineDynamicStateCreateInfo, VkPipelineInputAssemblyStateCreateInfo, VkPipelineMultisampleStateCreateInfo, VkPipelineRasterizationStateCreateInfo, VkPipelineShaderStageCreateInfo, VkPipelineVertexInputStateCreateInfo, VkPipelineViewportStateCreateInfo, VkRect2D, VkViewport}
 import org.nxn.utils.Using.*
 import org.nxn.vulkan.shader.CompiledShader
 
@@ -9,7 +9,7 @@ class Pipeline(val pipelineLayout: PipelineLayout, val renderPass: RenderPass,
                compiledShaders:IndexedSeq[CompiledShader],
                topology:Int = VK10.VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST,
                polygonMode:Int = VK10.VK_POLYGON_MODE_FILL,
-               cullMode:Int = VK10.VK_CULL_MODE_NONE,
+               cullMode:Int = VK10.VK_CULL_MODE_BACK_BIT,
                frontFace:Int = VK10.VK_FRONT_FACE_COUNTER_CLOCKWISE,
                colorAttachmentsCount:Int = 1 ) extends AutoCloseable{
 
@@ -94,6 +94,14 @@ class Pipeline(val pipelineLayout: PipelineLayout, val renderPass: RenderPass,
       .sType$Default()
       //.pDynamicStates(stack.ints(VK10.VK_DYNAMIC_STATE_VIEWPORT, VK10.VK_DYNAMIC_STATE_SCISSOR))
 
+    val depthInfo = VkPipelineDepthStencilStateCreateInfo.calloc(stack)
+      .sType$Default()
+      .depthTestEnable(true)
+      .depthWriteEnable(true)
+      .depthCompareOp(VK10.VK_COMPARE_OP_LESS)
+      .depthBoundsTestEnable(false)
+      .stencilTestEnable(false)
+
     val info = VkGraphicsPipelineCreateInfo.calloc(1, stack)
       .sType$Default()
       .pStages(stages)
@@ -106,6 +114,7 @@ class Pipeline(val pipelineLayout: PipelineLayout, val renderPass: RenderPass,
       .pDynamicState(dynamic)
       .layout(pipelineLayout.vkPipelineLayout)
       .renderPass(renderPass.vkRenderPass)
+      .pDepthStencilState(depthInfo)
 
     val pl = stack.callocLong(1)
     vkCheck(VK10.vkCreateGraphicsPipelines(renderPass.swapChain.device.vkDevice, VK10.VK_NULL_HANDLE, info, null, pl))

@@ -1,15 +1,16 @@
 package org.nxn.vulkan
 
 import org.lwjgl.system.{MemoryStack, MemoryUtil}
-import org.lwjgl.vulkan.{KHRSurface, KHRSwapchain, VK10, VkExtent2D, VkPresentInfoKHR, VkSurfaceCapabilitiesKHR, VkSurfaceFormatKHR, VkSwapchainCreateInfoKHR}
+import org.lwjgl.vulkan.{KHRSurface, KHRSwapchain, VK10, VkExtent2D, VkExtent3D, VkImageCreateInfo, VkImageViewCreateInfo, VkMemoryRequirements, VkPresentInfoKHR, VkSurfaceCapabilitiesKHR, VkSurfaceFormatKHR, VkSwapchainCreateInfoKHR}
 import org.nxn.utils.Dimension
 import org.nxn.utils.Using.*
 import org.nxn.vulkan.frame.NextFrame
 import org.nxn.vulkan.frame.PresentResult
 
+import java.util.function.Consumer
 import scala.concurrent.duration.Duration
 
-class SwapChain(val surface: Surface, val device: Device, imageCount:Int = 0) extends AutoCloseable{
+class SwapChain(val surface: Surface, device: Device, imageCount:Int = 0) extends Memory(device){
 
   /** (vkSwapChain : Long,
    vkImages: IndexedSeq[Long], format:Int,
@@ -144,6 +145,46 @@ class SwapChain(val surface: Surface, val device: Device, imageCount:Int = 0) ex
 
   val imageViews: IndexedSeq[ImageView] = initImageViews()
 
+  protected def initDepthImage():(Long, Int) = MemoryStack.stackPush() | { stack =>
+    val depthFormat = VK10.VK_FORMAT_D32_SFLOAT
+
+    val info = VkImageCreateInfo.calloc(stack)
+      .sType$Default()
+      .imageType(VK10.VK_IMAGE_TYPE_2D)
+      .usage(VK10.VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT)
+      .format(depthFormat)
+      .tiling(VK10.VK_IMAGE_TILING_OPTIMAL)
+      .sharingMode(VK10.VK_SHARING_MODE_EXCLUSIVE)
+      .samples(VK10.VK_SAMPLE_COUNT_1_BIT)
+      .initialLayout(VK10.VK_IMAGE_LAYOUT_UNDEFINED)
+      .mipLevels(1)
+      .arrayLayers(1)
+      .extent({ e =>
+          e.width(dimension.width).height(dimension.height).depth(1)
+        }: Consumer[VkExtent3D])
+
+    val lp = stack.callocLong(1)
+    vkCheck(VK10.vkCreateImage(device.vkDevice, info, null, lp))
+    (lp.get(0), depthFormat)
+  }
+
+  val (vkDepthImage:Long, depthImageFormat:Int) = initDepthImage()
+
+  override val vkMemory:Long = initMemory(VK10.VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT)(new MemoryCallback{
+    override def requirements(memReq: VkMemoryRequirements): Unit = {
+      VK10.vkGetImageMemoryRequirements(device.vkDevice, vkDepthImage, memReq)
+    }
+    override def bind(mem: Long): Unit = {
+      vkCheck(VK10.vkBindImageMemory(device.vkDevice, vkDepthImage, mem, 0))
+    }
+  })
+
+  protected def initDepthImageView():ImageView = {
+    new ImageView(device, vkDepthImage, depthImageFormat, VK10.VK_IMAGE_ASPECT_DEPTH_BIT)
+  }
+
+  val vkDepthImageView:ImageView = initDepthImageView()
+
   def presentResult(err:Int) : Option[PresentResult] = {
     var res:Option[PresentResult] = None
 
@@ -187,6 +228,10 @@ class SwapChain(val surface: Surface, val device: Device, imageCount:Int = 0) ex
   }
 
   override def close(): Unit = {
+    vkDepthImageView.close()
+    VK10.vkDestroyImage(device.vkDevice, vkDepthImage, null)
+    super.close()
+
     KHRSwapchain.vkDestroySwapchainKHR(device.vkDevice, vkSwapChain, null)
     for(i <- imageViews) i.close()
   }

@@ -9,8 +9,9 @@ class FrameBuffer(val renderPass: RenderPass, val imageView:ImageView) extends A
   protected def initFrameBuffer():Long = MemoryStack.stackPush() | { stack =>
     val swapChain = renderPass.swapChain
 
-    val attachments = stack.callocLong(1)
+    val attachments = stack.callocLong(2)
     attachments.put(imageView.vkImageView)
+    attachments.put(renderPass.swapChain.vkDepthImageView.vkImageView)
     attachments.flip()
     
     val dim = swapChain.dimension

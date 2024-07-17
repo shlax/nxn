@@ -28,10 +28,12 @@ class RenderCommand(val renderPass: RenderPass, count:Int = 1) extends AutoClose
     val info = VkRenderPassBeginInfo.calloc(stack)
       .sType$Default()
       .renderPass(renderPass.vkRenderPass)
-      .pClearValues(VkClearValue.calloc(1, stack).apply(0, { v =>
+      .pClearValues(VkClearValue.calloc(2, stack).apply(0, { v =>
           v.color().float32(0, 0f).float32(1, 0f).float32(2, 0f).float32(3, 0f)
+        }).apply(1, { v =>
+          v.depthStencil().depth(1f)
         }))
-      .clearValueCount(1)
+      .clearValueCount(2)
       .renderArea({ a =>
           a.offset().x(0).y(0)
           a.extent().width(dim.width).height(dim.height)
