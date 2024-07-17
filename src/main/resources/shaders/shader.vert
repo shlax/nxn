@@ -24,7 +24,6 @@ vec2 colors[6] = vec2[](
 layout(location = 0) out vec2 textCoords;
 
 void main() {
-    //gl_Position = transformations.viewMatrix * vec4(inPosition, 1.0);
-    gl_Position = vec4(inPosition, 1.0);
+    gl_Position = transformations.viewMatrix * vec4(inPosition, 1.0);
     textCoords = colors[gl_VertexIndex];
 }
