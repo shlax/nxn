@@ -9,7 +9,7 @@ class Pipeline(val pipelineLayout: PipelineLayout, val renderPass: RenderPass,
                compiledShaders:IndexedSeq[CompiledShader],
                topology:Int = VK10.VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST,
                polygonMode:Int = VK10.VK_POLYGON_MODE_FILL,
-               cullMode:Int = VK10.VK_CULL_MODE_BACK_BIT,
+               cullMode:Int = VK10.VK_CULL_MODE_NONE,
                frontFace:Int = VK10.VK_FRONT_FACE_COUNTER_CLOCKWISE,
                colorAttachmentsCount:Int = 1 ) extends AutoCloseable{
 
