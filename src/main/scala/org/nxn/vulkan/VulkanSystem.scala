@@ -6,7 +6,8 @@ import org.nxn.utils.Dimension
 import scala.concurrent.duration.Duration
 import scala.concurrent.duration.*
 
-class VulkanSystem(val name:String, val windowSize:Dimension, val debug :LogLevel = LogLevel.warning, val timeout:Duration = 1.second) extends AutoCloseable{
+class VulkanSystem(val name:String, val windowSize:Dimension, deviceName:String = "",
+                   val debug :LogLevel = LogLevel.warning, val timeout:Duration = 1.second) extends AutoCloseable{
   GLFWErrorCallback.createPrint.set()
 
   if (!GLFW.glfwInit()){
@@ -35,11 +36,11 @@ class VulkanSystem(val name:String, val windowSize:Dimension, val debug :LogLeve
 
   val surface:Surface = initSurface()
 
-  protected def initDevice():Device = {
-    new Device(instance, surface)
+  protected def initDevice(deviceName:String):Device = {
+    new Device(instance, surface, deviceName)
   }
 
-  val device:Device = initDevice()
+  val device:Device = initDevice(deviceName)
 
   protected def initSwapChain():SwapChain = {
     new SwapChain(surface, device)

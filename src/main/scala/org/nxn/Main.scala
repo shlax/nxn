@@ -1,18 +1,19 @@
 package org.nxn
 
 import de.matthiasmann.twl.utils.PNGDecoder
-import org.lwjgl.system.{MemoryStack, MemoryUtil}
+import org.lwjgl.system.{Configuration, MemoryStack, MemoryUtil}
 import org.lwjgl.util.shaderc.Shaderc
 import org.lwjgl.vulkan.{VK10, VkCommandBuffer, VkPipelineLayoutCreateInfo, VkPipelineVertexInputStateCreateInfo, VkPushConstantRange, VkVertexInputAttributeDescription, VkVertexInputBindingDescription}
 import org.nxn.utils.Using.*
 import org.nxn.utils.{Dimension, FpsCounter}
 import org.nxn.vulkan.memory.MemoryBuffer
 import org.nxn.vulkan.shader.ShaderCompiler
-import org.nxn.vulkan.{Buffer, CommandBuffer, DescriptorPool, DescriptorSet, DescriptorSetLayout, Fence, Texture, Pipeline, PipelineLayout, RenderCommand, Sampler, Semaphore, TypeLength, VulkanSystem}
+import org.nxn.vulkan.{Buffer, CommandBuffer, DescriptorPool, DescriptorSet, DescriptorSetLayout, Fence, Pipeline, PipelineLayout, RenderCommand, Sampler, Semaphore, Texture, TypeLength, VulkanSystem}
 
 object Main extends Runnable{
 
   def main(args:Array[String]) : Unit = {
+//    Configuration.STACK_SIZE.set(128)
     try {
       run()
     }catch {
@@ -31,7 +32,7 @@ object Main extends Runnable{
       )
     }
 
-    new VulkanSystem("NXN", Dimension(1280, 720)) | { sys =>
+    new VulkanSystem("NXN", Dimension(1280, 720), "NVIDIA GeForce RTX 2050") | { sys =>
       val graphicsQueue = sys.device.graphicsQueue
 
       using { use =>

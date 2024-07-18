@@ -4,13 +4,13 @@ import org.lwjgl.system.{MemoryStack, MemoryUtil}
 import org.lwjgl.vulkan.{KHRSwapchain, VK10, VkDevice, VkDeviceCreateInfo, VkDeviceQueueCreateInfo, VkPhysicalDeviceFeatures}
 import org.nxn.utils.Using.*
 
-class Device(val instance: Instance, surface: Surface) extends AutoCloseable{
+class Device(val instance: Instance, surface: Surface, deviceName:String = "") extends AutoCloseable{
 
-  protected def initPhysicalDevice():PhysicalDevice = {
-    new PhysicalDevice(instance, surface)
+  protected def initPhysicalDevice(deviceName:String):PhysicalDevice = {
+    new PhysicalDevice(instance, surface, deviceName)
   }
 
-  val physicalDevice:PhysicalDevice = initPhysicalDevice()
+  val physicalDevice:PhysicalDevice = initPhysicalDevice(deviceName)
 
   val queuesFamilies:IndexedSeq[Int] = physicalDevice.queuesFamilies()
 

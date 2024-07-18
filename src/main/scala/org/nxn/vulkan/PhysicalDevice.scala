@@ -1,32 +1,39 @@
 package org.nxn.vulkan
 
 import org.lwjgl.system.MemoryStack
-import org.lwjgl.vulkan.{KHRSurface, KHRSwapchain, VK10, VkExtensionProperties, VkPhysicalDevice, VkPhysicalDeviceMemoryProperties, VkQueueFamilyProperties}
+import org.lwjgl.vulkan.{KHRSurface, KHRSwapchain, VK10, VkExtensionProperties, VkPhysicalDevice, VkPhysicalDeviceMemoryProperties, VkPhysicalDeviceProperties, VkQueueFamilyProperties}
 import org.nxn.utils.Using.*
 
-class PhysicalDevice(val instance: Instance, val surface: Surface){
+class PhysicalDevice(val instance: Instance, val surface: Surface, deviceName:String = ""){
 
   /** vkPhysicalDevice:VkPhysicalDevice,
    graphicsQueueIndex:Int, graphicsQueueIndexes:IndexedSeq[Int],
    presentQueueIndex:Int, presentQueueIndexes:IndexedSeq[Int] */
-  protected def initPhysicalDeviceQueues():(VkPhysicalDevice, Int, IndexedSeq[Int], Int, IndexedSeq[Int]) = MemoryStack.stackPush()|{ stack =>
+  protected def initPhysicalDeviceQueues(deviceName:String):(VkPhysicalDevice, Int, IndexedSeq[Int], Int, IndexedSeq[Int]) = MemoryStack.stackPush()|{ stackTop =>
     val vkInstance = instance.vkInstance
 
-    val nBuff = stack.callocInt(1)
+    val nBuff = stackTop.callocInt(1)
     vkCheck(VK10.vkEnumeratePhysicalDevices(vkInstance, nBuff, null))
     val n = nBuff.get(0)
     if(n <= 0){
       throw new IllegalStateException("vkEnumeratePhysicalDevices reported zero accessible devices.")
     }
 
-    val devices = stack.callocPointer(n)
+    val devices = stackTop.callocPointer(n)
     vkCheck(VK10.vkEnumeratePhysicalDevices(vkInstance, nBuff, devices))
 
     var vkGpu:Option[(VkPhysicalDevice, Int, IndexedSeq[Int], Int, IndexedSeq[Int])] = None
 
-    for(i <- 0 until n){
+    for(i <- 0 until n) MemoryStack.stackPush()|{ stack =>
       val gpu = new VkPhysicalDevice(devices.get(i), vkInstance)
       val intBuff = stack.callocInt(1)
+
+      val nm = if(deviceName.isEmpty){ ""
+      }else{
+        val devProp = VkPhysicalDeviceProperties.calloc(stack)
+        VK10.vkGetPhysicalDeviceProperties(gpu, devProp)
+        devProp.deviceNameString()
+      }
 
       VK10.vkGetPhysicalDeviceQueueFamilyProperties(gpu, intBuff, null)
       val props = VkQueueFamilyProperties.calloc(intBuff.get(0), stack)
@@ -67,9 +74,16 @@ class PhysicalDevice(val instance: Instance, val surface: Surface){
         val gInd = if(int.isEmpty) graphicsQueueInd.head else int.head
         val pInd = if(int.isEmpty) presentQueueInd.head else int.head
 
-        if(vkGpu.isEmpty || ( int.nonEmpty && vkGpu.get._2 != vkGpu.get._4 )){
-          vkGpu = Some((gpu, gInd, graphicsQueueInd.toIndexedSeq, pInd, presentQueueInd.toIndexedSeq))
+        if(deviceName.isEmpty){
+          if (vkGpu.isEmpty || (int.nonEmpty && vkGpu.get._2 != vkGpu.get._4)) {
+            vkGpu = Some((gpu, gInd, graphicsQueueInd.toIndexedSeq, pInd, presentQueueInd.toIndexedSeq))
+          }
+        }else{
+          if(deviceName == nm){
+            vkGpu = Some((gpu, gInd, graphicsQueueInd.toIndexedSeq, pInd, presentQueueInd.toIndexedSeq))
+          }
         }
+
       }
 
     }
@@ -79,7 +93,7 @@ class PhysicalDevice(val instance: Instance, val surface: Surface){
 
   val (vkPhysicalDevice:VkPhysicalDevice,
     graphicsQueueIndex:Int, graphicsQueueIndexes:IndexedSeq[Int],
-    presentQueueIndex:Int, presentQueueIndexes:IndexedSeq[Int]) = initPhysicalDeviceQueues()
+    presentQueueIndex:Int, presentQueueIndexes:IndexedSeq[Int]) = initPhysicalDeviceQueues(deviceName)
 
   case class MemoryType(propertyFlags:Int)
 
