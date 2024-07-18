@@ -7,7 +7,7 @@ import org.nxn.utils.Using.*
 
 import java.util.function.Consumer
 
-class Image(device: Device, val size:Dimension, format:Int = VK10.VK_FORMAT_R8G8B8A8_SRGB) extends Memory(device){
+class Texture(device: Device, val size:Dimension, format:Int = VK10.VK_FORMAT_R8G8B8A8_SRGB) extends Memory(device){
 
   protected def initInage(size:Dimension, format:Int):Long = MemoryStack.stackPush() | { stack =>
     val dev = device.physicalDevice

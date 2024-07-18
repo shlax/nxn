@@ -8,7 +8,7 @@ import org.nxn.utils.Using.*
 import org.nxn.utils.{Dimension, FpsCounter}
 import org.nxn.vulkan.memory.MemoryBuffer
 import org.nxn.vulkan.shader.ShaderCompiler
-import org.nxn.vulkan.{Buffer, CommandBuffer, DescriptorPool, DescriptorSet, DescriptorSetLayout, Fence, Image, Pipeline, PipelineLayout, RenderCommand, Sampler, Semaphore, TypeLength, VulkanSystem}
+import org.nxn.vulkan.{Buffer, CommandBuffer, DescriptorPool, DescriptorSet, DescriptorSetLayout, Fence, Texture, Pipeline, PipelineLayout, RenderCommand, Sampler, Semaphore, TypeLength, VulkanSystem}
 
 object Main extends Runnable{
 
@@ -107,7 +107,7 @@ object Main extends Runnable{
 
         new RenderCommand(sys.renderPass) | { render =>
 
-          val texture = use(new Image(sys.device, Dimension(512, 512))).updateDescriptorSet(descriptorSet, 0, sampler)
+          val texture = use(new Texture(sys.device, Dimension(512, 512))).updateDescriptorSet(descriptorSet, 0, sampler)
 
           new Fence(sys.device, false) | { fence =>
             new Buffer(sys.device, 512 * 512 * 4, VK10.VK_BUFFER_USAGE_TRANSFER_SRC_BIT,

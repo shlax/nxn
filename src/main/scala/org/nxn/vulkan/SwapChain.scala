@@ -1,7 +1,7 @@
 package org.nxn.vulkan
 
 import org.lwjgl.system.{MemoryStack, MemoryUtil}
-import org.lwjgl.vulkan.{KHRSurface, KHRSwapchain, VK10, VkExtent2D, VkExtent3D, VkImageCreateInfo, VkMemoryRequirements, VkPresentInfoKHR, VkSurfaceCapabilitiesKHR, VkSurfaceFormatKHR, VkSwapchainCreateInfoKHR}
+import org.lwjgl.vulkan.{KHRSurface, KHRSwapchain, VK10, VkExtent2D, VkExtent3D, VkFormatProperties, VkImageCreateInfo, VkMemoryRequirements, VkPresentInfoKHR, VkSurfaceCapabilitiesKHR, VkSurfaceFormatKHR, VkSwapchainCreateInfoKHR}
 import org.nxn.utils.Dimension
 import org.nxn.utils.Using.*
 import org.nxn.vulkan.frame.NextFrame
@@ -147,6 +147,12 @@ class SwapChain(val surface: Surface, device: Device, imageCount:Int = 0) extend
 
   protected def initDepthImage():(Long, Int) = MemoryStack.stackPush() | { stack =>
     val depthFormat = VK10.VK_FORMAT_D32_SFLOAT
+
+    val props = VkFormatProperties.calloc(stack)
+    VK10.vkGetPhysicalDeviceFormatProperties(device.physicalDevice.vkPhysicalDevice, depthFormat, props)
+    if((props.optimalTilingFeatures() & VK10.VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT) != VK10.VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT){
+      throw new RuntimeException("vkPhysicalDevice don't support VK_FORMAT_D32_SFLOAT")
+    }
 
     val info = VkImageCreateInfo.calloc(stack)
       .sType$Default()
