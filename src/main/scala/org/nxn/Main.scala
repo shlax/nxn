@@ -32,7 +32,7 @@ object Main extends Runnable{
       )
     }
 
-    new VulkanSystem("NXN", Dimension(1280, 720), "NVIDIA GeForce RTX 2050") | { sys =>
+    new VulkanSystem("NXN", Dimension(1280, 720)) | { sys => // , "NVIDIA GeForce RTX 2050"
       val graphicsQueue = sys.device.graphicsQueue
 
       using { use =>
