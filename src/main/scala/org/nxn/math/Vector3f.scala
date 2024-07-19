@@ -1,6 +1,8 @@
 package org.nxn.math
 
-class Vector3f(var x : Float, var y : Float, var z : Float) {
+import java.nio.FloatBuffer
+
+class Vector3f(var x : Float, var y : Float, var z : Float)  extends ToBuffer{
 
   def add(a:Vector3f, b:Vector3f):this.type = {
     x = a.x + b.x
@@ -88,6 +90,10 @@ class Vector3f(var x : Float, var y : Float, var z : Float) {
 
   def dot(a: Vector3f): Float = {
     a.x * this.x + a.y * this.y + a.z * this.z
+  }
+
+  override def write(b: FloatBuffer): Unit = {
+    b.put(x).put(y).put(z)
   }
 
   override def toString: String = {

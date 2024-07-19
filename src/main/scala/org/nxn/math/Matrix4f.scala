@@ -1,9 +1,11 @@
 package org.nxn.math
 
-class Matrix4f(var m00: Float, var m01: Float, var m02: Float, var m03: Float,  // 0  1  2  3
-               var m10: Float, var m11: Float, var m12: Float, var m13: Float,  // 4  5  6  7
-               var m20: Float, var m21: Float, var m22: Float, var m23: Float,  // 8  9  10 11
-               var m30: Float, var m31: Float, var m32: Float, var m33: Float){ // 12 13 14 15
+import java.nio.FloatBuffer
+
+class Matrix4f(var m00: Float, var m01: Float, var m02: Float, var m03: Float,                    // 0  1  2  3
+               var m10: Float, var m11: Float, var m12: Float, var m13: Float,                    // 4  5  6  7
+               var m20: Float, var m21: Float, var m22: Float, var m23: Float,                    // 8  9  10 11
+               var m30: Float, var m31: Float, var m32: Float, var m33: Float) extends ToBuffer { // 12 13 14 15
 
   def this() = this(1f, 0f, 0f, 0f,
                     0f, 1f, 0f, 0f,
@@ -182,6 +184,13 @@ class Matrix4f(var m00: Float, var m01: Float, var m02: Float, var m03: Float,  
     this
   }
 
+  override def write(b: FloatBuffer): Unit = {
+    b.put(m00).put(m01).put(m02).put(m03)
+    b.put(m10).put(m11).put(m12).put(m13)
+    b.put(m20).put(m21).put(m22).put(m23)
+    b.put(m30).put(m31).put(m32).put(m33)
+  }
+  
   override def toString: String = {
     "{ {" + m00 + ", " + m01 + ", " + m02 + ", " + m03 + "}, " +
       "{" + m10 + ", " + m11 + ", " + m12 + ", " + m13 + "}, " +

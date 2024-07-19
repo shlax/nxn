@@ -1,6 +1,8 @@
 package org.nxn.math
 
-class Vector2f(var x : Float, var y : Float) {
+import java.nio.FloatBuffer
+
+class Vector2f(var x : Float, var y : Float) extends ToBuffer{
 
   def add(a: Vector2f, b: Vector2f): this.type = {
     x = a.x + b.x
@@ -69,6 +71,10 @@ class Vector2f(var x : Float, var y : Float) {
     a.x * this.x + a.y * this.y
   }
 
+  override def write(b:FloatBuffer):Unit = {
+    b.put(x).put(y)
+  }
+  
   override def toString: String = {
     "{" + x + ", " + y + "}"
   }
