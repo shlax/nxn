@@ -90,6 +90,8 @@ class Vector3f(var x : Float, var y : Float, var z : Float) {
     a.x * this.x + a.y * this.y + a.z * this.z
   }
 
-  override def toString: String = "{" + x + ", " + y + ", " + z + "}"
+  override def toString: String = {
+    "{" + x + ", " + y + ", " + z + "}"
+  }
 
 }
