@@ -4,7 +4,7 @@ import org.nxn.utils.Dimension
 
 object Perspective{
 
-  def apply(fovy: Float, zNear:Float, zFar:Float, dim:Dimension) : Matrix4f = {
+  def apply(fovy: Float, dim:Dimension, zNear:Float, zFar:Float) : Matrix4f = {
     val aspect = dim.width.toFloat / dim.height.toFloat
     apply(fovy, aspect, zNear, zFar)
   }
