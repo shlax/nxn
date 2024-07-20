@@ -8,7 +8,6 @@ class FpsCounter(mod:Int = 135, report:Int = 90) {
   private var ind = 0
 
   private var last:Long = System.nanoTime()
-
   private var act = -1
 
   def apply(c: Consumer[Double]): Unit = {
