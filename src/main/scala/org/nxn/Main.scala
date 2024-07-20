@@ -135,9 +135,13 @@ object Main extends Runnable{
 
           // >>
           while (sys.window.pullEvents()) {
+
+            // cpu calc
+            fps(f => println("fps: "+f))
+
             inFlightFence.await().reset()
 
-            fps(f => println("fps: "+f))
+            // update gpu
 
             val next = sys.swapChain.acquireNextImage(imageAvailableSemaphore) // waiting
             for(q <- next.presentResult) println(q)
