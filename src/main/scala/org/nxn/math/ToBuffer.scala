@@ -4,6 +4,6 @@ import java.nio.FloatBuffer
 
 trait ToBuffer {
 
-  def write(b:FloatBuffer):Unit
+  def write(b:FloatBuffer):FloatBuffer
   
 }

@@ -184,7 +184,7 @@ class Matrix4f(var m00: Float, var m01: Float, var m02: Float, var m03: Float,  
     this
   }
 
-  override def write(b: FloatBuffer): Unit = {
+  override def write(b: FloatBuffer): FloatBuffer = {
     b.put(m00).put(m01).put(m02).put(m03)
     b.put(m10).put(m11).put(m12).put(m13)
     b.put(m20).put(m21).put(m22).put(m23)

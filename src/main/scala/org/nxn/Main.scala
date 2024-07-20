@@ -1,9 +1,10 @@
 package org.nxn
 
 import de.matthiasmann.twl.utils.PNGDecoder
-import org.lwjgl.system.{Configuration, MemoryStack, MemoryUtil}
+import org.lwjgl.system.{MemoryStack, MemoryUtil}
 import org.lwjgl.util.shaderc.Shaderc
 import org.lwjgl.vulkan.{VK10, VkCommandBuffer, VkPipelineLayoutCreateInfo, VkPipelineVertexInputStateCreateInfo, VkPushConstantRange, VkVertexInputAttributeDescription, VkVertexInputBindingDescription}
+import org.nxn.math.Matrix4f
 import org.nxn.utils.Using.*
 import org.nxn.utils.{Dimension, FpsCounter}
 import org.nxn.vulkan.memory.MemoryBuffer
@@ -130,6 +131,8 @@ object Main extends Runnable{
             }
           }
 
+          val viewMatrix = new Matrix4f()
+
           // >>
           while (sys.window.pullEvents()) {
             inFlightFence.await().reset()
@@ -140,14 +143,10 @@ object Main extends Runnable{
             val cmdBuff = render.record(next){ (stack, buff) =>
               triangle.bindPipeline(buff)
 
-              val viewMatrix = stack.callocFloat(4 * 4)
-              viewMatrix.put(1f).put(0f).put(0f).put(0f)
-              viewMatrix.put(0f).put(1f).put(0f).put(0f)
-              viewMatrix.put(0f).put(0f).put(1f).put(0f)
-              viewMatrix.put(0f).put(0f).put(0f).put(1f)
-              viewMatrix.flip()
+              val viewBuff = stack.callocFloat(4 * 4)
+              viewMatrix.write(viewBuff).flip()
 
-              VK10.vkCmdPushConstants(buff, pipelineLayout.vkPipelineLayout, VK10.VK_SHADER_STAGE_VERTEX_BIT, 0, viewMatrix)
+              VK10.vkCmdPushConstants(buff, pipelineLayout.vkPipelineLayout, VK10.VK_SHADER_STAGE_VERTEX_BIT, 0, viewBuff)
 
               VK10.vkCmdBindDescriptorSets(buff, VK10.VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout.vkPipelineLayout, 0, stack.longs(descriptorSet.vkDescriptorSet), null)
 

@@ -71,7 +71,7 @@ class Vector2f(var x : Float, var y : Float) extends ToBuffer{
     a.x * this.x + a.y * this.y
   }
 
-  override def write(b:FloatBuffer):Unit = {
+  override def write(b:FloatBuffer):FloatBuffer = {
     b.put(x).put(y)
   }
   
