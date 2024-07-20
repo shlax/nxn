@@ -137,6 +137,8 @@ object Main extends Runnable{
           while (sys.window.pullEvents()) {
             inFlightFence.await().reset()
 
+            fps(f => println("fps: "+f))
+
             val next = sys.swapChain.acquireNextImage(imageAvailableSemaphore) // waiting
             for(q <- next.presentResult) println(q)
 
@@ -160,7 +162,6 @@ object Main extends Runnable{
             val res = sys.swapChain.presentImage(next, renderFinishedSemaphore)
             for(q <- res) println(q)
 
-            fps(f => println("fps: "+f))
           }
 
           sys.device.await()
