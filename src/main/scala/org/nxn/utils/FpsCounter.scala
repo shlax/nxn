@@ -2,29 +2,35 @@ package org.nxn.utils
 
 import java.util.function.Consumer
 
-class FpsCounter(mod:Int = 100) {
+class FpsCounter(mod:Int = 135, report:Int = 90) {
 
-  private var started:Long = 0
-  private var cnt:Long = -1
+  private val times = new Array[Long](mod)
+  private var ind = 0
+
+  private var last:Long = System.nanoTime()
+
+  private var act = -1
 
   def apply(c: Consumer[Double]): Unit = {
-    if(cnt == -1){
-      started = System.nanoTime()
-      cnt = 0
-    }else {
-      cnt += 1
-      if (cnt % mod == 0) {
-        val d = System.nanoTime() - started
-        val fps = cnt.toDouble / d.toDouble * 1000_000_000d
-        c.accept(fps)
+    val t = System.nanoTime()
+    times(ind) = t - last
+    last = t
+
+    ind += 1
+    if(ind == mod){
+      ind = 0
+      if(act == -1) act = 0
+    }
+
+    if(act >= 0){
+      act += 1
+      if(act == report){
+        act = 0
+        val avg = times.sum.doubleValue / mod.doubleValue
+        c.accept(1e9d / avg)
       }
     }
 
-  }
-
-  def reset():Unit = {
-    started = 0
-    cnt = -1
   }
 
 }
