@@ -4,12 +4,12 @@ import org.nxn.utils.Dimension
 
 object Perspective{
 
-  def apply(fovy: Float, dim:Dimension, zNear:Float, zFar:Float) : Matrix4f = {
+  def perspective(fovy: Float, dim:Dimension, zNear:Float, zFar:Float) : Matrix4f = {
     val aspect = dim.width.toFloat / dim.height.toFloat
-    apply(fovy, aspect, zNear, zFar)
+    perspective(fovy, aspect, zNear, zFar)
   }
 
-  def apply(fovy: Float, aspect:Float, zNear:Float, zFar:Float) : Matrix4f = {
+  def perspective(fovy: Float, aspect:Float, zNear:Float, zFar:Float) : Matrix4f = {
     val tan = Math.tan(fovy * Math.PI / 360d).toFloat // fovy / 2
 
     val m00 = 1f / (tan * aspect)
