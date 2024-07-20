@@ -18,7 +18,13 @@ class FpsCounter(mod:Int = 135, report:Int = 90) {
     ind += 1
     if(ind == mod){
       ind = 0
-      if(act == -1) act = 0
+      if(act == -1){
+        if(report <= mod){
+          act = report - 2
+        }else{
+          act = mod - 1
+        }
+      }
     }
 
     if(act >= 0){
