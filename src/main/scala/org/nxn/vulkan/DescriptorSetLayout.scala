@@ -2,7 +2,7 @@ package org.nxn.vulkan
 
 import org.lwjgl.system.MemoryStack
 import org.lwjgl.vulkan.{VK10, VkDescriptorSetLayoutBinding, VkDescriptorSetLayoutCreateInfo}
-import org.nxn.utils.Using.*
+import org.nxn.utils.using.*
 
 class DescriptorSetLayout(val device: Device, binding:Int, descriptorType:Int, stage:Int, descriptorCount:Int = 1) extends AutoCloseable{
 

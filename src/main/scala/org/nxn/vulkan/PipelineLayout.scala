@@ -2,7 +2,7 @@ package org.nxn.vulkan
 
 import org.lwjgl.system.MemoryStack
 import org.lwjgl.vulkan.{VK10, VkPipelineLayoutCreateInfo}
-import org.nxn.utils.Using.*
+import org.nxn.utils.using.*
 
 class PipelineLayout(val device: Device) extends AutoCloseable{
 

@@ -2,7 +2,7 @@ package org.nxn.vulkan
 
 import org.lwjgl.system.MemoryStack
 import org.lwjgl.vulkan.{KHRSurface, KHRSwapchain, VK10, VkExtensionProperties, VkPhysicalDevice, VkPhysicalDeviceMemoryProperties, VkPhysicalDeviceProperties, VkQueueFamilyProperties}
-import org.nxn.utils.Using.*
+import org.nxn.utils.using.*
 
 class PhysicalDevice(val instance: Instance, val surface: Surface, deviceName:String = ""){
 

@@ -3,7 +3,7 @@ package org.nxn.vulkan
 import org.lwjgl.system.MemoryStack
 import org.lwjgl.vulkan.{VK10, VkBufferImageCopy, VkDescriptorImageInfo, VkExtent3D, VkImageCreateInfo, VkImageFormatProperties, VkImageMemoryBarrier, VkImageSubresourceLayers, VkImageSubresourceRange, VkMemoryRequirements, VkOffset3D, VkWriteDescriptorSet}
 import org.nxn.utils.Dimension
-import org.nxn.utils.Using.*
+import org.nxn.utils.using.*
 
 import java.util.function.Consumer
 

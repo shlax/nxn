@@ -2,7 +2,7 @@ package org.nxn.utils
 
 import scala.annotation.targetName
 
-object Using {
+object using {
 
   extension [T <: AutoCloseable](ac: T) {
     @targetName("withClose")

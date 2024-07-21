@@ -3,7 +3,7 @@ package org.nxn.vulkan
 import org.lwjgl.glfw.GLFWVulkan
 import org.lwjgl.system.MemoryStack
 import org.lwjgl.vulkan.KHRSurface
-import org.nxn.utils.Using.*
+import org.nxn.utils.using.*
 
 class Surface(val instance:Instance, val window:GlfwWindow) extends AutoCloseable{
 
