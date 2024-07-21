@@ -1,6 +1,6 @@
 package org.nxn.math
 
-class RayTriangle {
+class RayIntersection {
 
   private val e1 = new Vector3f(0,0,0)
   private val e2 = new Vector3f(0,0,0)
