@@ -26,10 +26,10 @@ object Main extends Runnable{
   override def run(): Unit = {
     val fps = new FpsCounter()
 
-    val shaders = new ShaderCompiler(true) | { comp =>
+    val shaders = new ShaderCompiler(true) | { compile =>
       IndexedSeq(
-        comp.compile("/shaders/shader.vert", Shaderc.shaderc_glsl_vertex_shader, VK10.VK_SHADER_STAGE_VERTEX_BIT),
-        comp.compile("/shaders/shader.frag", Shaderc.shaderc_glsl_fragment_shader, VK10.VK_SHADER_STAGE_FRAGMENT_BIT)
+        compile("/shaders/shader.vert", Shaderc.shaderc_glsl_vertex_shader, VK10.VK_SHADER_STAGE_VERTEX_BIT),
+        compile("/shaders/shader.frag", Shaderc.shaderc_glsl_fragment_shader, VK10.VK_SHADER_STAGE_FRAGMENT_BIT)
       )
     }
 

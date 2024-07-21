@@ -12,7 +12,7 @@ class ShaderCompiler(debug: Boolean = false) extends AutoCloseable{
   
   if(debug) Shaderc.shaderc_compile_options_set_generate_debug_info(options)
 
-  def compile(uri:String, shaderType:Int, stage:Int, entryPoint:String = "main"): CompiledShader = {
+  def apply(uri:String, shaderType:Int, stage:Int, entryPoint:String = "main"): CompiledShader = {
     val src = this.getClass.getResourceAsStream(uri)|{ in =>
       Source.fromInputStream(in, "UTF-8").getLines().mkString("\n")
     }
