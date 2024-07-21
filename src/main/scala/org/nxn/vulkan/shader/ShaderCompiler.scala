@@ -5,10 +5,12 @@ import org.nxn.utils.using.*
 
 import scala.io.Source
 
-class ShaderCompiler extends AutoCloseable{
+class ShaderCompiler(debug: Boolean = false) extends AutoCloseable{
 
   val compiler:Long = Shaderc.shaderc_compiler_initialize()
   val options: Long = Shaderc.shaderc_compile_options_initialize()
+  
+  if(debug) Shaderc.shaderc_compile_options_set_generate_debug_info(options)
 
   def compile(uri:String, shaderType:Int, stage:Int, entryPoint:String = "main"): CompiledShader = {
     val src = this.getClass.getResourceAsStream(uri)|{ in =>
