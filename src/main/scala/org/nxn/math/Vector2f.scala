@@ -1,5 +1,7 @@
 package org.nxn.math
 
+import org.nxn.vulkan.memory.ToBuffer
+
 import java.nio.FloatBuffer
 
 class Vector2f(var x : Float, var y : Float) extends ToBuffer{

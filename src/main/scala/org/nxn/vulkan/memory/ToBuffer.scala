@@ -1,4 +1,4 @@
-package org.nxn.math
+package org.nxn.vulkan.memory
 
 import java.nio.FloatBuffer
 
