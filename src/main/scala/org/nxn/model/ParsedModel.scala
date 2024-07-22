@@ -16,7 +16,7 @@ object ParsedModel{
 
 }
 
-class ParsedModel(val points:Array[Vector3f], val faces:Array[ParsedFace]){
+class ParsedModel(val points:Array[Vector3f], val faces:Array[ParsedTriangle]){
 
 
 

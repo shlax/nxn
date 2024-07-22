@@ -20,12 +20,12 @@ public class ModelParser extends Parser {
 		T__0=1, T__1=2, T__2=3, T__3=4, T__4=5, T__5=6, T__6=7, T__7=8, T__8=9, 
 		T__9=10, T__10=11, T__11=12, T__12=13, DIGITS=14, WS=15;
 	public static final int
-		RULE_model = 0, RULE_face = 1, RULE_vertex = 2, RULE_uvs = 3, RULE_points = 4, 
+		RULE_model = 0, RULE_triangle = 1, RULE_vertex = 2, RULE_uvs = 3, RULE_points = 4, 
 		RULE_vector3 = 5, RULE_vector2 = 6, RULE_floatNum = 7, RULE_intNum = 8;
 	private static String[] makeRuleNames() {
 		return new String[] {
-			"model", "face", "vertex", "uvs", "points", "vector3", "vector2", "floatNum", 
-			"intNum"
+			"model", "triangle", "vertex", "uvs", "points", "vector3", "vector2", 
+			"floatNum", "intNum"
 		};
 	}
 	public static final String[] ruleNames = makeRuleNames();
@@ -98,16 +98,16 @@ public class ModelParser extends Parser {
 	public static class ModelContext extends ParserRuleContext {
 		public org.nxn.model.ParsedModel result;
 		public PointsContext p;
-		public FaceContext f;
-		public FaceContext fi;
+		public TriangleContext f;
+		public TriangleContext fi;
 		public PointsContext points() {
 			return getRuleContext(PointsContext.class,0);
 		}
-		public List<FaceContext> face() {
-			return getRuleContexts(FaceContext.class);
+		public List<TriangleContext> triangle() {
+			return getRuleContexts(TriangleContext.class);
 		}
-		public FaceContext face(int i) {
-			return getRuleContext(FaceContext.class,i);
+		public TriangleContext triangle(int i) {
+			return getRuleContext(TriangleContext.class,i);
 		}
 		public ModelContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -122,13 +122,13 @@ public class ModelParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			 java.util.List<org.nxn.model.ParsedFace> lf = new java.util.ArrayList<>(); 
+			 java.util.List<org.nxn.model.ParsedTriangle> lf = new java.util.ArrayList<>(); 
 			setState(19);
 			((ModelContext)_localctx).p = points();
 			setState(20);
 			match(T__0);
 			setState(21);
-			((ModelContext)_localctx).f = face();
+			((ModelContext)_localctx).f = triangle();
 			 lf.add(((ModelContext)_localctx).f.r); 
 			setState(28);
 			_errHandler.sync(this);
@@ -137,7 +137,7 @@ public class ModelParser extends Parser {
 				{
 				{
 				setState(23);
-				((ModelContext)_localctx).fi = face();
+				((ModelContext)_localctx).fi = triangle();
 				 lf.add(((ModelContext)_localctx).fi.r); 
 				}
 				}
@@ -147,7 +147,7 @@ public class ModelParser extends Parser {
 			}
 			setState(31);
 			match(T__1);
-			 ((ModelContext)_localctx).result =  new org.nxn.model.ParsedModel( ((ModelContext)_localctx).p.r.toArray(new org.nxn.math.Vector3f[0] ), lf.toArray( new org.nxn.model.ParsedFace[0] ) ); 
+			 ((ModelContext)_localctx).result =  new org.nxn.model.ParsedModel( ((ModelContext)_localctx).p.r.toArray(new org.nxn.math.Vector3f[0] ), lf.toArray( new org.nxn.model.ParsedTriangle[0] ) ); 
 			}
 		}
 		catch (RecognitionException re) {
@@ -162,8 +162,8 @@ public class ModelParser extends Parser {
 	}
 
 	@SuppressWarnings("CheckReturnValue")
-	public static class FaceContext extends ParserRuleContext {
-		public org.nxn.model.ParsedFace r;
+	public static class TriangleContext extends ParserRuleContext {
+		public org.nxn.model.ParsedTriangle r;
 		public VertexContext a;
 		public VertexContext b;
 		public VertexContext c;
@@ -173,33 +173,33 @@ public class ModelParser extends Parser {
 		public VertexContext vertex(int i) {
 			return getRuleContext(VertexContext.class,i);
 		}
-		public FaceContext(ParserRuleContext parent, int invokingState) {
+		public TriangleContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_face; }
+		@Override public int getRuleIndex() { return RULE_triangle; }
 	}
 
-	public final FaceContext face() throws RecognitionException {
-		FaceContext _localctx = new FaceContext(_ctx, getState());
-		enterRule(_localctx, 2, RULE_face);
+	public final TriangleContext triangle() throws RecognitionException {
+		TriangleContext _localctx = new TriangleContext(_ctx, getState());
+		enterRule(_localctx, 2, RULE_triangle);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(34);
 			match(T__2);
 			setState(35);
-			((FaceContext)_localctx).a = vertex();
+			((TriangleContext)_localctx).a = vertex();
 			setState(36);
 			match(T__3);
 			setState(37);
-			((FaceContext)_localctx).b = vertex();
+			((TriangleContext)_localctx).b = vertex();
 			setState(38);
 			match(T__3);
 			setState(39);
-			((FaceContext)_localctx).c = vertex();
+			((TriangleContext)_localctx).c = vertex();
 			setState(40);
 			match(T__4);
-			 ((FaceContext)_localctx).r =  new org.nxn.model.ParsedFace(((FaceContext)_localctx).a.r, ((FaceContext)_localctx).b.r, ((FaceContext)_localctx).c.r); 
+			 ((TriangleContext)_localctx).r =  new org.nxn.model.ParsedTriangle(((TriangleContext)_localctx).a.r, ((TriangleContext)_localctx).b.r, ((TriangleContext)_localctx).c.r); 
 			}
 		}
 		catch (RecognitionException re) {
