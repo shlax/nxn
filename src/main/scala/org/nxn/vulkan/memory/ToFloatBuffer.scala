@@ -5,5 +5,5 @@ import java.nio.FloatBuffer
 trait ToFloatBuffer {
 
   def write(b:FloatBuffer):FloatBuffer
-  
+
 }
