@@ -2,7 +2,7 @@ package org.nxn.vulkan.memory
 
 import java.nio.FloatBuffer
 
-trait ToBuffer {
+trait ToFloatBuffer {
 
   def write(b:FloatBuffer):FloatBuffer
   

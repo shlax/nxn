@@ -1,10 +1,10 @@
 package org.nxn.math
 
-import org.nxn.vulkan.memory.ToBuffer
+import org.nxn.vulkan.memory.ToFloatBuffer
 
 import java.nio.FloatBuffer
 
-class Vector2f(var x : Float, var y : Float) extends ToBuffer{
+class Vector2f(var x : Float, var y : Float) extends ToFloatBuffer{
 
   def add(a: Vector2f, b: Vector2f): this.type = {
     x = a.x + b.x
