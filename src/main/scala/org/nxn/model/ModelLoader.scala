@@ -19,7 +19,7 @@ class ModelLoader extends ANTLRErrorListener{
   }
 
   override def syntaxError(recognizer: Recognizer[?, ?], offendingSymbol: Any, line: Int, charPositionInLine: Int, msg: String, e: RecognitionException): Unit = {
-    throw new RuntimeException("line "+line+":"+charPositionInLine+">"+msg, e)
+    throw new RuntimeException("line "+line+":"+charPositionInLine+" "+msg, e)
   }
 
   override def reportAmbiguity(recognizer: Parser, dfa: DFA, startIndex: Int, stopIndex: Int, exact: Boolean, ambigAlts: util.BitSet, configs: ATNConfigSet): Unit = {
