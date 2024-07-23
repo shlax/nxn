@@ -15,7 +15,7 @@ class VulkanVertex(val point:Vector3f, val normal:Vector3f, val uvs:Array[Vector
   }
 
   def size():Int = {
-    TypeLength.floatLength.size(3 + 3) + TypeLength.floatLength.size(2 * uvs.length)
+    TypeLength.floatLength(3 + 3) + TypeLength.floatLength(2 * uvs.length)
   }
 
 }

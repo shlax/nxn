@@ -72,7 +72,7 @@ object Main extends Runnable{
             val ranges = VkPushConstantRange.calloc(1, stack)
               .stageFlags(VK10.VK_SHADER_STAGE_VERTEX_BIT)
               .offset(0)
-              .size(TypeLength.floatLength.size(4 * 4))
+              .size(TypeLength.floatLength(4 * 4))
             info.pPushConstantRanges(ranges)
 
             info.pSetLayouts(stack.longs(layout.vkDescriptorLayout))
@@ -100,12 +100,12 @@ object Main extends Runnable{
               .binding(0)
               .location(1)
               .format(VK10.VK_FORMAT_R32G32B32_SFLOAT)
-              .offset(TypeLength.floatLength.size(3))
+              .offset(TypeLength.floatLength(3))
             attributes.get(2) // uv
               .binding(0)
               .location(2)
               .format(VK10.VK_FORMAT_R32G32_SFLOAT)
-              .offset(TypeLength.floatLength.size(3+3))
+              .offset(TypeLength.floatLength(3+3))
             info.pVertexAttributeDescriptions(attributes)
           }
         })

@@ -11,7 +11,7 @@ class VulkanTriangle(val a:Int, val b:Int, val c:Int) extends ToIntBuffer{
   }
 
   def size():Int = {
-    TypeLength.intLength.size(3)
+    TypeLength.intLength(3)
   }
 
 }
