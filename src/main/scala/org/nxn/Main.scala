@@ -36,7 +36,7 @@ object Main extends Runnable{
 
     val cube = (getClass.getResourceAsStream("/models/cube.m3d")| { in =>
       new ModelLoader().loadModel(in)
-    }).invert().toVulkanModel()
+    }).invert().toVulkanModel().vulkanModel
 
     new VulkanSystem("NXN", Dimension(1280, 720)) | { sys => // , "NVIDIA GeForce RTX 2050"
       val graphicsQueue = sys.device.graphicsQueue
@@ -47,28 +47,16 @@ object Main extends Runnable{
         val inFlightFence = use(new Fence(sys.device))
 
         // vec2(0.0, -0.5), vec2(-0.5, 0.5), vec2(0.5, 0.5)
-        val points = use(new Buffer(sys.device, 2 * 3 * 3 * TypeLength.floatLength.size, VK10.VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
+        val points = use(new Buffer(sys.device, cube.vertexesSize(), VK10.VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
             VK10.VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK10.VK_MEMORY_PROPERTY_HOST_COHERENT_BIT)).mapMemory{ memory =>
           val b = MemoryUtil.memFloatBuffer(memory.address, memory.size)
-
-          def vec3(x:Float, y:Float, z:Float):Unit = {
-            b.put(x).put(y).put(z)
-          }
-
-          vec3(-0.75, -0.75, 0.25)
-          vec3( 0.75, -0.75, 0.25)
-          vec3( 0.00,  0.75, 0.75)
-
-          vec3(-0.75,  0.75, 0.25)
-          vec3( 0.75,  0.75, 0.25)
-          vec3( 0.00, -0.75, 0.75)
+          cube.toFloatBuffer(b)
         }
 
-        val indexes = use(new Buffer(sys.device, 6 * TypeLength.intLength.size, VK10.VK_BUFFER_USAGE_INDEX_BUFFER_BIT,
+        val indexes = use(new Buffer(sys.device, cube.indexesSize(), VK10.VK_BUFFER_USAGE_INDEX_BUFFER_BIT,
           VK10.VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK10.VK_MEMORY_PROPERTY_HOST_COHERENT_BIT)).mapMemory{ memory =>
           val b = MemoryUtil.memIntBuffer(memory.address, memory.size)
-          b.put(0).put(1).put(2)
-          b.put(5).put(4).put(3)
+          cube.toIntBuffer(b)
         }
 
         val sampler = use(new Sampler(sys.device))
@@ -98,16 +86,26 @@ object Main extends Runnable{
             val bindings = VkVertexInputBindingDescription.calloc(1, stack)
             bindings.get(0)
               .binding(0)
-              .stride(3 * TypeLength.floatLength.size)
+              .stride(cube.stride())
               .inputRate(VK10.VK_VERTEX_INPUT_RATE_VERTEX)
             info.pVertexBindingDescriptions(bindings)
 
-            val attributes = VkVertexInputAttributeDescription.calloc(1, stack)
-            attributes.get(0)
+            val attributes = VkVertexInputAttributeDescription.calloc(3, stack)
+            attributes.get(0) // vertex
               .binding(0)
               .location(0)
               .format(VK10.VK_FORMAT_R32G32B32_SFLOAT)
               .offset(0)
+            attributes.get(1) // normal
+              .binding(0)
+              .location(3)
+              .format(VK10.VK_FORMAT_R32G32B32_SFLOAT)
+              .offset(3 * TypeLength.floatLength.size)
+            attributes.get(2) // uv
+              .binding(0)
+              .location(6)
+              .format(VK10.VK_FORMAT_R32G32_SFLOAT)
+              .offset(2 * 3 * TypeLength.floatLength.size)
             info.pVertexAttributeDescriptions(attributes)
           }
         })
@@ -155,7 +153,7 @@ object Main extends Runnable{
               triangle.bindPipeline(buff)
 
               val viewBuff = stack.callocFloat(4 * 4)
-              viewMatrix.write(viewBuff).flip()
+              viewMatrix.toFloatBuffer(viewBuff).flip()
 
               VK10.vkCmdPushConstants(buff, pipelineLayout.vkPipelineLayout, VK10.VK_SHADER_STAGE_VERTEX_BIT, 0, viewBuff)
 

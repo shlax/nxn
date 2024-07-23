@@ -94,7 +94,7 @@ class Vector3f(var x : Float, var y : Float, var z : Float)  extends ToFloatBuff
     a.x * this.x + a.y * this.y + a.z * this.z
   }
 
-  override def write(b: FloatBuffer): FloatBuffer = {
+  override def toFloatBuffer(b: FloatBuffer): FloatBuffer = {
     b.put(x).put(y).put(z)
   }
 

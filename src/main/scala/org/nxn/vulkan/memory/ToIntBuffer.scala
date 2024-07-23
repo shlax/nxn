@@ -4,6 +4,6 @@ import java.nio.IntBuffer
 
 trait ToIntBuffer {
 
-  def write(b:IntBuffer):IntBuffer
+  def toIntBuffer(b:IntBuffer):IntBuffer
 
 }
