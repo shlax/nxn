@@ -19,7 +19,7 @@ object ParsedModel{
 
 class ParsedModel(val points:Array[Vector3f], val faces:Array[ParsedTriangle]){
 
-  def toVulkanModel(epsilon:Float = 0.0000001f):VulkanModel = {
+  def toVulkanModel(epsilon:Float = 0.0000001f):IndexedModel = {
     val vertexes = mutable.Map[Int, mutable.ArrayBuffer[(Int, VulkanVertex)]]()
     val indexes = mutable.ArrayBuffer[VulkanTriangle]()
 
@@ -57,7 +57,10 @@ class ParsedModel(val points:Array[Vector3f], val faces:Array[ParsedTriangle]){
       vertexArray(j._1) = j._2
     }
 
-    new VulkanModel(vertexArray, indexes.toArray)
+    val indMap = new Array[Array[Int]](vertexes.size)
+    for(i <- vertexes) indMap(i._1) = i._2.map(_._1).toArray
+
+    new IndexedModel(new VulkanModel(vertexArray, indexes.toArray), indMap)
   }
 
 }
