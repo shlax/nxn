@@ -10,6 +10,7 @@ import org.nxn.utils.{Dimension, FpsCounter}
 import org.nxn.vulkan.memory.MemoryBuffer
 import org.nxn.vulkan.shader.ShaderCompiler
 import org.nxn.vulkan.{Buffer, CommandBuffer, DescriptorPool, DescriptorSet, DescriptorSetLayout, Fence, Pipeline, PipelineLayout, RenderCommand, Sampler, Semaphore, Texture, TypeLength, VulkanSystem}
+import org.nxn.model.ModelLoader
 
 object Main extends Runnable{
 
@@ -32,6 +33,10 @@ object Main extends Runnable{
         compile("/shaders/shader.frag", Shaderc.shaderc_glsl_fragment_shader, VK10.VK_SHADER_STAGE_FRAGMENT_BIT)
       )
     }
+
+    /* val cube = (getClass.getResourceAsStream("/models/cube.m3d")| { in =>
+      new ModelLoader().loadModel(in)
+    }).invert().toVulkanModel() */
 
     new VulkanSystem("NXN", Dimension(1280, 720)) | { sys => // , "NVIDIA GeForce RTX 2050"
       val graphicsQueue = sys.device.graphicsQueue
