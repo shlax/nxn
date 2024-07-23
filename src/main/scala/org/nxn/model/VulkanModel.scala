@@ -11,21 +11,30 @@ class VulkanModel(val vertexes: Array[VulkanVertex], val indexes:Array[VulkanTri
     b
   }
 
-  override def toIntBuffer(b: IntBuffer): IntBuffer = {
-    for(i <- indexes) i.toIntBuffer(b)
-    b
-  }
-
   def vertexesSize() : Int = {
-    vertexes.length * stride()
+    vertexes.length * vertexesStride()
   }
 
-  def stride():Int = {
+  def vertexesStride():Int = {
     vertexes.head.size()
   }
 
+  override def toIntBuffer(b: IntBuffer): IntBuffer = {
+    for (i <- indexes) i.toIntBuffer(b)
+    b
+  }
+
   def indexesSize(): Int = {
-    3 * indexes.head.size()
+    indexes.length * indexesStride()
+  }
+
+  def indexesStride(): Int = {
+    indexes.head.size()
+  }
+
+  /** see vkCmdDrawIndexed */
+  def indexesCount(): Int = {
+    indexes.length * 3
   }
 
 }
