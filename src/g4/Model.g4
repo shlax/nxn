@@ -6,7 +6,7 @@ model returns [ org.nxn.model.ParsedModel result ] :
     { $result = new org.nxn.model.ParsedModel( $p.r.toArray(new org.nxn.math.Vector3f[0] ), lf.toArray( new org.nxn.model.ParsedTriangle[0] ) ); };
 
 triangle returns [ org.nxn.model.ParsedTriangle r ] :
-    '{' a=vertex ',' b=vertex ',' c=vertex '}'
+    '[' a=vertex ',' b=vertex ',' c=vertex ']'
     { $r = new org.nxn.model.ParsedTriangle($a.r, $b.r, $c.r); };
 
 vertex returns [ org.nxn.model.ParsedVertex r ] :
