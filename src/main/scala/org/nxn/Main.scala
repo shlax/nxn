@@ -7,9 +7,9 @@ import org.lwjgl.vulkan.{VK10, VkCommandBuffer, VkPipelineLayoutCreateInfo, VkPi
 import org.nxn.math.Matrix4f
 import org.nxn.utils.using.*
 import org.nxn.utils.{Dimension, FpsCounter}
-import org.nxn.vulkan.memory.MemoryBuffer
+import org.nxn.vulkan.memory.{MemoryBuffer, TypeLength}
 import org.nxn.vulkan.shader.ShaderCompiler
-import org.nxn.vulkan.{Buffer, CommandBuffer, DescriptorPool, DescriptorSet, DescriptorSetLayout, Fence, Pipeline, PipelineLayout, RenderCommand, Sampler, Semaphore, Texture, TypeLength, VulkanSystem}
+import org.nxn.vulkan.{Buffer, CommandBuffer, DescriptorPool, DescriptorSet, DescriptorSetLayout, Fence, Pipeline, PipelineLayout, RenderCommand, Sampler, Semaphore, Texture, VulkanSystem}
 import org.nxn.model.ModelLoader
 
 object Main extends Runnable{

@@ -1,4 +1,4 @@
-package org.nxn.vulkan
+package org.nxn.vulkan.memory
 
 enum TypeLength(val size:Int) {
   case intLength extends TypeLength(4)

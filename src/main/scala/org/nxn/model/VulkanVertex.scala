@@ -1,8 +1,7 @@
 package org.nxn.model
 
 import org.nxn.math.{Vector2f, Vector3f}
-import org.nxn.vulkan.TypeLength
-import org.nxn.vulkan.memory.ToFloatBuffer
+import org.nxn.vulkan.memory.{ToFloatBuffer, TypeLength}
 
 import java.nio.FloatBuffer
 

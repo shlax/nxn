@@ -1,7 +1,6 @@
 package org.nxn.model
 
-import org.nxn.vulkan.TypeLength
-import org.nxn.vulkan.memory.ToIntBuffer
+import org.nxn.vulkan.memory.{ToIntBuffer, TypeLength}
 
 import java.nio.IntBuffer
 
