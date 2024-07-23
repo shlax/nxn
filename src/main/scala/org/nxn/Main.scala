@@ -98,12 +98,12 @@ object Main extends Runnable{
               .offset(0)
             attributes.get(1) // normal
               .binding(0)
-              .location(3)
+              .location(1)
               .format(VK10.VK_FORMAT_R32G32B32_SFLOAT)
               .offset(3 * TypeLength.floatLength.size)
             attributes.get(2) // uv
               .binding(0)
-              .location(6)
+              .location(2)
               .format(VK10.VK_FORMAT_R32G32_SFLOAT)
               .offset(2 * 3 * TypeLength.floatLength.size)
             info.pVertexAttributeDescriptions(attributes)
