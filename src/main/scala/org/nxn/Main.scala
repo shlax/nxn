@@ -36,7 +36,7 @@ object Main extends Runnable{
 
     val cube = (getClass.getResourceAsStream("/models/cube.m3d")| { in =>
       new ModelLoader().loadModel(in)
-    }).invert().toVulkanModel().vulkanModel
+    }).invert().compile().vulkanModel
 
     new VulkanSystem("NXN", Dimension(1280, 720)) | { sys => // , "NVIDIA GeForce RTX 2050"
       val graphicsQueue = sys.device.graphicsQueue
