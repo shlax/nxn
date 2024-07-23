@@ -19,6 +19,12 @@ object ParsedModel{
 
 class ParsedModel(val points:Array[Vector3f], val faces:Array[ParsedTriangle]){
 
+  def invert():this.type = {
+    for(p <- points) p.y = -1 * p.y
+    for(f <- faces) f.invert()
+    this
+  }
+
   def toVulkanModel(epsilon:Float = 0.0000001f):IndexedModel = {
     val vertexes = mutable.Map[Int, mutable.ArrayBuffer[(Int, VulkanVertex)]]()
     val indexes = mutable.ArrayBuffer[VulkanTriangle]()
