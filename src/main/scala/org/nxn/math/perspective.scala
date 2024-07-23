@@ -10,7 +10,7 @@ object perspective{
   }
 
   def perspective(fovy: Float, aspect:Float, zNear:Float, zFar:Float) : Matrix4f = {
-    val tan = Math.tan(fovy * Math.PI / 360d).toFloat // fovy / 2
+    val tan = Math.tan(fovy.toDouble * Math.PI / 360d).toFloat // fovy / 2
 
     val m00 = 1f / (tan * aspect)
     val m11 = 1f / tan

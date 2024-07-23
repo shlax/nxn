@@ -20,8 +20,8 @@ class Matrix4f(var m00: Float, var m01: Float, var m02: Float, var m03: Float,  
                                0f, 0f, 0f, 1f)
 
   def rotX(angle: Float): this.type = {
-    val s = Math.sin(angle).toFloat
-    val c = Math.cos(angle).toFloat
+    val s = Math.sin(angle.toDouble).toFloat
+    val c = Math.cos(angle.toDouble).toFloat
 
     m00 = 1f; m01 = 0f; m02 = 0f; m03 = 0f
     m10 = 0f; m11 = c ; m12 = -s; m13 = 0f
@@ -32,8 +32,8 @@ class Matrix4f(var m00: Float, var m01: Float, var m02: Float, var m03: Float,  
   }
 
   def rotY(angle: Float): this.type = {
-    val s = Math.sin(angle).toFloat
-    val c = Math.cos(angle).toFloat
+    val s = Math.sin(angle.toDouble).toFloat
+    val c = Math.cos(angle.toDouble).toFloat
 
     m00 = c ; m01 = 0f; m02 = s ; m03 = 0f
     m10 = 0f; m11 = 1f; m12 = 0f; m13 = 0f
@@ -44,8 +44,8 @@ class Matrix4f(var m00: Float, var m01: Float, var m02: Float, var m03: Float,  
   }
 
   def rotZ(angle: Float): this.type = {
-    val s = Math.sin(angle).toFloat
-    val c = Math.cos(angle).toFloat
+    val s = Math.sin(angle.toDouble).toFloat
+    val c = Math.cos(angle.toDouble).toFloat
 
     m00 = c ; m01 = -s; m02 = 0f; m03 = 0f
     m10 = s ; m11 = c ; m12 = 0f; m13 = 0f
