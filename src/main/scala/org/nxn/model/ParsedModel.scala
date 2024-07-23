@@ -54,14 +54,10 @@ class ParsedModel(val points:Array[Vector3f], val faces:Array[ParsedTriangle]){
       }
     }
 
-    for(f <- faces){
-      indexes.addOne(new VulkanTriangle(put(f.a), put(f.b), put(f.c)))
-    }
+    for(f <- faces) indexes.addOne(new VulkanTriangle(put(f.a), put(f.b), put(f.c)))
 
     val vertexArray = new Array[VulkanVertex](next)
-    for(i <- vertexes; j <- i._2){
-      vertexArray(j._1) = j._2
-    }
+    for(i <- vertexes; j <- i._2) vertexArray(j._1) = j._2
 
     val indMap = new Array[Array[Int]](vertexes.size)
     for(i <- vertexes) indMap(i._1) = i._2.map(_._1).toArray
