@@ -13,15 +13,15 @@ dependencies {
 
     implementation("org.l33tlabs.twl:pngdecoder:1.0")
 
-    implementation("org.lwjgl:lwjgl-glfw:3.3.3")
-    implementation("org.lwjgl:lwjgl-vulkan:3.3.3")
-    implementation("org.lwjgl:lwjgl-shaderc:3.3.3")
+    implementation("org.lwjgl:lwjgl-glfw:3.3.4")
+    implementation("org.lwjgl:lwjgl-vulkan:3.3.4")
+    implementation("org.lwjgl:lwjgl-shaderc:3.3.4")
 
-    runtimeOnly("org.lwjgl:lwjgl:3.3.3:natives-linux")
-    runtimeOnly("org.lwjgl:lwjgl-glfw:3.3.3:natives-linux")
-    runtimeOnly("org.lwjgl:lwjgl-shaderc:3.3.3:natives-linux")
+    runtimeOnly("org.lwjgl:lwjgl:3.3.4:natives-linux")
+    runtimeOnly("org.lwjgl:lwjgl-glfw:3.3.4:natives-linux")
+    runtimeOnly("org.lwjgl:lwjgl-shaderc:3.3.4:natives-linux")
 
-    runtimeOnly("org.lwjgl:lwjgl:3.3.3:natives-windows")
-    runtimeOnly("org.lwjgl:lwjgl-glfw:3.3.3:natives-windows")
-    runtimeOnly("org.lwjgl:lwjgl-shaderc:3.3.3:natives-windows")
+    runtimeOnly("org.lwjgl:lwjgl:3.3.4:natives-windows")
+    runtimeOnly("org.lwjgl:lwjgl-glfw:3.3.4:natives-windows")
+    runtimeOnly("org.lwjgl:lwjgl-shaderc:3.3.4:natives-windows")
 }
