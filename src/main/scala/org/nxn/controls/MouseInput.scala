@@ -1,4 +1,4 @@
-package org.nxn.vulkan.input
+package org.nxn.controls
 
 import org.lwjgl.glfw.{GLFW, GLFWCursorPosCallbackI, GLFWMouseButtonCallbackI}
 import org.lwjgl.system.{MemoryStack, MemoryUtil}
