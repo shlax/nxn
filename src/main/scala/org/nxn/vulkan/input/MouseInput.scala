@@ -31,11 +31,11 @@ class MouseInput(val window: GlfwWindow) extends AutoCloseable{
     offset.x != 0f || offset.x != 0f
   }
 
-  private def close(c:AutoCloseable):Unit = {
+  private def closeCallback(c:AutoCloseable):Unit = {
     if(c != null) c.close()
   }
 
-  close(GLFW.glfwSetCursorPosCallback(window.windowHandle, (win: Long, xpos: Double, ypos: Double) => {
+  closeCallback(GLFW.glfwSetCursorPosCallback(window.windowHandle, (win: Long, xpos: Double, ypos: Double) => {
     if (rotate) {
       xOff += xpos - xWin
       yOff += ypos - yWin
@@ -44,7 +44,7 @@ class MouseInput(val window: GlfwWindow) extends AutoCloseable{
     }
   }))
 
-  close(GLFW.glfwSetMouseButtonCallback(window.windowHandle, (win: Long, button: Int, action: Int, mods: Int) => {
+  closeCallback(GLFW.glfwSetMouseButtonCallback(window.windowHandle, (win: Long, button: Int, action: Int, mods: Int) => {
     if (button == GLFW.GLFW_MOUSE_BUTTON_2) {
       if (action == GLFW.GLFW_PRESS) {
         MemoryStack.stackPush() | { stack =>
@@ -64,8 +64,8 @@ class MouseInput(val window: GlfwWindow) extends AutoCloseable{
   }))
 
   override def close(): Unit = {
-    close(GLFW.glfwSetCursorPosCallback(window.windowHandle, null))
-    close(GLFW.glfwSetMouseButtonCallback(window.windowHandle, null))
+    closeCallback(GLFW.glfwSetCursorPosCallback(window.windowHandle, null))
+    closeCallback(GLFW.glfwSetMouseButtonCallback(window.windowHandle, null))
 
     GLFW.glfwSetCursor(window.windowHandle, MemoryUtil.NULL)
     GLFW.glfwDestroyCursor(cursor)
