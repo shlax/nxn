@@ -14,20 +14,20 @@ class GlfwWindow(val system:VulkanSystem) extends  AutoCloseable{
     GLFW.glfwCreateWindow(s.width, s.height, system.name, MemoryUtil.NULL, MemoryUtil.NULL)
   }
 
-  val windowHandle:Long = initWindow()
-  if (windowHandle == MemoryUtil.NULL){
+  val glfwWindowHandle:Long = initWindow()
+  if (glfwWindowHandle == MemoryUtil.NULL){
     throw new IllegalStateException("Failed to create the GLFW window")
   }
 
   def pullEvents() :Boolean = {
-    val res = !GLFW.glfwWindowShouldClose(windowHandle)
+    val res = !GLFW.glfwWindowShouldClose(glfwWindowHandle)
     if(res) GLFW.glfwPollEvents()
     res
   }
 
   override def close(): Unit = {
-    Callbacks.glfwFreeCallbacks(windowHandle)
-    GLFW.glfwDestroyWindow(windowHandle)
+    Callbacks.glfwFreeCallbacks(glfwWindowHandle)
+    GLFW.glfwDestroyWindow(glfwWindowHandle)
   }
 
 }

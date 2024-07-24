@@ -8,7 +8,7 @@ import org.nxn.vulkan.GlfwWindow
 
 class MouseInput(val window: GlfwWindow) extends AutoCloseable{
   val cursor: Long = GLFW.glfwCreateStandardCursor(GLFW.GLFW_CROSSHAIR_CURSOR)
-  GLFW.glfwSetCursor(window.windowHandle, cursor)
+  GLFW.glfwSetCursor(window.glfwWindowHandle, cursor)
 
   private var rotate = false
 
@@ -32,7 +32,7 @@ class MouseInput(val window: GlfwWindow) extends AutoCloseable{
     if(c != null) c.close()
   }
 
-  closeCallback(GLFW.glfwSetCursorPosCallback(window.windowHandle, (win: Long, xpos: Double, ypos: Double) => {
+  closeCallback(GLFW.glfwSetCursorPosCallback(window.glfwWindowHandle, (win: Long, xpos: Double, ypos: Double) => {
     if (rotate) {
       xOff += xpos - xWin
       yOff += ypos - yWin
@@ -41,7 +41,7 @@ class MouseInput(val window: GlfwWindow) extends AutoCloseable{
     }
   }))
 
-  closeCallback(GLFW.glfwSetMouseButtonCallback(window.windowHandle, (win: Long, button: Int, action: Int, mods: Int) => {
+  closeCallback(GLFW.glfwSetMouseButtonCallback(window.glfwWindowHandle, (win: Long, button: Int, action: Int, mods: Int) => {
     if (button == GLFW.GLFW_MOUSE_BUTTON_2) {
       if (action == GLFW.GLFW_PRESS) {
         MemoryStack.stackPush() | { stack =>
@@ -61,10 +61,10 @@ class MouseInput(val window: GlfwWindow) extends AutoCloseable{
   }))
 
   override def close(): Unit = {
-    closeCallback(GLFW.glfwSetCursorPosCallback(window.windowHandle, null))
-    closeCallback(GLFW.glfwSetMouseButtonCallback(window.windowHandle, null))
+    closeCallback(GLFW.glfwSetCursorPosCallback(window.glfwWindowHandle, null))
+    closeCallback(GLFW.glfwSetMouseButtonCallback(window.glfwWindowHandle, null))
 
-    GLFW.glfwSetCursor(window.windowHandle, MemoryUtil.NULL)
+    GLFW.glfwSetCursor(window.glfwWindowHandle, MemoryUtil.NULL)
     GLFW.glfwDestroyCursor(cursor)
   }
 

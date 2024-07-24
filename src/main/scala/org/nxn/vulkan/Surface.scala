@@ -9,7 +9,7 @@ class Surface(val instance:Instance, val window:GlfwWindow) extends AutoCloseabl
 
   protected def initSurface():Long = MemoryStack.stackPush()|{ stack =>
     val b = stack.callocLong(1)
-    vkCheck(GLFWVulkan.glfwCreateWindowSurface(instance.vkInstance, window.windowHandle, null, b))
+    vkCheck(GLFWVulkan.glfwCreateWindowSurface(instance.vkInstance, window.glfwWindowHandle, null, b))
     b.get(0)
   }
 
