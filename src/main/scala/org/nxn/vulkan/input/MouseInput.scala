@@ -7,9 +7,6 @@ import org.nxn.utils.using.|
 import org.nxn.vulkan.GlfwWindow
 
 class MouseInput(val window: GlfwWindow) extends AutoCloseable{
-  private val width = window.system.windowSize.width / 2
-  private val height = window.system.windowSize.height / 2
-
   val cursor: Long = GLFW.glfwCreateStandardCursor(GLFW.GLFW_CROSSHAIR_CURSOR)
   GLFW.glfwSetCursor(window.windowHandle, cursor)
 
