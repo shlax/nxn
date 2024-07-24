@@ -9,7 +9,7 @@ class Angle3f(start:Float = 0, min:Float = -Angle3f.PIx2, max:Float = Angle3f.PI
 
   def apply(): Float = angle
 
-  def update(v: Float): Float = {
+  def add(v: Float): Float = {
     angle += v
 
     if (angle < min){

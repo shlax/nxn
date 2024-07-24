@@ -16,7 +16,7 @@ class OrbitCamera(val window: GlfwWindow, offset:Float, projection: Matrix4f) ex
   protected val offsetMatrix:Matrix4f = new Matrix4f().update(new Vector3f(0f, 0f, -offset))
   protected val diff = new Vector2f()
 
-  def update():Unit = {
+  def update(point:Vector3f):Unit = {
     if(mouseInput.pull(diff)){
       
     }
