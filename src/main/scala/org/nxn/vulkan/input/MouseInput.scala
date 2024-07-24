@@ -28,7 +28,7 @@ class MouseInput(val window: GlfwWindow) extends AutoCloseable{
     offset.y = yOff.toFloat
     yOff = 0
 
-    offset.x != 0f || offset.x != 0f
+    offset.x != 0f || offset.y != 0f
   }
 
   private def closeCallback(c:AutoCloseable):Unit = {
