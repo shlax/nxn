@@ -6,6 +6,8 @@ import java.nio.FloatBuffer
 
 class Vector2f(var x : Float, var y : Float) extends ToFloatBuffer{
 
+  def this() = this(0f, 0f)
+
   def add(a: Vector2f, b: Vector2f): this.type = {
     x = a.x + b.x
     y = a.y + b.y

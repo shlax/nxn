@@ -138,7 +138,7 @@ object Main extends Runnable{
           val viewMatrix = new Matrix4f()
 
           val input = use(new MouseInput(sys.window))
-          val mouseOffset = new Vector2f(0, 0)
+          val mouseOffset = new Vector2f()
 
           // >>
           while (sys.window.pullEvents()) {

@@ -2,12 +2,12 @@ package org.nxn.math
 
 class RayIntersection {
 
-  private val e1 = new Vector3f(0,0,0)
-  private val e2 = new Vector3f(0,0,0)
+  private val e1 = new Vector3f()
+  private val e2 = new Vector3f()
 
-  private val vp = new Vector3f(0,0,0)
-  private val vq = new Vector3f(0,0,0)
-  private val vt = new Vector3f(0,0,0)
+  private val vp = new Vector3f()
+  private val vq = new Vector3f()
+  private val vt = new Vector3f()
 
   /** https://en.wikipedia.org/wiki/M%C3%B6ller%E2%80%93Trumbore_intersection_algorithm */
   def intersect(r: Ray3f, t: Triangle3f): Float = {
