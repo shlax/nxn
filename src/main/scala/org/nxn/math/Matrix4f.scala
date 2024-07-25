@@ -4,6 +4,40 @@ import org.nxn.vulkan.memory.ToFloatBuffer
 
 import java.nio.FloatBuffer
 
+object Matrix4f{
+
+  def rotX(angle: Float): Matrix4f = {
+    val s = Math.sin(angle.toDouble).toFloat
+    val c = Math.cos(angle.toDouble).toFloat
+
+    new Matrix4f(1f, 0f, 0f, 0f,
+                 0f, c , -s, 0f,
+                 0f, s , c , 0f,
+                 0f, 0f, 0f, 1f)
+  }
+
+  def rotY(angle: Float): Matrix4f= {
+    val s = Math.sin(angle.toDouble).toFloat
+    val c = Math.cos(angle.toDouble).toFloat
+
+    new Matrix4f(c , 0f, s , 0f,
+                 0f, 1f, 0f, 0f,
+                 -s, 0f, c , 0f,
+                 0f, 0f, 0f, 1f)
+  }
+
+  def rotZ(angle: Float): Matrix4f = {
+    val s = Math.sin(angle.toDouble).toFloat
+    val c = Math.cos(angle.toDouble).toFloat
+
+    new Matrix4f(c , -s, 0f, 0f,
+                 s ,  c, 0f, 0f,
+                 0f, 0f, 1f, 0f,
+                 0f, 0f, 0f, 1f)
+  }
+
+}
+
 class Matrix4f(var m00: Float, var m01: Float, var m02: Float, var m03: Float,                         // 0  1  2  3
                var m10: Float, var m11: Float, var m12: Float, var m13: Float,                         // 4  5  6  7
                var m20: Float, var m21: Float, var m22: Float, var m23: Float,                         // 8  9  10 11
@@ -18,6 +52,11 @@ class Matrix4f(var m00: Float, var m01: Float, var m02: Float, var m03: Float,  
                                0f, 1f, 0f, v.y,
                                0f, 0f, 1f, v.z,
                                0f, 0f, 0f, 1f)
+
+  def this(x:Float, y:Float, z:Float) = this(1f, 0f, 0f, x,
+                                             0f, 1f, 0f, y,
+                                             0f, 0f, 1f, z,
+                                             0f, 0f, 0f, 1f)
 
   def this(v: Matrix4f) = this(v.m00, v.m01, v.m02, v.m03,
                                v.m10, v.m11, v.m12, v.m13,
@@ -74,6 +113,15 @@ class Matrix4f(var m00: Float, var m01: Float, var m02: Float, var m03: Float,  
     m10 = v.m10; m11 = v.m11; m12 = v.m12; m13 = v.m13
     m20 = v.m20; m21 = v.m21; m22 = v.m22; m23 = v.m23
     m30 = v.m30; m31 = v.m31; m32 = v.m32; m33 = v.m33
+
+    this
+  }
+
+  def set(x: Float, y:Float, z:Float): this.type = {
+    m00 = 1f; m01 = 0f; m02 = 0f; m03 = x
+    m10 = 0f; m11 = 1f; m12 = 0f; m13 = y
+    m20 = 0f; m21 = 0f; m22 = 1f; m23 = z
+    m30 = 0f; m31 = 0f; m32 = 0f; m33 = 1f
 
     this
   }
