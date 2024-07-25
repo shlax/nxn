@@ -24,7 +24,9 @@ class OrbitCamera(val window: GlfwWindow, offset:Float, projection: Matrix4f, se
 
       val tmp = new Matrix4f()
       rotationMatrix.rotX(rx).mulThis(tmp.rotY(ry))
-      viewMatrix.set(new Vector3f(0, 0, offset)).mulThis(rotationMatrix).mulWith(projection)
+
+      tmp.set(point).mulWith(rotationMatrix)
+      viewMatrix.set(new Vector3f(0, 0, offset)).mulThis(tmp).mulWith(projection)
     }
   }
 
