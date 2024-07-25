@@ -26,9 +26,7 @@ class MouseInput(val window: GlfwWindow) extends AutoCloseable{
       None
     }else{
       val offset = new Vector3f(xOff.toFloat, yOff.toFloat, zOff.toFloat)
-      xOff = 0d
-      yOff = 0d
-      zOff = 0d
+      xOff = 0d; yOff = 0d; zOff = 0d
       Some(offset)
     }
   }
