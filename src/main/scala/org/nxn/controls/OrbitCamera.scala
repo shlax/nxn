@@ -1,6 +1,6 @@
 package org.nxn.controls
 
-import org.nxn.math.{Angle3f, Matrix4f, Vector3f}
+import org.nxn.math.{Angle3f, Matrix4f, Vector2f, Vector3f}
 import org.nxn.vulkan.GlfwWindow
 
 class OrbitCamera(val window: GlfwWindow, offset:Float, projection: Matrix4f, sensitivity:Float = 0.005f) extends AutoCloseable {
@@ -14,7 +14,7 @@ class OrbitCamera(val window: GlfwWindow, offset:Float, projection: Matrix4f, se
   var xRotation: Angle3f = new Angle3f()
   var yRotation: Angle3f = new Angle3f()
 
-  def update(point:Vector3f):Unit = {
+  def update(point:Vector3f):Option[Vector2f] = {
     val diff = mouseInput.pull()
     if(diff.isDefined){
       val df = diff.get
@@ -25,6 +25,7 @@ class OrbitCamera(val window: GlfwWindow, offset:Float, projection: Matrix4f, se
     }else{
       update(point, xRotation(), yRotation())
     }
+    diff
   }
 
   val rotationMatrix: Matrix4f = new Matrix4f()
