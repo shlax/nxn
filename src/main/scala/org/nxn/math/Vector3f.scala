@@ -7,7 +7,15 @@ import java.nio.FloatBuffer
 class Vector3f(var x : Float, var y : Float, var z : Float)  extends ToFloatBuffer{
   
   def this() = this(0f, 0f, 0f)
-  
+
+  def set(vx: Float, vy:Float, vz:Float): this.type  = {
+    x = vx
+    y = vy
+    z = vz
+
+    this
+  }
+
   def add(a:Vector3f, b:Vector3f):this.type = {
     x = a.x + b.x
     y = a.y + b.y

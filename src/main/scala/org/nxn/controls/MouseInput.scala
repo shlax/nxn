@@ -3,7 +3,7 @@ package org.nxn.controls
 import org.lwjgl.glfw.{GLFW, GLFWCursorPosCallbackI, GLFWMouseButtonCallbackI}
 import org.lwjgl.system.{MemoryStack, MemoryUtil}
 import org.nxn.math.Vector2f
-import org.nxn.utils.using.|
+import org.nxn.utils.using.*
 import org.nxn.vulkan.GlfwWindow
 
 class MouseInput(val window: GlfwWindow) extends AutoCloseable{
@@ -18,17 +18,18 @@ class MouseInput(val window: GlfwWindow) extends AutoCloseable{
   private var xWin:Double = 0
   private var yWin:Double = 0
 
-  def pull(offset: Vector2f):Boolean = {
-    offset.x = xOff.toFloat
-    xOff = 0
-
-    offset.y = yOff.toFloat
-    yOff = 0
-
-    offset.x != 0f || offset.y != 0f
+  def pull():Option[Vector2f] = {
+    if(xOff == 0d && yOff == 0d){
+      None
+    }else{
+      val offset = new Vector2f(xOff.toFloat, yOff.toFloat)
+      xOff = 0d
+      yOff = 0d
+      Some(offset)
+    }
   }
 
-  private def closeCallback(c:AutoCloseable):Unit = {
+  protected def closeCallback(c:AutoCloseable):Unit = {
     if(c != null) c.close()
   }
 

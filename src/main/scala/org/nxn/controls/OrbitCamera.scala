@@ -1,9 +1,9 @@
 package org.nxn.controls
 
-import org.nxn.math.{Matrix4f, Vector2f, Vector3f}
+import org.nxn.math.{Angle3f, Matrix4f, Vector3f}
 import org.nxn.vulkan.GlfwWindow
 
-class OrbitCamera(val window: GlfwWindow, offset:Float, projection: Matrix4f) extends AutoCloseable {
+class OrbitCamera(val window: GlfwWindow, offset:Float, projection: Matrix4f, sensitivity:Float = 0.005f) extends AutoCloseable {
 
   protected def initMouseInput():MouseInput = {
     new MouseInput(window)
@@ -11,14 +11,20 @@ class OrbitCamera(val window: GlfwWindow, offset:Float, projection: Matrix4f) ex
 
   val mouseInput:MouseInput = initMouseInput()
 
-  val viewMatrix: Matrix4f = new Matrix4f()
+  var xRotation: Angle3f = new Angle3f()
+  var yRotation: Angle3f = new Angle3f()
 
-  protected val offsetMatrix:Matrix4f = new Matrix4f().update(new Vector3f(0f, 0f, -offset))
-  protected val diff = new Vector2f()
+  val rotationMatrix: Matrix4f = new Matrix4f()
+  val viewMatrix: Matrix4f = new Matrix4f(new Vector3f(0, 0, offset)).mulWith(projection)
 
   def update(point:Vector3f):Unit = {
-    if(mouseInput.pull(diff)){
-      
+    for(diff <- mouseInput.pull()){
+      val rx = xRotation.add(diff.y * sensitivity)
+      val ry = yRotation.add(diff.x * -1 * sensitivity)
+
+      val tmp = new Matrix4f()
+      rotationMatrix.rotX(rx).mulThis(tmp.rotY(ry))
+      viewMatrix.set(new Vector3f(0, 0, offset)).mulThis(rotationMatrix).mulWith(projection)
     }
   }
 

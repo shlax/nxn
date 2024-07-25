@@ -25,3 +25,15 @@ dependencies {
     runtimeOnly("org.lwjgl:lwjgl-glfw:3.3.4:natives-windows")
     runtimeOnly("org.lwjgl:lwjgl-shaderc:3.3.4:natives-windows")
 }
+
+tasks.register<Copy>("copyDependenciesToLibs") {
+    into("${layout.buildDirectory.get()}/libs")
+    from(project.configurations.runtimeClasspath)
+}
+
+tasks.withType<Jar> {
+    manifest {
+        attributes["Main-Class"] = "org.nxn.Main"
+        attributes["Class-Path"] = project.configurations.runtimeClasspath.get().files.joinToString(" ") { it.name }
+    }
+}

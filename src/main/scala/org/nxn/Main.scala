@@ -4,14 +4,15 @@ import de.matthiasmann.twl.utils.PNGDecoder
 import org.lwjgl.system.{MemoryStack, MemoryUtil}
 import org.lwjgl.util.shaderc.Shaderc
 import org.lwjgl.vulkan.{VK10, VkCommandBuffer, VkPipelineLayoutCreateInfo, VkPipelineVertexInputStateCreateInfo, VkPushConstantRange, VkVertexInputAttributeDescription, VkVertexInputBindingDescription}
-import org.nxn.controls.MouseInput
-import org.nxn.math.{Matrix4f, Vector2f}
+import org.nxn.controls.{MouseInput, OrbitCamera}
+import org.nxn.math.{Matrix4f, Vector2f, Vector3f}
 import org.nxn.utils.using.*
 import org.nxn.utils.{Dimension, FpsCounter}
 import org.nxn.vulkan.memory.{MemoryBuffer, TypeLength}
 import org.nxn.vulkan.shader.ShaderCompiler
 import org.nxn.vulkan.{Buffer, CommandBuffer, DescriptorPool, DescriptorSet, DescriptorSetLayout, Fence, Pipeline, PipelineLayout, RenderCommand, Sampler, Semaphore, Texture, VulkanSystem}
 import org.nxn.model.ModelLoader
+import org.nxn.math.perspective.*
 
 object Main extends Runnable{
 
@@ -26,7 +27,7 @@ object Main extends Runnable{
   }
 
   override def run(): Unit = {
-    val fps = new FpsCounter()
+    // val fps = new FpsCounter()
 
     val shaders = new ShaderCompiler(true) | { compile =>
       IndexedSeq(
@@ -135,20 +136,16 @@ object Main extends Runnable{
             }
           }
 
-          val viewMatrix = new Matrix4f()
-
-          val input = use(new MouseInput(sys.window))
-          val mouseOffset = new Vector2f()
+          val camera = use(new OrbitCamera(sys.window, 3, perspective(60, sys.windowSize, 1, 1000)))
+          val cameraPoint = new Vector3f()
 
           // >>
           while (sys.window.pullEvents()) {
 
-            if(input.pull(mouseOffset)){
-              println(mouseOffset)
-            }
+            camera.update(cameraPoint)
 
             // cpu calc
-            fps(f => println("fps: "+f))
+            // fps(f => println("fps: "+f))
 
             inFlightFence.await().reset()
 
@@ -161,7 +158,7 @@ object Main extends Runnable{
               triangle.bindPipeline(buff)
 
               val viewBuff = stack.callocFloat(4 * 4)
-              viewMatrix.toFloatBuffer(viewBuff).flip()
+              camera.viewMatrix.toFloatBuffer(viewBuff).flip()
 
               VK10.vkCmdPushConstants(buff, pipelineLayout.vkPipelineLayout, VK10.VK_SHADER_STAGE_VERTEX_BIT, 0, viewBuff)
 

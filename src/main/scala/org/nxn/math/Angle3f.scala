@@ -2,6 +2,11 @@ package org.nxn.math
 
 object Angle3f{
   val PIx2: Float = (Math.PI * 2d).toFloat
+
+  def radians(n:Float):Float = {
+    n * PIx2 / 360f
+  }
+
 }
 
 class Angle3f(start:Float = 0, min:Float = -Angle3f.PIx2, max:Float = Angle3f.PIx2) {

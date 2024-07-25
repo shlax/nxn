@@ -19,6 +19,11 @@ class Matrix4f(var m00: Float, var m01: Float, var m02: Float, var m03: Float,  
                                0f, 0f, 1f, v.z,
                                0f, 0f, 0f, 1f)
 
+  def this(v: Matrix4f) = this(v.m00, v.m01, v.m02, v.m03,
+                               v.m10, v.m11, v.m12, v.m13,
+                               v.m20, v.m21, v.m22, v.m23,
+                               v.m30, v.m31, v.m32, v.m33)
+
   def rotX(angle: Float): this.type = {
     val s = Math.sin(angle.toDouble).toFloat
     val c = Math.cos(angle.toDouble).toFloat
@@ -64,7 +69,7 @@ class Matrix4f(var m00: Float, var m01: Float, var m02: Float, var m03: Float,  
     this
   }
 
-  def update(v: Matrix4f): this.type = {
+  def set(v: Matrix4f): this.type = {
     m00 = v.m00; m01 = v.m01; m02 = v.m02; m03 = v.m03
     m10 = v.m10; m11 = v.m11; m12 = v.m12; m13 = v.m13
     m20 = v.m20; m21 = v.m21; m22 = v.m22; m23 = v.m23
@@ -73,7 +78,7 @@ class Matrix4f(var m00: Float, var m01: Float, var m02: Float, var m03: Float,  
     this
   }
 
-  def update(v: Vector3f): this.type = {
+  def set(v: Vector3f): this.type = {
     m00 = 1f; m01 = 0f; m02 = 0f; m03 = v.x
     m10 = 0f; m11 = 1f; m12 = 0f; m13 = v.y
     m20 = 0f; m21 = 0f; m22 = 1f; m23 = v.z
@@ -96,8 +101,12 @@ class Matrix4f(var m00: Float, var m01: Float, var m02: Float, var m03: Float,  
     out
   }
 
-  def mul (m : Matrix4f) : this.type = {
+  def mulThis(m : Matrix4f) : this.type = {
     mul(this, m)
+  }
+
+  def mulWith(m: Matrix4f): this.type = {
+    mul(m, this)
   }
 
   def mul(m : Matrix4f, n : Matrix4f):this.type = {
@@ -187,10 +196,10 @@ class Matrix4f(var m00: Float, var m01: Float, var m02: Float, var m03: Float,  
   }
 
   override def toFloatBuffer(b: FloatBuffer): FloatBuffer = {
-    b.put(m00).put(m01).put(m02).put(m03)
-    b.put(m10).put(m11).put(m12).put(m13)
-    b.put(m20).put(m21).put(m22).put(m23)
-    b.put(m30).put(m31).put(m32).put(m33)
+    b.put(m00).put(m10).put(m20).put(m30)
+    b.put(m01).put(m11).put(m21).put(m31)
+    b.put(m02).put(m12).put(m22).put(m32)
+    b.put(m03).put(m13).put(m23).put(m33)
   }
   
   override def toString: String = {
