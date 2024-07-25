@@ -14,20 +14,28 @@ class OrbitCamera(val window: GlfwWindow, offset:Float, projection: Matrix4f, se
   var xRotation: Angle3f = new Angle3f()
   var yRotation: Angle3f = new Angle3f()
 
+  def update(point:Vector3f):Unit = {
+    val diff = mouseInput.pull()
+    if(diff.isDefined){
+      val df = diff.get
+      val rx = xRotation.add(df.y * sensitivity)
+      val ry = yRotation.add(-df.x * sensitivity)
+
+      update(point, rx, ry)
+    }else{
+      update(point, xRotation(), yRotation())
+    }
+  }
+
   val rotationMatrix: Matrix4f = new Matrix4f()
   val viewMatrix: Matrix4f = new Matrix4f(new Vector3f(0, 0, offset)).mulWith(projection)
 
-  def update(point:Vector3f):Unit = {
-    for(diff <- mouseInput.pull()){
-      val rx = xRotation.add(diff.y * sensitivity)
-      val ry = yRotation.add(diff.x * -1 * sensitivity)
+  protected def update(point:Vector3f, rx:Float, ry:Float):Unit = {
+    val tmp = new Matrix4f()
+    rotationMatrix.rotX(rx).mulThis(tmp.rotY(ry))
 
-      val tmp = new Matrix4f()
-      rotationMatrix.rotX(rx).mulThis(tmp.rotY(ry))
-
-      tmp.set(point).mulWith(rotationMatrix)
-      viewMatrix.set(new Vector3f(0, 0, offset)).mulThis(tmp).mulWith(projection)
-    }
+    tmp.set(point).mulWith(rotationMatrix)
+    viewMatrix.set(new Vector3f(0, 0, offset)).mulThis(tmp).mulWith(projection)
   }
 
   override def close(): Unit = {
