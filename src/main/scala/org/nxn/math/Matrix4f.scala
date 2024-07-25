@@ -6,7 +6,7 @@ import java.nio.FloatBuffer
 
 object Matrix4f{
 
-  def rotX(angle: Float): Matrix4f = {
+  def xRot(angle: Float): Matrix4f = {
     val s = Math.sin(angle.toDouble).toFloat
     val c = Math.cos(angle.toDouble).toFloat
 
@@ -16,7 +16,7 @@ object Matrix4f{
                  0f, 0f, 0f, 1f)
   }
 
-  def rotY(angle: Float): Matrix4f= {
+  def yRot(angle: Float): Matrix4f= {
     val s = Math.sin(angle.toDouble).toFloat
     val c = Math.cos(angle.toDouble).toFloat
 
@@ -26,7 +26,7 @@ object Matrix4f{
                  0f, 0f, 0f, 1f)
   }
 
-  def rotZ(angle: Float): Matrix4f = {
+  def zRot(angle: Float): Matrix4f = {
     val s = Math.sin(angle.toDouble).toFloat
     val c = Math.cos(angle.toDouble).toFloat
 
@@ -63,7 +63,7 @@ class Matrix4f(var m00: Float, var m01: Float, var m02: Float, var m03: Float,  
                                v.m20, v.m21, v.m22, v.m23,
                                v.m30, v.m31, v.m32, v.m33)
 
-  def rotX(angle: Float): this.type = {
+  def xRot(angle: Float): this.type = {
     val s = Math.sin(angle.toDouble).toFloat
     val c = Math.cos(angle.toDouble).toFloat
 
@@ -75,7 +75,7 @@ class Matrix4f(var m00: Float, var m01: Float, var m02: Float, var m03: Float,  
     this
   }
 
-  def rotY(angle: Float): this.type = {
+  def yRot(angle: Float): this.type = {
     val s = Math.sin(angle.toDouble).toFloat
     val c = Math.cos(angle.toDouble).toFloat
 
@@ -87,7 +87,7 @@ class Matrix4f(var m00: Float, var m01: Float, var m02: Float, var m03: Float,  
     this
   }
 
-  def rotZ(angle: Float): this.type = {
+  def zRot(angle: Float): this.type = {
     val s = Math.sin(angle.toDouble).toFloat
     val c = Math.cos(angle.toDouble).toFloat
 
