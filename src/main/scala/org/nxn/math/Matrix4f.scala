@@ -31,7 +31,7 @@ object Matrix4f{
     val c = Math.cos(angle.toDouble).toFloat
 
     new Matrix4f(c , -s, 0f, 0f,
-                 s ,  c, 0f, 0f,
+                 s , c , 0f, 0f,
                  0f, 0f, 1f, 0f,
                  0f, 0f, 0f, 1f)
   }
