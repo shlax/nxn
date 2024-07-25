@@ -8,7 +8,7 @@ class Angle3f(start:Float = 0, min:Float = -Angle3f.PIx2, max:Float = Angle3f.PI
   private var angle: Float = start
 
   def apply(): Float = angle
-
+  
   def add(v: Float): Float = {
     angle += v
 
@@ -21,6 +21,11 @@ class Angle3f(start:Float = 0, min:Float = -Angle3f.PIx2, max:Float = Angle3f.PI
     angle
   }
 
+  def set(v: Float): this.type = {
+    angle = v
+    this
+  }
+  
   override def toString: String = {
     "<"+angle+">"
   }

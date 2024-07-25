@@ -136,8 +136,8 @@ object Main extends Runnable{
             }
           }
 
-          val camera = use(new OrbitCamera(sys.window, 3, perspective(60, sys.windowSize, 1, 1000)))
           val cameraPoint = new Vector3f()
+          val camera = use(new OrbitCamera(sys.window, perspective(60, sys.windowSize, 1, 1000))).set(cameraPoint, 3, 0, 0)
 
           // >>
           while (sys.window.pullEvents()) {

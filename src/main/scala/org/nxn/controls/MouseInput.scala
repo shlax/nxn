@@ -1,8 +1,8 @@
 package org.nxn.controls
 
-import org.lwjgl.glfw.{GLFW, GLFWCursorPosCallbackI, GLFWMouseButtonCallbackI}
+import org.lwjgl.glfw.{GLFW, GLFWCursorPosCallbackI, GLFWMouseButtonCallbackI, GLFWScrollCallbackI}
 import org.lwjgl.system.{MemoryStack, MemoryUtil}
-import org.nxn.math.Vector2f
+import org.nxn.math.Vector3f
 import org.nxn.utils.using.*
 import org.nxn.vulkan.GlfwWindow
 
@@ -15,16 +15,20 @@ class MouseInput(val window: GlfwWindow) extends AutoCloseable{
   private var xOff:Double = 0
   private var yOff:Double = 0
 
+  /** scroll */
+  private var zOff:Double = 0
+
   private var xWin:Double = 0
   private var yWin:Double = 0
 
-  def pull():Option[Vector2f] = {
-    if(xOff == 0d && yOff == 0d){
+  def pull():Option[Vector3f] = {
+    if(xOff == 0d && yOff == 0d && zOff == 0d){
       None
     }else{
-      val offset = new Vector2f(xOff.toFloat, yOff.toFloat)
+      val offset = new Vector3f(xOff.toFloat, yOff.toFloat, zOff.toFloat)
       xOff = 0d
       yOff = 0d
+      zOff = 0d
       Some(offset)
     }
   }
@@ -61,9 +65,14 @@ class MouseInput(val window: GlfwWindow) extends AutoCloseable{
     }
   }))
 
+  closeCallback(GLFW.glfwSetScrollCallback(window.glfwWindowHandle, (window: Long, xOffset: Double, yOffset: Double) => {
+    zOff += yOffset
+  }))
+
   override def close(): Unit = {
     closeCallback(GLFW.glfwSetCursorPosCallback(window.glfwWindowHandle, null))
     closeCallback(GLFW.glfwSetMouseButtonCallback(window.glfwWindowHandle, null))
+    closeCallback(GLFW.glfwSetScrollCallback(window.glfwWindowHandle, null))
 
     GLFW.glfwSetCursor(window.glfwWindowHandle, MemoryUtil.NULL)
     GLFW.glfwDestroyCursor(cursor)
