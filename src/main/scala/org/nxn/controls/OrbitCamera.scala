@@ -35,7 +35,7 @@ class OrbitCamera(val window: GlfwWindow, offset:Float, projection: Matrix4f, se
     rotationMatrix.rotX(rx).mulThis(tmp)
 
     tmp.set(point).mulWith(rotationMatrix)
-    viewMatrix.set(0, 0, offset).mulThis(tmp).mulWith(projection)
+    viewMatrix.set(0f, 0f, offset).mulThis(tmp).mulWith(projection)
   }
 
   override def close(): Unit = {
