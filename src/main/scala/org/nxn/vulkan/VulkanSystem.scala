@@ -8,9 +8,8 @@ import scala.concurrent.duration.*
 
 class VulkanSystem(val name:String, val windowSize:Dimension, deviceName:String = "",
                    val debug :LogLevel = LogLevel.warning, val timeout:Duration = 1.second) extends AutoCloseable{
+  // GLFW.glfwInitHint(GLFW.GLFW_PLATFORM, GLFW.GLFW_PLATFORM_X11)
 
-  GLFW.glfwInitHint(GLFW.GLFW_PLATFORM, GLFW.GLFW_PLATFORM_X11)
-  
   GLFWErrorCallback.createPrint.set()
 
   if (!GLFW.glfwInit()){
