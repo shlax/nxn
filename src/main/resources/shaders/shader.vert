@@ -15,6 +15,6 @@ layout(location = 1) out vec2 textCoords;
 void main() {
     gl_Position = transformations.viewMatrix * vec4(inPosition, 1);
     vec4 nv = transformations.rotationMatrix * vec4(inNormal, 1);
-    surfaceNormal = abs(dot(nv.xyz, vec3(0, 0, -1)));
+    surfaceNormal = abs(nv.z); // abs(dot(nv.xyz, vec3(0, 0, -1)));
     textCoords = inUv;
 }
