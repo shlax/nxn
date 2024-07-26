@@ -54,8 +54,12 @@ class ParsedModel(val points:Array[Vector3f], val faces:Array[ParsedTriangle]){
     val vertexArray = new Array[VulkanVertex](next)
     for(i <- vertexes; j <- i) vertexArray(j._1) = j._2
 
+    ind = 0
     val indMap = new Array[Array[Int]](vertexes.length)
-    for(i <- vertexes.zipWithIndex) indMap(i._2) = i._1.map(_._1).toArray
+    for(i <- vertexes){
+      indMap(ind) = i.map(_._1).toArray
+      ind += 1
+    }
 
     new IndexedModel(new VulkanModel(vertexArray, indexes), indMap)
   }
