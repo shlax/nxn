@@ -13,8 +13,8 @@ layout(location = 0) out float surfaceNormal;
 layout(location = 1) out vec2 textCoords;
 
 void main() {
-    gl_Position = transformations.viewMatrix * vec4(inPosition, 1.0);
-    vec4 nv = transformations.rotationMatrix * vec4(inNormal, 1.0);
+    gl_Position = transformations.viewMatrix * vec4(inPosition, 1);
+    vec4 nv = transformations.rotationMatrix * vec4(inNormal, 1);
     surfaceNormal = dot(nv.xyz, vec3(0, 0, -1));
     textCoords = inUv;
 }
