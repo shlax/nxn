@@ -13,7 +13,8 @@ class ParsedModel(val points:Array[Vector3f], val faces:Array[ParsedTriangle]){
 
   def compile(epsilon:Float = 0.0000001f):IndexedModel = {
     val vertexes = new Array[mutable.ArrayBuffer[(Int, VulkanVertex)]](points.length)
-    val indexes = new mutable.ArrayBuffer[VulkanTriangle](faces.length)
+    val indexes = new Array[VulkanTriangle](faces.length)
+    var ind = 0
 
     def eqVector2f(a: Vector2f, b: Vector2f): Boolean = {
       Math.abs(a.x - b.x) < epsilon && Math.abs(a.y - b.y) < epsilon
@@ -45,7 +46,10 @@ class ParsedModel(val points:Array[Vector3f], val faces:Array[ParsedTriangle]){
       }
     }
 
-    for(f <- faces) indexes.addOne(new VulkanTriangle(put(f.a), put(f.b), put(f.c)))
+    for(f <- faces){
+      indexes(ind) = new VulkanTriangle(put(f.a), put(f.b), put(f.c))
+      ind += 1
+    }
 
     val vertexArray = new Array[VulkanVertex](next)
     for(i <- vertexes; j <- i) vertexArray(j._1) = j._2
@@ -53,7 +57,7 @@ class ParsedModel(val points:Array[Vector3f], val faces:Array[ParsedTriangle]){
     val indMap = new Array[Array[Int]](vertexes.length)
     for(i <- vertexes.zipWithIndex) indMap(i._2) = i._1.map(_._1).toArray
 
-    new IndexedModel(new VulkanModel(vertexArray, indexes.toArray), indMap)
+    new IndexedModel(new VulkanModel(vertexArray, indexes), indMap)
   }
 
 }
