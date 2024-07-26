@@ -74,7 +74,7 @@ object Main extends Runnable{
             val ranges = VkPushConstantRange.calloc(1, stack)
               .stageFlags(VK10.VK_SHADER_STAGE_VERTEX_BIT)
               .offset(0)
-              .size(TypeLength.floatLength(4 * 4))
+              .size(TypeLength.floatLength(2 * 4 * 4))
             info.pPushConstantRanges(ranges)
 
             info.pSetLayouts(stack.longs(layout.vkDescriptorLayout))
@@ -157,8 +157,10 @@ object Main extends Runnable{
             val cmdBuff = render.record(next){ (stack, buff) =>
               triangle.bindPipeline(buff)
 
-              val viewBuff = stack.callocFloat(4 * 4)
-              camera.viewMatrix.toFloatBuffer(viewBuff).flip()
+              val viewBuff = stack.callocFloat(2 * 4 * 4)
+              camera.viewMatrix.toFloatBuffer(viewBuff)
+              camera.rotationMatrix.toFloatBuffer(viewBuff)
+              viewBuff.flip()
 
               VK10.vkCmdPushConstants(buff, pipelineLayout.vkPipelineLayout, VK10.VK_SHADER_STAGE_VERTEX_BIT, 0, viewBuff)
 
