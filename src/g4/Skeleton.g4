@@ -1,7 +1,7 @@
 grammar Skeleton;
 
-skeleton returns [ org.nxn.model.skeleton.ParsedJoint r ]:
-    '[' j=joint ']' { $r = $j.r; } ;
+skeleton returns [ org.nxn.model.skeleton.ParsedJoint result ]:
+    '[' j=joint ']' { $result = $j.r; } ;
 
 joint returns [ org.nxn.model.skeleton.ParsedJoint r ]:
     nm=NAME ':' vec=vector3 ( ':' a=NAME)? (':' b=bindings  )? ( ':' l=jointList )?

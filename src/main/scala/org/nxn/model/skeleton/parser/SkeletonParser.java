@@ -97,7 +97,7 @@ public class SkeletonParser extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class SkeletonContext extends ParserRuleContext {
-		public org.nxn.model.skeleton.ParsedJoint r;
+		public org.nxn.model.skeleton.ParsedJoint result;
 		public JointContext j;
 		public JointContext joint() {
 			return getRuleContext(JointContext.class,0);
@@ -120,7 +120,7 @@ public class SkeletonParser extends Parser {
 			((SkeletonContext)_localctx).j = joint();
 			setState(20);
 			match(T__1);
-			 ((SkeletonContext)_localctx).r =  ((SkeletonContext)_localctx).j.r; 
+			 ((SkeletonContext)_localctx).result =  ((SkeletonContext)_localctx).j.r; 
 			}
 		}
 		catch (RecognitionException re) {
