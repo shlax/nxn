@@ -1,17 +1,20 @@
 grammar Model;
 
 model returns [ org.nxn.model.ParsedModel result ] :
-    { java.util.List<org.nxn.model.ParsedTriangle> lf = new java.util.ArrayList<>(); }
-    p=points ':' '[' f=triangle { lf.add($f.r); } ( ',' fi=triangle { lf.add($fi.r); } )* ']'
-    { $result = new org.nxn.model.ParsedModel( $p.r.toArray(new org.nxn.math.Vector3f[0] ), lf.toArray( new org.nxn.model.ParsedTriangle[0] ) ); };
+    p=points ':' t=triangles
+    { $result = new org.nxn.model.ParsedModel( $p.r.toArray(new org.nxn.math.Vector3f[0] ), $t.r.toArray( new org.nxn.model.ParsedTriangle[0] ) ); };
+
+triangles returns [ java.util.List<org.nxn.model.ParsedTriangle> r ] :
+    { $r = new java.util.ArrayList<org.nxn.model.ParsedTriangle>(); }
+    '[' f=triangle { $r.add($f.r); } ( ',' fi=triangle { $r.add($fi.r); } )* ']' ;
 
 triangle returns [ org.nxn.model.ParsedTriangle r ] :
     '[' a=vertex ',' b=vertex ',' c=vertex ']'
-    { $r = new org.nxn.model.ParsedTriangle($a.r, $b.r, $c.r); };
+    { $r = new org.nxn.model.ParsedTriangle($a.r, $b.r, $c.r); } ;
 
 vertex returns [ org.nxn.model.ParsedVertex r ] :
     i=indNum ':' n=vector3 ':' u=uvs
-    { $r = new org.nxn.model.ParsedVertex($i.r, $n.r, $u.r.toArray( new org.nxn.math.Vector2f[0] ) ); };
+    { $r = new org.nxn.model.ParsedVertex($i.r, $n.r, $u.r.toArray( new org.nxn.math.Vector2f[0] ) ); } ;
 
 uvs returns [ java.util.List<org.nxn.math.Vector2f> r ] :
     { $r = new java.util.ArrayList<>(); }
@@ -23,11 +26,11 @@ points returns [ java.util.List<org.nxn.math.Vector3f> r ] :
 
 vector3  returns [ org.nxn.math.Vector3f r ]:
     '(' a=floatNum ',' b=floatNum ',' c=floatNum ')'
-    { $r = new org.nxn.math.Vector3f($a.r, $b.r, $c.r); };
+    { $r = new org.nxn.math.Vector3f($a.r, $b.r, $c.r); } ;
 
 vector2  returns [ org.nxn.math.Vector2f r ]:
     '(' a=floatNum ',' b=floatNum ')'
-    { $r = new org.nxn.math.Vector2f($a.r, $b.r); };
+    { $r = new org.nxn.math.Vector2f($a.r, $b.r); } ;
 
 floatNum returns [ float r ]:
     s=('+'|'-')? n=DIGITS ('.' m=DIGITS)? (('e'|'E') e=('+'|'-')? p=DIGITS )?
@@ -48,7 +51,7 @@ floatNum returns [ float r ]:
             sb.append($p.text);
         }
         $r = Float.parseFloat(sb.toString());
-    };
+    } ;
 
 indNum returns [ int r ]:
     n=DIGITS
