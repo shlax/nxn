@@ -4,7 +4,7 @@ skeleton returns [ org.nxn.model.skeleton.ParsedJoint r ]:
     '[' j=joint ']' { $r = $j.r; } ;
 
 joint returns [ org.nxn.model.skeleton.ParsedJoint r ]:
-    nm=NAME ':' vec=vector3 ( ':' a=NAME)? (':' b=binding  )? ( ':' l=jointList )?
+    nm=NAME ':' vec=vector3 ( ':' a=NAME)? (':' b=bindings  )? ( ':' l=jointList )?
     { $r = new org.nxn.model.skeleton.ParsedJoint( $nm.text, $vec.r, $a.text, $b.r, $l.r); } ;
 
 jointList returns [ org.nxn.model.skeleton.ParsedJoint[] r ]:
@@ -12,11 +12,13 @@ jointList returns [ org.nxn.model.skeleton.ParsedJoint[] r ]:
     '[' j=joint { l.add($j.r); } (',' k=joint { l.add($k.r); } )* ']'
     { $r = l.toArray(new org.nxn.model.skeleton.ParsedJoint[0]); } ;
 
-binding returns [ org.nxn.model.skeleton.ParsedBinding[] r ]:
+bindings returns [ org.nxn.model.skeleton.ParsedBinding[] r ]:
     { java.util.List<org.nxn.model.skeleton.ParsedBinding> l = new java.util.ArrayList<org.nxn.model.skeleton.ParsedBinding>(); }
-    '[' n=NAME ':' i=indList { l.add(new org.nxn.model.skeleton.ParsedBinding($n.text, $i.r)); }
-        ( ',' m=NAME ':' j=indList { l.add(new org.nxn.model.skeleton.ParsedBinding($m.text, $j.r)); } )* ']'
+    '[' n=binding { l.add($n.r); } ( ',' m=binding { l.add($m.r); } )* ']'
     { $r = l.toArray( new org.nxn.model.skeleton.ParsedBinding[0] ); } ;
+
+binding returns [ org.nxn.model.skeleton.ParsedBinding r ]:
+    n=NAME ':' i=indList { $r = new org.nxn.model.skeleton.ParsedBinding($n.text, $i.r); } ;
 
 indList returns [ int[] r ]:
     { java.util.ArrayList<Integer> l = new java.util.ArrayList<Integer>(); }
