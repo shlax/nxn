@@ -55,9 +55,8 @@ class MouseInput(val window: GlfwWindow) extends AutoCloseable{
         GLFW.glfwSetInputMode(win, GLFW.GLFW_CURSOR, GLFW.GLFW_CURSOR_DISABLED)
         rotate = true
       }else if (action == GLFW.GLFW_RELEASE){
+        rotate = false; setXY = false
         GLFW.glfwSetInputMode(win, GLFW.GLFW_CURSOR, GLFW.GLFW_CURSOR_NORMAL)
-        rotate = false
-        setXY = false
       }
     }
   }))
