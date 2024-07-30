@@ -39,8 +39,7 @@ class ParsedModel(val points:Array[Vector3f], val faces:Array[ParsedTriangle]){
         vertexes(pv.index) = v
       }
 
-      val f = v.find( x => eqVertex(x.vertex, pv) )
-      if(f.isDefined) f.get.index else {
+      v.find( x => eqVertex(x.vertex, pv) ).map(_.index).getOrElse {
         val act = next
         val normal = v.map(_.vertex.normal).find( i => eqVector3f(i, pv.normal) ).getOrElse(pv.normal)
         val uvs = pv.uvs.zipWithIndex.map( i => v.map(_.vertex.uvs(i._2)).find( j => eqVector2f(j, i._1) ).getOrElse(i._1) )
