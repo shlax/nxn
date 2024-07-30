@@ -12,7 +12,7 @@ class ParsedModel(val points:Array[Vector3f], val faces:Array[ParsedTriangle]){
   }
 
   def compile(epsilon:Float = 0.0000001f):IndexedModel = {
-    case class IndexVertex(index:Int, vertex:VulkanVertex)
+    class IndexVertex(val index:Int, val vertex:VulkanVertex)
 
     val vertexes = new Array[mutable.ArrayBuffer[IndexVertex]](points.length)
     val indexes = new Array[VulkanTriangle](faces.length)
@@ -39,12 +39,12 @@ class ParsedModel(val points:Array[Vector3f], val faces:Array[ParsedTriangle]){
         vertexes(pv.index) = v
       }
 
-      val f = v.find( x => eqVertex(x._2, pv) )
-      if(f.isDefined) f.get._1 else {
+      val f = v.find( x => eqVertex(x.vertex, pv) )
+      if(f.isDefined) f.get.index else {
         val act = next
         val normal = v.map(_.vertex.normal).find( i => eqVector3f(i, pv.normal) ).getOrElse(pv.normal)
         val uvs = pv.uvs.zipWithIndex.map( i => v.map(_.vertex.uvs(i._2)).find( j => eqVector2f(j, i._1) ).getOrElse(i._1) )
-        v += IndexVertex(act, new VulkanVertex(points(pv.index), normal, uvs))
+        v += new IndexVertex(act, new VulkanVertex(points(pv.index), normal, uvs))
         next += 1
         act
       }
