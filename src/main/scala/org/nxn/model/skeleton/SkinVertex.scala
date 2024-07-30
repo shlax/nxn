@@ -17,7 +17,7 @@ object SkinVertex {
         throw new IllegalArgumentException("" + point + " != " + v.point)
       }
 
-      normals += normals.find(_.outNormal.eq(v.normal)).getOrElse(SkinNormal(v.normal))
+      normals += normals.find(_.is(v.normal)).getOrElse(SkinNormal(v.normal))
     }
 
     new SkinVertex(new Vector3f(point), point, normals.toArray)

@@ -16,4 +16,8 @@ class SkinNormal(val inNormal:Vector3f, val outNormal:Vector3f) {
     normalMatrix(inNormal, outNormal)
   }
 
+  def is(v:Vector3f):Boolean = {
+    outNormal.eq(v)
+  }
+
 }
