@@ -40,7 +40,9 @@ class ParsedModel(val points:Array[Vector3f], val faces:Array[ParsedTriangle]){
       val f = v.find( x => eqVertex(x._2, pv) )
       if(f.isDefined) f.get._1 else {
         val act = next
-        v.addOne( (act, new VulkanVertex(points(pv.index), pv.normal, pv.uvs)) )
+        val normal = v.map(_._2.normal).find( i => eqVector3f(i, pv.normal) ).getOrElse(pv.normal)
+        val uvs = pv.uvs.zipWithIndex.map( i => v.map(_._2.uvs(i._2)).find( j => eqVector2f(j, i._1) ).getOrElse(i._1) )
+        v.addOne( (act, new VulkanVertex(points(pv.index), normal, uvs)) )
         next += 1
         act
       }
