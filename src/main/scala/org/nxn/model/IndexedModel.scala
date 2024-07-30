@@ -2,8 +2,8 @@ package org.nxn.model
 
 class IndexedModel(val vulkanModel: VulkanModel, indexes:Array[Array[Int]]){
 
-  def lookup(i:Int):Array[Int] = {
-    indexes(i)
+  def apply(i:Int):Array[VulkanVertex] = {
+    indexes(i).map( i => vulkanModel.vertexes(i) )
   }
 
 }

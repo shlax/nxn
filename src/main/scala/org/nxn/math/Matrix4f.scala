@@ -43,25 +43,33 @@ class Matrix4f(var m00: Float, var m01: Float, var m02: Float, var m03: Float,  
                var m20: Float, var m21: Float, var m22: Float, var m23: Float,                         // 8  9  10 11
                var m30: Float, var m31: Float, var m32: Float, var m33: Float) extends ToFloatBuffer { // 12 13 14 15
 
-  def this() = this(1f, 0f, 0f, 0f,
-                    0f, 1f, 0f, 0f,
-                    0f, 0f, 1f, 0f,
-                    0f, 0f, 0f, 1f)
+  def this() = {
+    this(1f, 0f, 0f, 0f,
+         0f, 1f, 0f, 0f,
+         0f, 0f, 1f, 0f,
+         0f, 0f, 0f, 1f)
+  }
 
-  def this(v: Vector3f) = this(1f, 0f, 0f, v.x,
-                               0f, 1f, 0f, v.y,
-                               0f, 0f, 1f, v.z,
-                               0f, 0f, 0f, 1f)
+  def this(v: Vector3f) = {
+    this(1f, 0f, 0f, v.x,
+         0f, 1f, 0f, v.y,
+         0f, 0f, 1f, v.z,
+         0f, 0f, 0f, 1f)
+  }
 
-  def this(x:Float, y:Float, z:Float) = this(1f, 0f, 0f, x,
-                                             0f, 1f, 0f, y,
-                                             0f, 0f, 1f, z,
-                                             0f, 0f, 0f, 1f)
+  def this(x:Float, y:Float, z:Float) = {
+    this(1f, 0f, 0f, x,
+         0f, 1f, 0f, y,
+         0f, 0f, 1f, z,
+         0f, 0f, 0f, 1f)
+  }
 
-  def this(v: Matrix4f) = this(v.m00, v.m01, v.m02, v.m03,
-                               v.m10, v.m11, v.m12, v.m13,
-                               v.m20, v.m21, v.m22, v.m23,
-                               v.m30, v.m31, v.m32, v.m33)
+  def this(v: Matrix4f) = {
+    this(v.m00, v.m01, v.m02, v.m03,
+         v.m10, v.m11, v.m12, v.m13,
+         v.m20, v.m21, v.m22, v.m23,
+         v.m30, v.m31, v.m32, v.m33)
+  }
 
   def xRot(angle: Float): this.type = {
     val s = Math.sin(angle.toDouble).toFloat

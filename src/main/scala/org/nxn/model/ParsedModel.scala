@@ -12,7 +12,9 @@ class ParsedModel(val points:Array[Vector3f], val faces:Array[ParsedTriangle]){
   }
 
   def compile(epsilon:Float = 0.0000001f):IndexedModel = {
-    val vertexes = new Array[mutable.ArrayBuffer[(Int, VulkanVertex)]](points.length)
+    case class IndexVertex(index:Int, vertex:VulkanVertex)
+
+    val vertexes = new Array[mutable.ArrayBuffer[IndexVertex]](points.length)
     val indexes = new Array[VulkanTriangle](faces.length)
     var ind = 0
 
@@ -33,16 +35,16 @@ class ParsedModel(val points:Array[Vector3f], val faces:Array[ParsedTriangle]){
     def put(pv:ParsedVertex):Int = {
       var v = vertexes(pv.index)
       if(v == null){
-        v = new mutable.ArrayBuffer[(Int, VulkanVertex)]
+        v = new mutable.ArrayBuffer[IndexVertex]()
         vertexes(pv.index) = v
       }
 
       val f = v.find( x => eqVertex(x._2, pv) )
       if(f.isDefined) f.get._1 else {
         val act = next
-        val normal = v.map(_._2.normal).find( i => eqVector3f(i, pv.normal) ).getOrElse(pv.normal)
-        val uvs = pv.uvs.zipWithIndex.map( i => v.map(_._2.uvs(i._2)).find( j => eqVector2f(j, i._1) ).getOrElse(i._1) )
-        v.addOne( (act, new VulkanVertex(points(pv.index), normal, uvs)) )
+        val normal = v.map(_.vertex.normal).find( i => eqVector3f(i, pv.normal) ).getOrElse(pv.normal)
+        val uvs = pv.uvs.zipWithIndex.map( i => v.map(_.vertex.uvs(i._2)).find( j => eqVector2f(j, i._1) ).getOrElse(i._1) )
+        v += IndexVertex(act, new VulkanVertex(points(pv.index), normal, uvs))
         next += 1
         act
       }
@@ -54,12 +56,12 @@ class ParsedModel(val points:Array[Vector3f], val faces:Array[ParsedTriangle]){
     }
 
     val vertexArray = new Array[VulkanVertex](next)
-    for(i <- vertexes; j <- i) vertexArray(j._1) = j._2
+    for(i <- vertexes; j <- i) vertexArray(j.index) = j.vertex
 
     ind = 0
     val indMap = new Array[Array[Int]](vertexes.length)
     for(i <- vertexes){
-      indMap(ind) = i.map(_._1).toArray
+      indMap(ind) = i.map(_.index).toArray
       ind += 1
     }
 

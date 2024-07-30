@@ -5,9 +5,15 @@ import org.nxn.vulkan.memory.ToFloatBuffer
 import java.nio.FloatBuffer
 
 class Vector3f(var x : Float, var y : Float, var z : Float)  extends ToFloatBuffer{
-  
-  def this() = this(0f, 0f, 0f)
 
+  def this() = {
+    this(0f, 0f, 0f)
+  }
+
+  def this(v: Vector3f) = {
+    this(v.x, v.y, v.z)
+  }
+  
   def set(vx: Float, vy:Float, vz:Float): this.type  = {
     x = vx
     y = vy
@@ -16,6 +22,14 @@ class Vector3f(var x : Float, var y : Float, var z : Float)  extends ToFloatBuff
     this
   }
 
+  def set(v:Vector3f): this.type  = {
+    x = v.x
+    y = v.y
+    z = v.z
+    
+    this
+  }
+  
   def add(a:Vector3f, b:Vector3f):this.type = {
     x = a.x + b.x
     y = a.y + b.y
