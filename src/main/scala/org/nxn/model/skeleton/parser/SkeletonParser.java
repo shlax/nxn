@@ -1,4 +1,4 @@
-// Generated from C:/Users/root/IdeaProjects/NXN/src/g4/Skeleton.g4 by ANTLR 4.13.1
+// Generated from /home/pochodnicky/wrksp/no-git/NXN/src/g4/Skeleton.g4 by ANTLR 4.13.1
 package org.nxn.model.skeleton.parser;
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
@@ -324,7 +324,7 @@ public class SkeletonParser extends Parser {
 			match(T__6);
 			setState(63);
 			((AngleContext)_localctx).t = match(NAME);
-			 ((AngleContext)_localctx).r =  new org.nxn.model.skeleton.ParsedAngle((((AngleContext)_localctx).f!=null?((AngleContext)_localctx).f.getText():null), (((AngleContext)_localctx).t!=null?((AngleContext)_localctx).t.getText():null), ((AngleContext)_localctx).n.r); 
+			 ((AngleContext)_localctx).r =  new org.nxn.model.skeleton.ParsedAngle(org.nxn.utils.Axis.valueOf((((AngleContext)_localctx).f!=null?((AngleContext)_localctx).f.getText():null)), org.nxn.utils.Axis.valueOf((((AngleContext)_localctx).t!=null?((AngleContext)_localctx).t.getText():null)), ((AngleContext)_localctx).n.r); 
 			}
 		}
 		catch (RecognitionException re) {

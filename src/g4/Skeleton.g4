@@ -14,7 +14,7 @@ angles returns [ org.nxn.model.skeleton.ParsedAngle[] r ]:
 
 angle returns [ org.nxn.model.skeleton.ParsedAngle r ]:
     n=floatNum ':' f=NAME '->' t=NAME
-    { $r = new org.nxn.model.skeleton.ParsedAngle($f.text, $t.text, $n.r); };
+    { $r = new org.nxn.model.skeleton.ParsedAngle(org.nxn.utils.Axis.valueOf($f.text), org.nxn.utils.Axis.valueOf($t.text), $n.r); };
 
 jointList returns [ org.nxn.model.skeleton.ParsedJoint[] r ]:
     { java.util.List<org.nxn.model.skeleton.ParsedJoint> l = new java.util.ArrayList<org.nxn.model.skeleton.ParsedJoint>(); }

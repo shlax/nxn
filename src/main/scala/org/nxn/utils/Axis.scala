@@ -1,4 +1,4 @@
-package org.nxn.math
+package org.nxn.utils
 
 enum Axis extends Enum[Axis] {
   case X extends Axis
