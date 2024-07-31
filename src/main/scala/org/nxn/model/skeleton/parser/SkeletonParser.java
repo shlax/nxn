@@ -138,7 +138,7 @@ public class SkeletonParser extends Parser {
 	public static class JointContext extends ParserRuleContext {
 		public org.nxn.model.skeleton.ParsedJoint r;
 		public Token nm;
-		public Vector3Context vec;
+		public Vector3Context v;
 		public AnglesContext a;
 		public BindingsContext b;
 		public JointListContext l;
@@ -178,7 +178,7 @@ public class SkeletonParser extends Parser {
 			case 1:
 				{
 				setState(29);
-				((JointContext)_localctx).vec = vector3();
+				((JointContext)_localctx).v = vector3();
 				}
 				break;
 			case 2:
@@ -212,7 +212,7 @@ public class SkeletonParser extends Parser {
 				}
 			}
 
-			 ((JointContext)_localctx).r =  new org.nxn.model.skeleton.ParsedJoint( (((JointContext)_localctx).nm!=null?((JointContext)_localctx).nm.getText():null), ((JointContext)_localctx).vec.r, ((JointContext)_localctx).a.r, ((JointContext)_localctx).b.r, ((JointContext)_localctx).l.r); 
+			 ((JointContext)_localctx).r =  new org.nxn.model.skeleton.ParsedJoint( (((JointContext)_localctx).nm!=null?((JointContext)_localctx).nm.getText():null), ((JointContext)_localctx).v.r, ((JointContext)_localctx).a.r, ((JointContext)_localctx).b.r, ((JointContext)_localctx).l.r); 
 			}
 		}
 		catch (RecognitionException re) {

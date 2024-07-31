@@ -4,8 +4,8 @@ skeleton returns [ org.nxn.model.skeleton.ParsedJoint result ]:
     '[' j=joint ']' { $result = $j.r; } ;
 
 joint returns [ org.nxn.model.skeleton.ParsedJoint r ]:
-    nm=NAME ':' (vec=vector3 | a=angles) (':' b=bindings  )? ( ':' l=jointList )?
-    { $r = new org.nxn.model.skeleton.ParsedJoint( $nm.text, $vec.r, $a.r, $b.r, $l.r); } ;
+    nm=NAME ':' (v=vector3 | a=angles) (':' b=bindings  )? ( ':' l=jointList )?
+    { $r = new org.nxn.model.skeleton.ParsedJoint( $nm.text, $v.r, $a.r, $b.r, $l.r); } ;
 
 angles returns [ org.nxn.model.skeleton.ParsedAngle[] r ]:
     { java.util.List<org.nxn.model.skeleton.ParsedAngle> l = new java.util.ArrayList<org.nxn.model.skeleton.ParsedAngle>(); }
