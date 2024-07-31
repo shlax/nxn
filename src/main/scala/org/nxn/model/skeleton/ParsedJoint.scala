@@ -16,7 +16,7 @@ class ParsedJoint(val name:String, val point: Vector3f, val angles:Array[ParsedA
     if(angles.groupBy(_.to).maxBy(_._2.length)._2.length > 1) throw new IllegalArgumentException("duplicate to angle value")
   }
 
-  def apply(models:Map[String, IndexedModel]):AbstractJoint = {
+  def apply(parent:RotatingJoint, models:Map[String, IndexedModel]):AbstractJoint = {
     val vertexes = new mutable.ArrayBuffer[SkinVertex]()
     if(binding != null) {
       for (b <- binding) {
@@ -28,8 +28,20 @@ class ParsedJoint(val name:String, val point: Vector3f, val angles:Array[ParsedA
     }
 
     val sub = if(subJoints == null) new Array[AbstractJoint](0) else new Array[AbstractJoint](subJoints.length)
-    val ret = new AbstractJoint(vertexes.toArray, sub)
-    for(i <- subJoints.zipWithIndex) sub(i._2) = i._1(models)
+
+    val ret = if(point != null) new RotatingJoint(point, vertexes.toArray, sub)
+      else{
+        val ang = angles.map(i => i(parent))
+        new InterpolatedJoint(ang, vertexes.toArray, sub)
+      }
+
+    val par = ret match {
+        case j: RotatingJoint => j
+        case _ => parent
+      }
+
+    for(i <- subJoints.zipWithIndex) sub(i._2) = i._1(par, models)
+
     ret
   }
 
