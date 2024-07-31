@@ -7,7 +7,9 @@ object Angle3f{
 class Angle3f(start:Float = 0, min:Float = -Angle3f.PIx2, max:Float = Angle3f.PIx2) {
   private var angle: Float = start
 
-  def apply(): Float = angle
+  def apply(): Float = {
+    angle
+  }
   
   def add(v: Float): Float = {
     angle += v

@@ -11,17 +11,19 @@ class ParsedJoint(val name:String, val point: Vector3f, val angles:Array[ParsedA
   if(point == null && angles == null) throw new IllegalArgumentException("point == null && angles == null")
   if(point != null && angles != null) throw new IllegalArgumentException("point != null && angles != null")
   if(angles != null){
-    if (angles.length == 0) throw new IllegalArgumentException("angles == 0")
-    if (angles.length > 3) throw new IllegalArgumentException("angles > 3 :" + angles.length)
-    if (angles.groupBy(_.to).maxBy(_._2.length)._2.length > 1) throw new IllegalArgumentException("duplicate angle value")
+    if(angles.length == 0) throw new IllegalArgumentException("angles == 0")
+    if(angles.length > 3) throw new IllegalArgumentException("angles > 3 :" + angles.length)
+    if(angles.groupBy(_.to).maxBy(_._2.length)._2.length > 1) throw new IllegalArgumentException("duplicate to angle value")
   }
 
   def apply(models:Map[String, IndexedModel]):AbstractJoint = {
     val vertexes = new mutable.ArrayBuffer[SkinVertex]()
-    for(b <- binding){
-      val m = models(b.mesh)
-      for(i <- b.indexes){
-        vertexes += SkinVertex(m(i))
+    if(binding != null) {
+      for (b <- binding) {
+        val m = models(b.mesh)
+        for (i <- b.indexes) {
+          vertexes += SkinVertex(m(i))
+        }
       }
     }
 
