@@ -27,8 +27,10 @@ class ParsedJoint(val name:String, val point: Vector3f, val angles:Array[ParsedA
       }
     }
 
-    val sub = if(subJoints == null) new Array[AbstractJoint](0) else subJoints.map(j => j(models))
-    new AbstractJoint(vertexes.toArray, sub)
+    val sub = if(subJoints == null) new Array[AbstractJoint](0) else new Array[AbstractJoint](subJoints.length)
+    val ret = new AbstractJoint(vertexes.toArray, sub)
+    for(i <- subJoints.zipWithIndex) sub(i._2) = i._1(models)
+    ret
   }
 
 }
