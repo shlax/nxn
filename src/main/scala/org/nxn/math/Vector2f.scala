@@ -93,6 +93,7 @@ class Vector2f(var x : Float, var y : Float) extends ToFloatBuffer{
     a.x * this.x + a.y * this.y
   }
 
+  /** return z */
   def cross(v: Vector2f): Float = {
     this.x * v.y - v.x * this.y
   }
