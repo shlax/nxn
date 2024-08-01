@@ -5,7 +5,12 @@ import org.nxn.utils.Axis
 
 class InterpolatedAngle(val angle: Angle3f, val to:Axis, val value:Float){
 
-  def apply(m:Matrix4f):Matrix4f = {
+  def rotation(): Matrix4f = {
+    val v = value * angle()
+    to.rotate(v)
+  }
+
+  def rotation(m:Matrix4f):Matrix4f = {
     val v = value * angle()
     to.rotate(m, v)
   }

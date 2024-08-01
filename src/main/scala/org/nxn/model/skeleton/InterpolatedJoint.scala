@@ -7,16 +7,16 @@ class InterpolatedJoint(name:String, val interpolations:Array[InterpolatedAngle]
   
   def apply(modelMatrix:Matrix4f, normalMatrix:Matrix4f):Unit = {
     if(interpolations.length == 1){
-      val rot = interpolations.head(new Matrix4f())
+      val rot = interpolations.head.rotation()
 
       val tmp = Matrix4f.mul(modelMatrix, rot)
       rot.mulMxT(normalMatrix)
 
       update(tmp, rot)
     }else{
-      val tmp = interpolations.head(new Matrix4f())
-      val rot = interpolations.tail.head(new Matrix4f()).mulMxT(tmp)
-      for (i <- interpolations.tail.tail) rot.mulTxM(i(tmp))
+      val tmp = interpolations.head.rotation()
+      val rot = interpolations.tail.head.rotation().mulMxT(tmp)
+      for (i <- interpolations.tail.tail) rot.mulTxM(i.rotation(tmp))
 
       tmp.mul(modelMatrix, rot)
       rot.mulMxT(normalMatrix)
