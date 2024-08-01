@@ -18,9 +18,10 @@ class RotatingJoint(val point: Vector3f, vertexes:Array[SkinVertex], subJoints:A
 
   def apply(modelMatrix:Matrix4f, normalMatrix:Matrix4f):Unit = {
     val tmp = Matrix4f.zRot(z())
-    val rot = Matrix4f.yRot(y()).mulMxT(tmp).mulTxM(tmp.xRot(x())).mulMxT(normalMatrix)
+    val rot = Matrix4f.yRot(y()).mulMxT(tmp).mulTxM(tmp.xRot(x()))
 
     tmp.set(point).mulMxT(rot).mulMxT(modelMatrix)
+    rot.mulMxT(normalMatrix)
 
     for(s <- subJoints) s(tmp, rot)
   }

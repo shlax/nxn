@@ -8,18 +8,19 @@ class InterpolatedJoint(val interpolations:Array[InterpolatedAngle],
   def apply(modelMatrix:Matrix4f, normalMatrix:Matrix4f):Unit = {
 
     if(interpolations.length == 1){
-      val rot = interpolations.head(new Matrix4f()).mulMxT(normalMatrix)
+      val rot = interpolations.head(new Matrix4f())
 
       val tmp = Matrix4f.mul(modelMatrix, rot)
+      rot.mulMxT(normalMatrix)
 
       for (s <- subJoints) s(tmp, rot)
     }else{
       val tmp = interpolations.head(new Matrix4f())
       val rot = interpolations.tail.head(new Matrix4f()).mulMxT(tmp)
       for (i <- interpolations.tail.tail) rot.mulTxM(i(tmp))
-      rot.mulMxT(normalMatrix)
 
       tmp.mul(modelMatrix, rot)
+      rot.mulMxT(normalMatrix)
 
       for (s <- subJoints) s(tmp, rot)
     }
