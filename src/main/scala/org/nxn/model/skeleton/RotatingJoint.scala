@@ -23,7 +23,7 @@ class RotatingJoint(val point: Vector3f, vertexes:Array[SkinVertex], subJoints:A
     tmp.set(point).mulMxT(rot).mulMxT(modelMatrix)
     rot.mulMxT(normalMatrix)
 
-    for(s <- subJoints) s(tmp, rot)
+    update(tmp, rot)
   }
 
 }

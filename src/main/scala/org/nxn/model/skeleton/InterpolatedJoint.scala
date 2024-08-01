@@ -6,14 +6,13 @@ class InterpolatedJoint(val interpolations:Array[InterpolatedAngle],
                           vertexes:Array[SkinVertex], subJoints:Array[AbstractJoint]) extends AbstractJoint(vertexes, subJoints){
 
   def apply(modelMatrix:Matrix4f, normalMatrix:Matrix4f):Unit = {
-
     if(interpolations.length == 1){
       val rot = interpolations.head(new Matrix4f())
 
       val tmp = Matrix4f.mul(modelMatrix, rot)
       rot.mulMxT(normalMatrix)
 
-      for (s <- subJoints) s(tmp, rot)
+      update(tmp, rot)
     }else{
       val tmp = interpolations.head(new Matrix4f())
       val rot = interpolations.tail.head(new Matrix4f()).mulMxT(tmp)
@@ -22,9 +21,8 @@ class InterpolatedJoint(val interpolations:Array[InterpolatedAngle],
       tmp.mul(modelMatrix, rot)
       rot.mulMxT(normalMatrix)
 
-      for (s <- subJoints) s(tmp, rot)
+      update(tmp, rot)
     }
-
   }
 
 }
