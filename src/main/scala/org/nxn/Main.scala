@@ -49,13 +49,13 @@ object Main extends Runnable{
         val inFlightFence = use(new Fence(sys.device))
 
         // vec2(0.0, -0.5), vec2(-0.5, 0.5), vec2(0.5, 0.5)
-        val points = use(new Buffer(sys.device, cube.vertexesSize(), VK10.VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
+        val points = use(new Buffer(sys.device, cube.vertexesSize, VK10.VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
             VK10.VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK10.VK_MEMORY_PROPERTY_HOST_COHERENT_BIT)).mapMemory{ memory =>
           val b = MemoryUtil.memFloatBuffer(memory.address, memory.size)
           cube.toFloatBuffer(b)
         }
 
-        val indexes = use(new Buffer(sys.device, cube.indexesSize(), VK10.VK_BUFFER_USAGE_INDEX_BUFFER_BIT,
+        val indexes = use(new Buffer(sys.device, cube.indexesSize, VK10.VK_BUFFER_USAGE_INDEX_BUFFER_BIT,
           VK10.VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK10.VK_MEMORY_PROPERTY_HOST_COHERENT_BIT)).mapMemory{ memory =>
           val b = MemoryUtil.memIntBuffer(memory.address, memory.size)
           cube.toIntBuffer(b)
@@ -88,7 +88,7 @@ object Main extends Runnable{
             val bindings = VkVertexInputBindingDescription.calloc(1, stack)
             bindings.get(0)
               .binding(0)
-              .stride(cube.vertexesStride())
+              .stride(cube.vertexesStride)
               .inputRate(VK10.VK_VERTEX_INPUT_RATE_VERTEX)
             info.pVertexBindingDescriptions(bindings)
 
@@ -168,7 +168,7 @@ object Main extends Runnable{
 
               VK10.vkCmdBindVertexBuffers(buff, 0, stack.longs(points.vkBuffer), stack.longs(0L))
               VK10.vkCmdBindIndexBuffer(buff, indexes.vkBuffer, 0, VK10.VK_INDEX_TYPE_UINT32) //VK10.vkCmdDraw(buff, 3, 1, 0, 0)
-              VK10.vkCmdDrawIndexed(buff, cube.indexesCount(), 1, 0, 0, 0)
+              VK10.vkCmdDrawIndexed(buff, cube.indexesCount, 1, 0, 0, 0)
             }
 
             graphicsQueue.submit(cmdBuff, imageAvailableSemaphore, VK10.VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, renderFinishedSemaphore, inFlightFence)

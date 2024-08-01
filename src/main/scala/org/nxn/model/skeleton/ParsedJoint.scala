@@ -1,7 +1,7 @@
 package org.nxn.model.skeleton
 
 import org.nxn.math.Vector3f
-import org.nxn.model.IndexedModel
+import org.nxn.model.CompiledModel
 
 import scala.collection.mutable
 
@@ -16,7 +16,7 @@ class ParsedJoint(val name:String, val point: Vector3f, val angles:Array[ParsedA
     if(angles.groupBy(_.to).maxBy(_._2.length)._2.length > 1) throw new IllegalArgumentException("duplicate to angle value")
   }
 
-  def apply(parent:RotatingJoint, models:Map[String, IndexedModel]):AbstractJoint = {
+  def apply(parent:RotatingJoint, models:Map[String, CompiledModel]):AbstractJoint = {
     val vertexes = new mutable.ArrayBuffer[SkinVertex]()
     if(binding != null) {
       for (b <- binding) {

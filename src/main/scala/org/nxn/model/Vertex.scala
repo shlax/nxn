@@ -5,7 +5,7 @@ import org.nxn.vulkan.memory.{ToFloatBuffer, TypeLength}
 
 import java.nio.FloatBuffer
 
-class VulkanVertex(val point:Vector3f, val normal:Vector3f, val uvs:Array[Vector2f]) extends ToFloatBuffer {
+class Vertex(val point:Vector3f, val normal:Vector3f, val uvs:Array[Vector2f]) extends ToFloatBuffer {
 
   override def toFloatBuffer(b: FloatBuffer): FloatBuffer = {
     point.toFloatBuffer(b)
@@ -14,7 +14,7 @@ class VulkanVertex(val point:Vector3f, val normal:Vector3f, val uvs:Array[Vector
     b
   }
 
-  def size():Int = {
+  def size:Int = {
     TypeLength.floatLength(3 + 3) + TypeLength.floatLength(2 * uvs.length)
   }
 

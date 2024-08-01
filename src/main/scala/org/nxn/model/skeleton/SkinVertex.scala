@@ -1,14 +1,14 @@
 package org.nxn.model.skeleton
 
 import org.nxn.math.{Matrix4f, Vector3f}
-import org.nxn.model.VulkanVertex
+import org.nxn.model.Vertex
 
 import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer
 
 object SkinVertex {
 
-  def apply(points:Array[VulkanVertex]):SkinVertex = {
+  def apply(points:Array[Vertex]):SkinVertex = {
     val point = points.head.point
     val normals = new ArrayBuffer[SkinNormal]()
 
