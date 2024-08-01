@@ -4,6 +4,34 @@ import org.nxn.vulkan.memory.ToFloatBuffer
 
 import java.nio.FloatBuffer
 
+object Vector3f{
+
+  def cross(v1: Vector3f, v2: Vector3f): Vector3f = {
+    val tx = v1.y * v2.z - v1.z * v2.y
+    val ty = v1.z * v2.x - v1.x * v2.z
+    val tz = v1.x * v2.y - v1.y * v2.x
+
+    new Vector3f(tx, ty, tz)
+  }
+
+  def add(a: Vector3f, b: Vector3f): Vector3f = {
+    val x = a.x + b.x
+    val y = a.y + b.y
+    val z = a.z + b.z
+
+    new Vector3f(x, y, z)
+  }
+
+  def sub(a: Vector3f, b: Vector3f): Vector3f = {
+    val x = a.x - b.x
+    val y = a.y - b.y
+    val z = a.z - b.z
+
+    new Vector3f(x, y, z)
+  }
+
+}
+
 class Vector3f(var x : Float, var y : Float, var z : Float)  extends ToFloatBuffer{
 
   def this() = {
