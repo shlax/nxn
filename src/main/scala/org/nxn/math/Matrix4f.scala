@@ -16,7 +16,7 @@ object Matrix4f{
                  0f, 0f, 0f, 1f)
   }
 
-  def yRot(angle: Float): Matrix4f= {
+  def yRot(angle: Float): Matrix4f = {
     val s = Math.sin(angle.toDouble).toFloat
     val c = Math.cos(angle.toDouble).toFloat
 
@@ -34,6 +34,30 @@ object Matrix4f{
                  s , c , 0f, 0f,
                  0f, 0f, 1f, 0f,
                  0f, 0f, 0f, 1f)
+  }
+
+  def mul(m : Matrix4f, n : Matrix4f):Matrix4f = {
+    val t00 = m.m00 * n.m00 + m.m01 * n.m10 + m.m02 * n.m20 + m.m03 * n.m30
+    val t01 = m.m00 * n.m01 + m.m01 * n.m11 + m.m02 * n.m21 + m.m03 * n.m31
+    val t02 = m.m00 * n.m02 + m.m01 * n.m12 + m.m02 * n.m22 + m.m03 * n.m32
+    val t03 = m.m00 * n.m03 + m.m01 * n.m13 + m.m02 * n.m23 + m.m03 * n.m33
+    val t10 = m.m10 * n.m00 + m.m11 * n.m10 + m.m12 * n.m20 + m.m13 * n.m30
+    val t11 = m.m10 * n.m01 + m.m11 * n.m11 + m.m12 * n.m21 + m.m13 * n.m31
+    val t12 = m.m10 * n.m02 + m.m11 * n.m12 + m.m12 * n.m22 + m.m13 * n.m32
+    val t13 = m.m10 * n.m03 + m.m11 * n.m13 + m.m12 * n.m23 + m.m13 * n.m33
+    val t20 = m.m20 * n.m00 + m.m21 * n.m10 + m.m22 * n.m20 + m.m23 * n.m30
+    val t21 = m.m20 * n.m01 + m.m21 * n.m11 + m.m22 * n.m21 + m.m23 * n.m31
+    val t22 = m.m20 * n.m02 + m.m21 * n.m12 + m.m22 * n.m22 + m.m23 * n.m32
+    val t23 = m.m20 * n.m03 + m.m21 * n.m13 + m.m22 * n.m23 + m.m23 * n.m33
+    val t30 = m.m30 * n.m00 + m.m31 * n.m10 + m.m32 * n.m20 + m.m33 * n.m30
+    val t31 = m.m30 * n.m01 + m.m31 * n.m11 + m.m32 * n.m21 + m.m33 * n.m31
+    val t32 = m.m30 * n.m02 + m.m31 * n.m12 + m.m32 * n.m22 + m.m33 * n.m32
+    val t33 = m.m30 * n.m03 + m.m31 * n.m13 + m.m32 * n.m23 + m.m33 * n.m33
+
+    new Matrix4f(t00, t01, t02, t03,
+                 t10, t11, t12, t13,
+                 t20, t21, t22, t23,
+                 t30, t31, t32, t33)
   }
 
 }
