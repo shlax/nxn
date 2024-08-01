@@ -181,11 +181,11 @@ class Matrix4f(var m00: Float, var m01: Float, var m02: Float, var m03: Float,  
     out
   }
 
-  def mulThis(m : Matrix4f) : this.type = {
+  def mulTxM(m : Matrix4f) : this.type = {
     mul(this, m)
   }
 
-  def mulWith(m: Matrix4f): this.type = {
+  def mulMxT(m: Matrix4f): this.type = {
     mul(m, this)
   }
 
