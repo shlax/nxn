@@ -35,7 +35,7 @@ class ParsedJoint(val name:String, val point: Vector3f, val axis:Array[Axis], va
 
     val sub = if(subJoints == null) new Array[AbstractJoint](0) else new Array[AbstractJoint](subJoints.length)
 
-    val ret = if(point != null) new RotatingJoint(name.intern(), point, vertexes.toArray, sub)
+    val ret = if(point != null) new RotatingJoint(name.intern(), point, axis.map(a => new AxisAngle(a)), vertexes.toArray, sub)
       else{
         val ang = angles.map(i => i(parent))
         new InterpolatedJoint(name.intern(), ang, vertexes.toArray, sub)
