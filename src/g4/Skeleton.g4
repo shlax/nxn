@@ -4,16 +4,20 @@ skeleton returns [ org.nxn.model.skeleton.ParsedJoint result ]:
     '[' j=joint ']' { $result = $j.r; } ;
 
 joint returns [ org.nxn.model.skeleton.ParsedJoint r ]:
-    nm=NAME ':' (v=vector3 | a=angles) (':' b=bindings  )? ( ':' l=jointList )?
-    { $r = new org.nxn.model.skeleton.ParsedJoint( $nm.text, $v.r, $a.r, $b.r, $l.r); } ;
+    nm=NAME ':' ( (v=vector3 o=axis) | a=angles ) (':' b=bindings  )? ( ':' l=jointList )?
+    { $r = new org.nxn.model.skeleton.ParsedJoint( $nm.text, $v.r, $o.r, $a.r, $b.r, $l.r); };
+
+axis returns [ org.nxn.utils.Axis[] r ]:
+    ':' t=NAME
+    { $r = $t.text.chars().mapToObj(c -> org.nxn.utils.Axis.valueOf(String.valueOf((char)c))).toArray(l -> new org.nxn.utils.Axis[l]); };
 
 angles returns [ org.nxn.model.skeleton.ParsedAngle[] r ]:
     { java.util.List<org.nxn.model.skeleton.ParsedAngle> l = new java.util.ArrayList<org.nxn.model.skeleton.ParsedAngle>(); }
     '(' j=angle { l.add($j.r); } (',' k=angle { l.add($k.r); } )* ')'
-    { $r = l.toArray(new org.nxn.model.skeleton.ParsedAngle[0]); } ;
+    { $r = l.toArray(new org.nxn.model.skeleton.ParsedAngle[0]); };
 
 angle returns [ org.nxn.model.skeleton.ParsedAngle r ]:
-    n=floatNum ':' f=NAME '->' t=NAME
+    n=floatNum ':' f=NAME '-' '>' t=NAME
     { $r = new org.nxn.model.skeleton.ParsedAngle(org.nxn.utils.Axis.valueOf($f.text), org.nxn.utils.Axis.valueOf($t.text), $n.r); };
 
 jointList returns [ org.nxn.model.skeleton.ParsedJoint[] r ]:

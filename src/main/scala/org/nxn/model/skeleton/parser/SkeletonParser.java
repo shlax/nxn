@@ -1,4 +1,4 @@
-// Generated from /home/pochodnicky/wrksp/no-git/NXN/src/g4/Skeleton.g4 by ANTLR 4.13.1
+// Generated from C:/Users/root/IdeaProjects/NXN/src/g4/Skeleton.g4 by ANTLR 4.13.1
 package org.nxn.model.skeleton.parser;
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
@@ -20,20 +20,20 @@ public class SkeletonParser extends Parser {
 		T__0=1, T__1=2, T__2=3, T__3=4, T__4=5, T__5=6, T__6=7, T__7=8, T__8=9, 
 		T__9=10, T__10=11, T__11=12, NAME=13, DIGITS=14, WS=15;
 	public static final int
-		RULE_skeleton = 0, RULE_joint = 1, RULE_angles = 2, RULE_angle = 3, RULE_jointList = 4, 
-		RULE_bindings = 5, RULE_binding = 6, RULE_indList = 7, RULE_vector3 = 8, 
-		RULE_floatNum = 9, RULE_indNum = 10;
+		RULE_skeleton = 0, RULE_joint = 1, RULE_axis = 2, RULE_angles = 3, RULE_angle = 4, 
+		RULE_jointList = 5, RULE_bindings = 6, RULE_binding = 7, RULE_indList = 8, 
+		RULE_vector3 = 9, RULE_floatNum = 10, RULE_indNum = 11;
 	private static String[] makeRuleNames() {
 		return new String[] {
-			"skeleton", "joint", "angles", "angle", "jointList", "bindings", "binding", 
-			"indList", "vector3", "floatNum", "indNum"
+			"skeleton", "joint", "axis", "angles", "angle", "jointList", "bindings", 
+			"binding", "indList", "vector3", "floatNum", "indNum"
 		};
 	}
 	public static final String[] ruleNames = makeRuleNames();
 
 	private static String[] makeLiteralNames() {
 		return new String[] {
-			null, "'['", "']'", "':'", "'('", "','", "')'", "'->'", "'+'", "'-'", 
+			null, "'['", "']'", "':'", "'('", "','", "')'", "'-'", "'>'", "'+'", 
 			"'.'", "'e'", "'E'"
 		};
 	}
@@ -114,11 +114,11 @@ public class SkeletonParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(22);
-			match(T__0);
-			setState(23);
-			((SkeletonContext)_localctx).j = joint();
 			setState(24);
+			match(T__0);
+			setState(25);
+			((SkeletonContext)_localctx).j = joint();
+			setState(26);
 			match(T__1);
 			 ((SkeletonContext)_localctx).result =  ((SkeletonContext)_localctx).j.r; 
 			}
@@ -139,13 +139,11 @@ public class SkeletonParser extends Parser {
 		public org.nxn.model.skeleton.ParsedJoint r;
 		public Token nm;
 		public Vector3Context v;
+		public AxisContext o;
 		public AnglesContext a;
 		public BindingsContext b;
 		public JointListContext l;
 		public TerminalNode NAME() { return getToken(SkeletonParser.NAME, 0); }
-		public Vector3Context vector3() {
-			return getRuleContext(Vector3Context.class,0);
-		}
 		public AnglesContext angles() {
 			return getRuleContext(AnglesContext.class,0);
 		}
@@ -154,6 +152,12 @@ public class SkeletonParser extends Parser {
 		}
 		public JointListContext jointList() {
 			return getRuleContext(JointListContext.class,0);
+		}
+		public Vector3Context vector3() {
+			return getRuleContext(Vector3Context.class,0);
+		}
+		public AxisContext axis() {
+			return getRuleContext(AxisContext.class,0);
 		}
 		public JointContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -168,51 +172,90 @@ public class SkeletonParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(27);
+			setState(29);
 			((JointContext)_localctx).nm = match(NAME);
-			setState(28);
+			setState(30);
 			match(T__2);
-			setState(31);
+			setState(35);
 			_errHandler.sync(this);
 			switch ( getInterpreter().adaptivePredict(_input,0,_ctx) ) {
 			case 1:
 				{
-				setState(29);
+				{
+				setState(31);
 				((JointContext)_localctx).v = vector3();
+				setState(32);
+				((JointContext)_localctx).o = axis();
+				}
 				}
 				break;
 			case 2:
 				{
-				setState(30);
-				((JointContext)_localctx).a = angles();
-				}
-				break;
-			}
-			setState(35);
-			_errHandler.sync(this);
-			switch ( getInterpreter().adaptivePredict(_input,1,_ctx) ) {
-			case 1:
-				{
-				setState(33);
-				match(T__2);
 				setState(34);
-				((JointContext)_localctx).b = bindings();
+				((JointContext)_localctx).a = angles();
 				}
 				break;
 			}
 			setState(39);
 			_errHandler.sync(this);
-			_la = _input.LA(1);
-			if (_la==T__2) {
+			switch ( getInterpreter().adaptivePredict(_input,1,_ctx) ) {
+			case 1:
 				{
 				setState(37);
 				match(T__2);
 				setState(38);
+				((JointContext)_localctx).b = bindings();
+				}
+				break;
+			}
+			setState(43);
+			_errHandler.sync(this);
+			_la = _input.LA(1);
+			if (_la==T__2) {
+				{
+				setState(41);
+				match(T__2);
+				setState(42);
 				((JointContext)_localctx).l = jointList();
 				}
 			}
 
-			 ((JointContext)_localctx).r =  new org.nxn.model.skeleton.ParsedJoint( (((JointContext)_localctx).nm!=null?((JointContext)_localctx).nm.getText():null), ((JointContext)_localctx).v.r, ((JointContext)_localctx).a.r, ((JointContext)_localctx).b.r, ((JointContext)_localctx).l.r); 
+			 ((JointContext)_localctx).r =  new org.nxn.model.skeleton.ParsedJoint( (((JointContext)_localctx).nm!=null?((JointContext)_localctx).nm.getText():null), ((JointContext)_localctx).v.r, ((JointContext)_localctx).o.r, ((JointContext)_localctx).a.r, ((JointContext)_localctx).b.r, ((JointContext)_localctx).l.r); 
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	@SuppressWarnings("CheckReturnValue")
+	public static class AxisContext extends ParserRuleContext {
+		public org.nxn.utils.Axis[] r;
+		public Token t;
+		public TerminalNode NAME() { return getToken(SkeletonParser.NAME, 0); }
+		public AxisContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_axis; }
+	}
+
+	public final AxisContext axis() throws RecognitionException {
+		AxisContext _localctx = new AxisContext(_ctx, getState());
+		enterRule(_localctx, 4, RULE_axis);
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(47);
+			match(T__2);
+			setState(48);
+			((AxisContext)_localctx).t = match(NAME);
+			 ((AxisContext)_localctx).r =  (((AxisContext)_localctx).t!=null?((AxisContext)_localctx).t.getText():null).chars().mapToObj(c -> org.nxn.utils.Axis.valueOf(String.valueOf((char)c))).toArray(l -> new org.nxn.utils.Axis[l]); 
 			}
 		}
 		catch (RecognitionException re) {
@@ -245,35 +288,35 @@ public class SkeletonParser extends Parser {
 
 	public final AnglesContext angles() throws RecognitionException {
 		AnglesContext _localctx = new AnglesContext(_ctx, getState());
-		enterRule(_localctx, 4, RULE_angles);
+		enterRule(_localctx, 6, RULE_angles);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
 			 java.util.List<org.nxn.model.skeleton.ParsedAngle> l = new java.util.ArrayList<org.nxn.model.skeleton.ParsedAngle>(); 
-			setState(44);
+			setState(52);
 			match(T__3);
-			setState(45);
+			setState(53);
 			((AnglesContext)_localctx).j = angle();
 			 l.add(((AnglesContext)_localctx).j.r); 
-			setState(53);
+			setState(61);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while (_la==T__4) {
 				{
 				{
-				setState(47);
+				setState(55);
 				match(T__4);
-				setState(48);
+				setState(56);
 				((AnglesContext)_localctx).k = angle();
 				 l.add(((AnglesContext)_localctx).k.r); 
 				}
 				}
-				setState(55);
+				setState(63);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
-			setState(56);
+			setState(64);
 			match(T__5);
 			 ((AnglesContext)_localctx).r =  l.toArray(new org.nxn.model.skeleton.ParsedAngle[0]); 
 			}
@@ -310,19 +353,21 @@ public class SkeletonParser extends Parser {
 
 	public final AngleContext angle() throws RecognitionException {
 		AngleContext _localctx = new AngleContext(_ctx, getState());
-		enterRule(_localctx, 6, RULE_angle);
+		enterRule(_localctx, 8, RULE_angle);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(59);
+			setState(67);
 			((AngleContext)_localctx).n = floatNum();
-			setState(60);
+			setState(68);
 			match(T__2);
-			setState(61);
+			setState(69);
 			((AngleContext)_localctx).f = match(NAME);
-			setState(62);
+			setState(70);
 			match(T__6);
-			setState(63);
+			setState(71);
+			match(T__7);
+			setState(72);
 			((AngleContext)_localctx).t = match(NAME);
 			 ((AngleContext)_localctx).r =  new org.nxn.model.skeleton.ParsedAngle(org.nxn.utils.Axis.valueOf((((AngleContext)_localctx).f!=null?((AngleContext)_localctx).f.getText():null)), org.nxn.utils.Axis.valueOf((((AngleContext)_localctx).t!=null?((AngleContext)_localctx).t.getText():null)), ((AngleContext)_localctx).n.r); 
 			}
@@ -357,35 +402,35 @@ public class SkeletonParser extends Parser {
 
 	public final JointListContext jointList() throws RecognitionException {
 		JointListContext _localctx = new JointListContext(_ctx, getState());
-		enterRule(_localctx, 8, RULE_jointList);
+		enterRule(_localctx, 10, RULE_jointList);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
 			 java.util.List<org.nxn.model.skeleton.ParsedJoint> l = new java.util.ArrayList<org.nxn.model.skeleton.ParsedJoint>(); 
-			setState(67);
+			setState(76);
 			match(T__0);
-			setState(68);
+			setState(77);
 			((JointListContext)_localctx).j = joint();
 			 l.add(((JointListContext)_localctx).j.r); 
-			setState(76);
+			setState(85);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while (_la==T__4) {
 				{
 				{
-				setState(70);
+				setState(79);
 				match(T__4);
-				setState(71);
+				setState(80);
 				((JointListContext)_localctx).k = joint();
 				 l.add(((JointListContext)_localctx).k.r); 
 				}
 				}
-				setState(78);
+				setState(87);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
-			setState(79);
+			setState(88);
 			match(T__1);
 			 ((JointListContext)_localctx).r =  l.toArray(new org.nxn.model.skeleton.ParsedJoint[0]); 
 			}
@@ -420,35 +465,35 @@ public class SkeletonParser extends Parser {
 
 	public final BindingsContext bindings() throws RecognitionException {
 		BindingsContext _localctx = new BindingsContext(_ctx, getState());
-		enterRule(_localctx, 10, RULE_bindings);
+		enterRule(_localctx, 12, RULE_bindings);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
 			 java.util.List<org.nxn.model.skeleton.ParsedBinding> l = new java.util.ArrayList<org.nxn.model.skeleton.ParsedBinding>(); 
-			setState(83);
+			setState(92);
 			match(T__0);
-			setState(84);
+			setState(93);
 			((BindingsContext)_localctx).n = binding();
 			 l.add(((BindingsContext)_localctx).n.r); 
-			setState(92);
+			setState(101);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while (_la==T__4) {
 				{
 				{
-				setState(86);
+				setState(95);
 				match(T__4);
-				setState(87);
+				setState(96);
 				((BindingsContext)_localctx).m = binding();
 				 l.add(((BindingsContext)_localctx).m.r); 
 				}
 				}
-				setState(94);
+				setState(103);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
-			setState(95);
+			setState(104);
 			match(T__1);
 			 ((BindingsContext)_localctx).r =  l.toArray( new org.nxn.model.skeleton.ParsedBinding[0] ); 
 			}
@@ -481,15 +526,15 @@ public class SkeletonParser extends Parser {
 
 	public final BindingContext binding() throws RecognitionException {
 		BindingContext _localctx = new BindingContext(_ctx, getState());
-		enterRule(_localctx, 12, RULE_binding);
+		enterRule(_localctx, 14, RULE_binding);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(98);
+			setState(107);
 			((BindingContext)_localctx).n = match(NAME);
-			setState(99);
+			setState(108);
 			match(T__2);
-			setState(100);
+			setState(109);
 			((BindingContext)_localctx).i = indList();
 			 ((BindingContext)_localctx).r =  new org.nxn.model.skeleton.ParsedBinding((((BindingContext)_localctx).n!=null?((BindingContext)_localctx).n.getText():null), ((BindingContext)_localctx).i.r); 
 			}
@@ -524,35 +569,35 @@ public class SkeletonParser extends Parser {
 
 	public final IndListContext indList() throws RecognitionException {
 		IndListContext _localctx = new IndListContext(_ctx, getState());
-		enterRule(_localctx, 14, RULE_indList);
+		enterRule(_localctx, 16, RULE_indList);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
 			 java.util.ArrayList<Integer> l = new java.util.ArrayList<Integer>(); 
-			setState(104);
+			setState(113);
 			match(T__0);
-			setState(105);
+			setState(114);
 			((IndListContext)_localctx).n = indNum();
 			 l.add(((IndListContext)_localctx).n.r); 
-			setState(113);
+			setState(122);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while (_la==T__4) {
 				{
 				{
-				setState(107);
+				setState(116);
 				match(T__4);
-				setState(108);
+				setState(117);
 				((IndListContext)_localctx).m = indNum();
 				 l.add(((IndListContext)_localctx).m.r); 
 				}
 				}
-				setState(115);
+				setState(124);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
-			setState(116);
+			setState(125);
 			match(T__1);
 			 ((IndListContext)_localctx).r =  l.stream().mapToInt(Integer::intValue).toArray(); 
 			}
@@ -588,23 +633,23 @@ public class SkeletonParser extends Parser {
 
 	public final Vector3Context vector3() throws RecognitionException {
 		Vector3Context _localctx = new Vector3Context(_ctx, getState());
-		enterRule(_localctx, 16, RULE_vector3);
+		enterRule(_localctx, 18, RULE_vector3);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(119);
+			setState(128);
 			match(T__3);
-			setState(120);
+			setState(129);
 			((Vector3Context)_localctx).a = floatNum();
-			setState(121);
+			setState(130);
 			match(T__4);
-			setState(122);
+			setState(131);
 			((Vector3Context)_localctx).b = floatNum();
-			setState(123);
+			setState(132);
 			match(T__4);
-			setState(124);
+			setState(133);
 			((Vector3Context)_localctx).c = floatNum();
-			setState(125);
+			setState(134);
 			match(T__5);
 			 ((Vector3Context)_localctx).r =  new org.nxn.math.Vector3f(((Vector3Context)_localctx).a.r, ((Vector3Context)_localctx).b.r, ((Vector3Context)_localctx).c.r); 
 			}
@@ -640,20 +685,20 @@ public class SkeletonParser extends Parser {
 
 	public final FloatNumContext floatNum() throws RecognitionException {
 		FloatNumContext _localctx = new FloatNumContext(_ctx, getState());
-		enterRule(_localctx, 18, RULE_floatNum);
+		enterRule(_localctx, 20, RULE_floatNum);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(129);
+			setState(138);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			if (_la==T__7 || _la==T__8) {
+			if (_la==T__6 || _la==T__8) {
 				{
-				setState(128);
+				setState(137);
 				((FloatNumContext)_localctx).s = _input.LT(1);
 				_la = _input.LA(1);
-				if ( !(_la==T__7 || _la==T__8) ) {
+				if ( !(_la==T__6 || _la==T__8) ) {
 					((FloatNumContext)_localctx).s = (Token)_errHandler.recoverInline(this);
 				}
 				else {
@@ -664,26 +709,26 @@ public class SkeletonParser extends Parser {
 				}
 			}
 
-			setState(131);
+			setState(140);
 			((FloatNumContext)_localctx).n = match(DIGITS);
-			setState(134);
+			setState(143);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==T__9) {
 				{
-				setState(132);
+				setState(141);
 				match(T__9);
-				setState(133);
+				setState(142);
 				((FloatNumContext)_localctx).m = match(DIGITS);
 				}
 			}
 
-			setState(141);
+			setState(150);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==T__10 || _la==T__11) {
 				{
-				setState(136);
+				setState(145);
 				_la = _input.LA(1);
 				if ( !(_la==T__10 || _la==T__11) ) {
 				_errHandler.recoverInline(this);
@@ -693,15 +738,15 @@ public class SkeletonParser extends Parser {
 					_errHandler.reportMatch(this);
 					consume();
 				}
-				setState(138);
+				setState(147);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
-				if (_la==T__7 || _la==T__8) {
+				if (_la==T__6 || _la==T__8) {
 					{
-					setState(137);
+					setState(146);
 					((FloatNumContext)_localctx).e = _input.LT(1);
 					_la = _input.LA(1);
-					if ( !(_la==T__7 || _la==T__8) ) {
+					if ( !(_la==T__6 || _la==T__8) ) {
 						((FloatNumContext)_localctx).e = (Token)_errHandler.recoverInline(this);
 					}
 					else {
@@ -712,7 +757,7 @@ public class SkeletonParser extends Parser {
 					}
 				}
 
-				setState(140);
+				setState(149);
 				((FloatNumContext)_localctx).p = match(DIGITS);
 				}
 			}
@@ -761,11 +806,11 @@ public class SkeletonParser extends Parser {
 
 	public final IndNumContext indNum() throws RecognitionException {
 		IndNumContext _localctx = new IndNumContext(_ctx, getState());
-		enterRule(_localctx, 20, RULE_indNum);
+		enterRule(_localctx, 22, RULE_indNum);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(145);
+			setState(154);
 			((IndNumContext)_localctx).n = match(DIGITS);
 			 ((IndNumContext)_localctx).r =  Integer.parseInt((((IndNumContext)_localctx).n!=null?((IndNumContext)_localctx).n.getText():null)); 
 			}
@@ -782,92 +827,97 @@ public class SkeletonParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\u0004\u0001\u000f\u0095\u0002\u0000\u0007\u0000\u0002\u0001\u0007\u0001"+
+		"\u0004\u0001\u000f\u009e\u0002\u0000\u0007\u0000\u0002\u0001\u0007\u0001"+
 		"\u0002\u0002\u0007\u0002\u0002\u0003\u0007\u0003\u0002\u0004\u0007\u0004"+
 		"\u0002\u0005\u0007\u0005\u0002\u0006\u0007\u0006\u0002\u0007\u0007\u0007"+
-		"\u0002\b\u0007\b\u0002\t\u0007\t\u0002\n\u0007\n\u0001\u0000\u0001\u0000"+
-		"\u0001\u0000\u0001\u0000\u0001\u0000\u0001\u0001\u0001\u0001\u0001\u0001"+
-		"\u0001\u0001\u0003\u0001 \b\u0001\u0001\u0001\u0001\u0001\u0003\u0001"+
+		"\u0002\b\u0007\b\u0002\t\u0007\t\u0002\n\u0007\n\u0002\u000b\u0007\u000b"+
+		"\u0001\u0000\u0001\u0000\u0001\u0000\u0001\u0000\u0001\u0000\u0001\u0001"+
+		"\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0003\u0001"+
 		"$\b\u0001\u0001\u0001\u0001\u0001\u0003\u0001(\b\u0001\u0001\u0001\u0001"+
-		"\u0001\u0001\u0002\u0001\u0002\u0001\u0002\u0001\u0002\u0001\u0002\u0001"+
-		"\u0002\u0001\u0002\u0001\u0002\u0005\u00024\b\u0002\n\u0002\f\u00027\t"+
-		"\u0002\u0001\u0002\u0001\u0002\u0001\u0002\u0001\u0003\u0001\u0003\u0001"+
-		"\u0003\u0001\u0003\u0001\u0003\u0001\u0003\u0001\u0003\u0001\u0004\u0001"+
+		"\u0001\u0003\u0001,\b\u0001\u0001\u0001\u0001\u0001\u0001\u0002\u0001"+
+		"\u0002\u0001\u0002\u0001\u0002\u0001\u0003\u0001\u0003\u0001\u0003\u0001"+
+		"\u0003\u0001\u0003\u0001\u0003\u0001\u0003\u0001\u0003\u0005\u0003<\b"+
+		"\u0003\n\u0003\f\u0003?\t\u0003\u0001\u0003\u0001\u0003\u0001\u0003\u0001"+
 		"\u0004\u0001\u0004\u0001\u0004\u0001\u0004\u0001\u0004\u0001\u0004\u0001"+
-		"\u0004\u0005\u0004K\b\u0004\n\u0004\f\u0004N\t\u0004\u0001\u0004\u0001"+
 		"\u0004\u0001\u0004\u0001\u0005\u0001\u0005\u0001\u0005\u0001\u0005\u0001"+
-		"\u0005\u0001\u0005\u0001\u0005\u0001\u0005\u0005\u0005[\b\u0005\n\u0005"+
-		"\f\u0005^\t\u0005\u0001\u0005\u0001\u0005\u0001\u0005\u0001\u0006\u0001"+
-		"\u0006\u0001\u0006\u0001\u0006\u0001\u0006\u0001\u0007\u0001\u0007\u0001"+
-		"\u0007\u0001\u0007\u0001\u0007\u0001\u0007\u0001\u0007\u0001\u0007\u0005"+
-		"\u0007p\b\u0007\n\u0007\f\u0007s\t\u0007\u0001\u0007\u0001\u0007\u0001"+
+		"\u0005\u0001\u0005\u0001\u0005\u0001\u0005\u0005\u0005T\b\u0005\n\u0005"+
+		"\f\u0005W\t\u0005\u0001\u0005\u0001\u0005\u0001\u0005\u0001\u0006\u0001"+
+		"\u0006\u0001\u0006\u0001\u0006\u0001\u0006\u0001\u0006\u0001\u0006\u0001"+
+		"\u0006\u0005\u0006d\b\u0006\n\u0006\f\u0006g\t\u0006\u0001\u0006\u0001"+
+		"\u0006\u0001\u0006\u0001\u0007\u0001\u0007\u0001\u0007\u0001\u0007\u0001"+
 		"\u0007\u0001\b\u0001\b\u0001\b\u0001\b\u0001\b\u0001\b\u0001\b\u0001\b"+
-		"\u0001\b\u0001\t\u0003\t\u0082\b\t\u0001\t\u0001\t\u0001\t\u0003\t\u0087"+
-		"\b\t\u0001\t\u0001\t\u0003\t\u008b\b\t\u0001\t\u0003\t\u008e\b\t\u0001"+
-		"\t\u0001\t\u0001\n\u0001\n\u0001\n\u0001\n\u0000\u0000\u000b\u0000\u0002"+
-		"\u0004\u0006\b\n\f\u000e\u0010\u0012\u0014\u0000\u0002\u0001\u0000\b\t"+
-		"\u0001\u0000\u000b\f\u0094\u0000\u0016\u0001\u0000\u0000\u0000\u0002\u001b"+
-		"\u0001\u0000\u0000\u0000\u0004+\u0001\u0000\u0000\u0000\u0006;\u0001\u0000"+
-		"\u0000\u0000\bB\u0001\u0000\u0000\u0000\nR\u0001\u0000\u0000\u0000\fb"+
-		"\u0001\u0000\u0000\u0000\u000eg\u0001\u0000\u0000\u0000\u0010w\u0001\u0000"+
-		"\u0000\u0000\u0012\u0081\u0001\u0000\u0000\u0000\u0014\u0091\u0001\u0000"+
-		"\u0000\u0000\u0016\u0017\u0005\u0001\u0000\u0000\u0017\u0018\u0003\u0002"+
-		"\u0001\u0000\u0018\u0019\u0005\u0002\u0000\u0000\u0019\u001a\u0006\u0000"+
-		"\uffff\uffff\u0000\u001a\u0001\u0001\u0000\u0000\u0000\u001b\u001c\u0005"+
-		"\r\u0000\u0000\u001c\u001f\u0005\u0003\u0000\u0000\u001d \u0003\u0010"+
-		"\b\u0000\u001e \u0003\u0004\u0002\u0000\u001f\u001d\u0001\u0000\u0000"+
-		"\u0000\u001f\u001e\u0001\u0000\u0000\u0000 #\u0001\u0000\u0000\u0000!"+
-		"\"\u0005\u0003\u0000\u0000\"$\u0003\n\u0005\u0000#!\u0001\u0000\u0000"+
-		"\u0000#$\u0001\u0000\u0000\u0000$\'\u0001\u0000\u0000\u0000%&\u0005\u0003"+
-		"\u0000\u0000&(\u0003\b\u0004\u0000\'%\u0001\u0000\u0000\u0000\'(\u0001"+
-		"\u0000\u0000\u0000()\u0001\u0000\u0000\u0000)*\u0006\u0001\uffff\uffff"+
-		"\u0000*\u0003\u0001\u0000\u0000\u0000+,\u0006\u0002\uffff\uffff\u0000"+
-		",-\u0005\u0004\u0000\u0000-.\u0003\u0006\u0003\u0000.5\u0006\u0002\uffff"+
-		"\uffff\u0000/0\u0005\u0005\u0000\u000001\u0003\u0006\u0003\u000012\u0006"+
-		"\u0002\uffff\uffff\u000024\u0001\u0000\u0000\u00003/\u0001\u0000\u0000"+
-		"\u000047\u0001\u0000\u0000\u000053\u0001\u0000\u0000\u000056\u0001\u0000"+
-		"\u0000\u000068\u0001\u0000\u0000\u000075\u0001\u0000\u0000\u000089\u0005"+
-		"\u0006\u0000\u00009:\u0006\u0002\uffff\uffff\u0000:\u0005\u0001\u0000"+
-		"\u0000\u0000;<\u0003\u0012\t\u0000<=\u0005\u0003\u0000\u0000=>\u0005\r"+
-		"\u0000\u0000>?\u0005\u0007\u0000\u0000?@\u0005\r\u0000\u0000@A\u0006\u0003"+
-		"\uffff\uffff\u0000A\u0007\u0001\u0000\u0000\u0000BC\u0006\u0004\uffff"+
-		"\uffff\u0000CD\u0005\u0001\u0000\u0000DE\u0003\u0002\u0001\u0000EL\u0006"+
-		"\u0004\uffff\uffff\u0000FG\u0005\u0005\u0000\u0000GH\u0003\u0002\u0001"+
-		"\u0000HI\u0006\u0004\uffff\uffff\u0000IK\u0001\u0000\u0000\u0000JF\u0001"+
-		"\u0000\u0000\u0000KN\u0001\u0000\u0000\u0000LJ\u0001\u0000\u0000\u0000"+
-		"LM\u0001\u0000\u0000\u0000MO\u0001\u0000\u0000\u0000NL\u0001\u0000\u0000"+
-		"\u0000OP\u0005\u0002\u0000\u0000PQ\u0006\u0004\uffff\uffff\u0000Q\t\u0001"+
-		"\u0000\u0000\u0000RS\u0006\u0005\uffff\uffff\u0000ST\u0005\u0001\u0000"+
-		"\u0000TU\u0003\f\u0006\u0000U\\\u0006\u0005\uffff\uffff\u0000VW\u0005"+
-		"\u0005\u0000\u0000WX\u0003\f\u0006\u0000XY\u0006\u0005\uffff\uffff\u0000"+
-		"Y[\u0001\u0000\u0000\u0000ZV\u0001\u0000\u0000\u0000[^\u0001\u0000\u0000"+
-		"\u0000\\Z\u0001\u0000\u0000\u0000\\]\u0001\u0000\u0000\u0000]_\u0001\u0000"+
-		"\u0000\u0000^\\\u0001\u0000\u0000\u0000_`\u0005\u0002\u0000\u0000`a\u0006"+
-		"\u0005\uffff\uffff\u0000a\u000b\u0001\u0000\u0000\u0000bc\u0005\r\u0000"+
-		"\u0000cd\u0005\u0003\u0000\u0000de\u0003\u000e\u0007\u0000ef\u0006\u0006"+
-		"\uffff\uffff\u0000f\r\u0001\u0000\u0000\u0000gh\u0006\u0007\uffff\uffff"+
-		"\u0000hi\u0005\u0001\u0000\u0000ij\u0003\u0014\n\u0000jq\u0006\u0007\uffff"+
-		"\uffff\u0000kl\u0005\u0005\u0000\u0000lm\u0003\u0014\n\u0000mn\u0006\u0007"+
-		"\uffff\uffff\u0000np\u0001\u0000\u0000\u0000ok\u0001\u0000\u0000\u0000"+
-		"ps\u0001\u0000\u0000\u0000qo\u0001\u0000\u0000\u0000qr\u0001\u0000\u0000"+
-		"\u0000rt\u0001\u0000\u0000\u0000sq\u0001\u0000\u0000\u0000tu\u0005\u0002"+
-		"\u0000\u0000uv\u0006\u0007\uffff\uffff\u0000v\u000f\u0001\u0000\u0000"+
-		"\u0000wx\u0005\u0004\u0000\u0000xy\u0003\u0012\t\u0000yz\u0005\u0005\u0000"+
-		"\u0000z{\u0003\u0012\t\u0000{|\u0005\u0005\u0000\u0000|}\u0003\u0012\t"+
-		"\u0000}~\u0005\u0006\u0000\u0000~\u007f\u0006\b\uffff\uffff\u0000\u007f"+
-		"\u0011\u0001\u0000\u0000\u0000\u0080\u0082\u0007\u0000\u0000\u0000\u0081"+
-		"\u0080\u0001\u0000\u0000\u0000\u0081\u0082\u0001\u0000\u0000\u0000\u0082"+
-		"\u0083\u0001\u0000\u0000\u0000\u0083\u0086\u0005\u000e\u0000\u0000\u0084"+
-		"\u0085\u0005\n\u0000\u0000\u0085\u0087\u0005\u000e\u0000\u0000\u0086\u0084"+
-		"\u0001\u0000\u0000\u0000\u0086\u0087\u0001\u0000\u0000\u0000\u0087\u008d"+
-		"\u0001\u0000\u0000\u0000\u0088\u008a\u0007\u0001\u0000\u0000\u0089\u008b"+
-		"\u0007\u0000\u0000\u0000\u008a\u0089\u0001\u0000\u0000\u0000\u008a\u008b"+
-		"\u0001\u0000\u0000\u0000\u008b\u008c\u0001\u0000\u0000\u0000\u008c\u008e"+
-		"\u0005\u000e\u0000\u0000\u008d\u0088\u0001\u0000\u0000\u0000\u008d\u008e"+
-		"\u0001\u0000\u0000\u0000\u008e\u008f\u0001\u0000\u0000\u0000\u008f\u0090"+
-		"\u0006\t\uffff\uffff\u0000\u0090\u0013\u0001\u0000\u0000\u0000\u0091\u0092"+
-		"\u0005\u000e\u0000\u0000\u0092\u0093\u0006\n\uffff\uffff\u0000\u0093\u0015"+
-		"\u0001\u0000\u0000\u0000\u000b\u001f#\'5L\\q\u0081\u0086\u008a\u008d";
+		"\u0005\by\b\b\n\b\f\b|\t\b\u0001\b\u0001\b\u0001\b\u0001\t\u0001\t\u0001"+
+		"\t\u0001\t\u0001\t\u0001\t\u0001\t\u0001\t\u0001\t\u0001\n\u0003\n\u008b"+
+		"\b\n\u0001\n\u0001\n\u0001\n\u0003\n\u0090\b\n\u0001\n\u0001\n\u0003\n"+
+		"\u0094\b\n\u0001\n\u0003\n\u0097\b\n\u0001\n\u0001\n\u0001\u000b\u0001"+
+		"\u000b\u0001\u000b\u0001\u000b\u0000\u0000\f\u0000\u0002\u0004\u0006\b"+
+		"\n\f\u000e\u0010\u0012\u0014\u0016\u0000\u0002\u0002\u0000\u0007\u0007"+
+		"\t\t\u0001\u0000\u000b\f\u009c\u0000\u0018\u0001\u0000\u0000\u0000\u0002"+
+		"\u001d\u0001\u0000\u0000\u0000\u0004/\u0001\u0000\u0000\u0000\u00063\u0001"+
+		"\u0000\u0000\u0000\bC\u0001\u0000\u0000\u0000\nK\u0001\u0000\u0000\u0000"+
+		"\f[\u0001\u0000\u0000\u0000\u000ek\u0001\u0000\u0000\u0000\u0010p\u0001"+
+		"\u0000\u0000\u0000\u0012\u0080\u0001\u0000\u0000\u0000\u0014\u008a\u0001"+
+		"\u0000\u0000\u0000\u0016\u009a\u0001\u0000\u0000\u0000\u0018\u0019\u0005"+
+		"\u0001\u0000\u0000\u0019\u001a\u0003\u0002\u0001\u0000\u001a\u001b\u0005"+
+		"\u0002\u0000\u0000\u001b\u001c\u0006\u0000\uffff\uffff\u0000\u001c\u0001"+
+		"\u0001\u0000\u0000\u0000\u001d\u001e\u0005\r\u0000\u0000\u001e#\u0005"+
+		"\u0003\u0000\u0000\u001f \u0003\u0012\t\u0000 !\u0003\u0004\u0002\u0000"+
+		"!$\u0001\u0000\u0000\u0000\"$\u0003\u0006\u0003\u0000#\u001f\u0001\u0000"+
+		"\u0000\u0000#\"\u0001\u0000\u0000\u0000$\'\u0001\u0000\u0000\u0000%&\u0005"+
+		"\u0003\u0000\u0000&(\u0003\f\u0006\u0000\'%\u0001\u0000\u0000\u0000\'"+
+		"(\u0001\u0000\u0000\u0000(+\u0001\u0000\u0000\u0000)*\u0005\u0003\u0000"+
+		"\u0000*,\u0003\n\u0005\u0000+)\u0001\u0000\u0000\u0000+,\u0001\u0000\u0000"+
+		"\u0000,-\u0001\u0000\u0000\u0000-.\u0006\u0001\uffff\uffff\u0000.\u0003"+
+		"\u0001\u0000\u0000\u0000/0\u0005\u0003\u0000\u000001\u0005\r\u0000\u0000"+
+		"12\u0006\u0002\uffff\uffff\u00002\u0005\u0001\u0000\u0000\u000034\u0006"+
+		"\u0003\uffff\uffff\u000045\u0005\u0004\u0000\u000056\u0003\b\u0004\u0000"+
+		"6=\u0006\u0003\uffff\uffff\u000078\u0005\u0005\u0000\u000089\u0003\b\u0004"+
+		"\u00009:\u0006\u0003\uffff\uffff\u0000:<\u0001\u0000\u0000\u0000;7\u0001"+
+		"\u0000\u0000\u0000<?\u0001\u0000\u0000\u0000=;\u0001\u0000\u0000\u0000"+
+		"=>\u0001\u0000\u0000\u0000>@\u0001\u0000\u0000\u0000?=\u0001\u0000\u0000"+
+		"\u0000@A\u0005\u0006\u0000\u0000AB\u0006\u0003\uffff\uffff\u0000B\u0007"+
+		"\u0001\u0000\u0000\u0000CD\u0003\u0014\n\u0000DE\u0005\u0003\u0000\u0000"+
+		"EF\u0005\r\u0000\u0000FG\u0005\u0007\u0000\u0000GH\u0005\b\u0000\u0000"+
+		"HI\u0005\r\u0000\u0000IJ\u0006\u0004\uffff\uffff\u0000J\t\u0001\u0000"+
+		"\u0000\u0000KL\u0006\u0005\uffff\uffff\u0000LM\u0005\u0001\u0000\u0000"+
+		"MN\u0003\u0002\u0001\u0000NU\u0006\u0005\uffff\uffff\u0000OP\u0005\u0005"+
+		"\u0000\u0000PQ\u0003\u0002\u0001\u0000QR\u0006\u0005\uffff\uffff\u0000"+
+		"RT\u0001\u0000\u0000\u0000SO\u0001\u0000\u0000\u0000TW\u0001\u0000\u0000"+
+		"\u0000US\u0001\u0000\u0000\u0000UV\u0001\u0000\u0000\u0000VX\u0001\u0000"+
+		"\u0000\u0000WU\u0001\u0000\u0000\u0000XY\u0005\u0002\u0000\u0000YZ\u0006"+
+		"\u0005\uffff\uffff\u0000Z\u000b\u0001\u0000\u0000\u0000[\\\u0006\u0006"+
+		"\uffff\uffff\u0000\\]\u0005\u0001\u0000\u0000]^\u0003\u000e\u0007\u0000"+
+		"^e\u0006\u0006\uffff\uffff\u0000_`\u0005\u0005\u0000\u0000`a\u0003\u000e"+
+		"\u0007\u0000ab\u0006\u0006\uffff\uffff\u0000bd\u0001\u0000\u0000\u0000"+
+		"c_\u0001\u0000\u0000\u0000dg\u0001\u0000\u0000\u0000ec\u0001\u0000\u0000"+
+		"\u0000ef\u0001\u0000\u0000\u0000fh\u0001\u0000\u0000\u0000ge\u0001\u0000"+
+		"\u0000\u0000hi\u0005\u0002\u0000\u0000ij\u0006\u0006\uffff\uffff\u0000"+
+		"j\r\u0001\u0000\u0000\u0000kl\u0005\r\u0000\u0000lm\u0005\u0003\u0000"+
+		"\u0000mn\u0003\u0010\b\u0000no\u0006\u0007\uffff\uffff\u0000o\u000f\u0001"+
+		"\u0000\u0000\u0000pq\u0006\b\uffff\uffff\u0000qr\u0005\u0001\u0000\u0000"+
+		"rs\u0003\u0016\u000b\u0000sz\u0006\b\uffff\uffff\u0000tu\u0005\u0005\u0000"+
+		"\u0000uv\u0003\u0016\u000b\u0000vw\u0006\b\uffff\uffff\u0000wy\u0001\u0000"+
+		"\u0000\u0000xt\u0001\u0000\u0000\u0000y|\u0001\u0000\u0000\u0000zx\u0001"+
+		"\u0000\u0000\u0000z{\u0001\u0000\u0000\u0000{}\u0001\u0000\u0000\u0000"+
+		"|z\u0001\u0000\u0000\u0000}~\u0005\u0002\u0000\u0000~\u007f\u0006\b\uffff"+
+		"\uffff\u0000\u007f\u0011\u0001\u0000\u0000\u0000\u0080\u0081\u0005\u0004"+
+		"\u0000\u0000\u0081\u0082\u0003\u0014\n\u0000\u0082\u0083\u0005\u0005\u0000"+
+		"\u0000\u0083\u0084\u0003\u0014\n\u0000\u0084\u0085\u0005\u0005\u0000\u0000"+
+		"\u0085\u0086\u0003\u0014\n\u0000\u0086\u0087\u0005\u0006\u0000\u0000\u0087"+
+		"\u0088\u0006\t\uffff\uffff\u0000\u0088\u0013\u0001\u0000\u0000\u0000\u0089"+
+		"\u008b\u0007\u0000\u0000\u0000\u008a\u0089\u0001\u0000\u0000\u0000\u008a"+
+		"\u008b\u0001\u0000\u0000\u0000\u008b\u008c\u0001\u0000\u0000\u0000\u008c"+
+		"\u008f\u0005\u000e\u0000\u0000\u008d\u008e\u0005\n\u0000\u0000\u008e\u0090"+
+		"\u0005\u000e\u0000\u0000\u008f\u008d\u0001\u0000\u0000\u0000\u008f\u0090"+
+		"\u0001\u0000\u0000\u0000\u0090\u0096\u0001\u0000\u0000\u0000\u0091\u0093"+
+		"\u0007\u0001\u0000\u0000\u0092\u0094\u0007\u0000\u0000\u0000\u0093\u0092"+
+		"\u0001\u0000\u0000\u0000\u0093\u0094\u0001\u0000\u0000\u0000\u0094\u0095"+
+		"\u0001\u0000\u0000\u0000\u0095\u0097\u0005\u000e\u0000\u0000\u0096\u0091"+
+		"\u0001\u0000\u0000\u0000\u0096\u0097\u0001\u0000\u0000\u0000\u0097\u0098"+
+		"\u0001\u0000\u0000\u0000\u0098\u0099\u0006\n\uffff\uffff\u0000\u0099\u0015"+
+		"\u0001\u0000\u0000\u0000\u009a\u009b\u0005\u000e\u0000\u0000\u009b\u009c"+
+		"\u0006\u000b\uffff\uffff\u0000\u009c\u0017\u0001\u0000\u0000\u0000\u000b"+
+		"#\'+=Uez\u008a\u008f\u0093\u0096";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {
