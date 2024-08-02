@@ -4,10 +4,10 @@ import org.nxn.model.{Vertex, VertexModel}
 
 object SkinModel{
 
-  def apply(m:VertexModel):SkinModel = {
-    new SkinModel(m.vertexes, m.indexesCount)
+  def apply(name:String, m:VertexModel):SkinModel = {
+    new SkinModel(name, m.vertexes, m.indexesCount)
   }
 
 }
 
-class SkinModel(vertexes: Array[Vertex], override val indexesCount:Int) extends VertexModel(vertexes)
+class SkinModel(val name:String, vertexes: Array[Vertex], override val indexesCount:Int) extends VertexModel(vertexes)
