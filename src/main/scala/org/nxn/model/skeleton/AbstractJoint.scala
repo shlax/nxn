@@ -8,7 +8,7 @@ abstract class AbstractJoint(val name:String, val vertexes:Array[SkinVertex], va
     if(nm == name) Some(this)
     else{
       var res:Option[AbstractJoint] = None
-      for(a <- subJoints if res.isEmpty) res = a.apply(nm)
+      for(a <- subJoints if res.isEmpty) res = a(nm)
       res
     }
   }
