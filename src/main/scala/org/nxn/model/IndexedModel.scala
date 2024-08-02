@@ -4,7 +4,6 @@ import org.nxn.vulkan.memory.ToIntBuffer
 import java.nio.IntBuffer
 
 class IndexedModel(vertexes: Array[Vertex], val indexes:Array[IndexedTriangle]) extends VertexModel(vertexes), ToIntBuffer {
-  override val indexesCount: Int = indexes.length * 3
 
   override def toIntBuffer(b: IntBuffer): IntBuffer = {
     for (i <- indexes) i.toIntBuffer(b)
@@ -17,6 +16,10 @@ class IndexedModel(vertexes: Array[Vertex], val indexes:Array[IndexedTriangle]) 
 
   def indexesSize: Int = {
     indexes.length * indexesStride
+  }
+
+  override def indexesCount: Int ={
+    indexes.length * 3
   }
 
 }
