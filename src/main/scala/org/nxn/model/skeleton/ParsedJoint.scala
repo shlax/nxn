@@ -22,13 +22,15 @@ class ParsedJoint(val name:String, val point: Vector3f, val axis:Array[Axis], va
     if (axis.groupBy(_.name()).maxBy(_._2.length)._2.length > 1) throw new IllegalArgumentException("duplicate axis value")
   }
 
-  def apply(models:Map[String, CompiledModel], parent:Option[RotatingJoint] = None):AbstractJoint = {
+  def apply(models:Map[String, CompiledModel], offset:Vector3f = new Vector3f(), parent:Option[RotatingJoint] = None):AbstractJoint = {
+    val off = if(point == null) offset else new Vector3f(offset).add(point)
+
     val vertexes = new mutable.ArrayBuffer[SkinVertex]()
     if(binding != null) {
       for (b <- binding) {
         val m = models(b.mesh)
         for (i <- b.indexes) {
-          vertexes += SkinVertex(m(i))
+          vertexes += SkinVertex(off, m(i))
         }
       }
     }
@@ -46,7 +48,7 @@ class ParsedJoint(val name:String, val point: Vector3f, val axis:Array[Axis], va
         case _ => parent
       }
 
-    for(i <- subJoints.zipWithIndex) sub(i._2) = i._1(models, par)
+    for(i <- subJoints.zipWithIndex) sub(i._2) = i._1(models, off, par)
 
     ret
   }

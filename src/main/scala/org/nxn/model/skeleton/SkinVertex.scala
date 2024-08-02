@@ -8,7 +8,7 @@ import scala.collection.mutable.ArrayBuffer
 
 object SkinVertex {
 
-  def apply(points:Array[Vertex]):SkinVertex = {
+  def apply(offset:Vector3f, points:Array[Vertex]):SkinVertex = {
     val point = points.head.point
     val normals = new ArrayBuffer[SkinNormal]()
 
@@ -20,7 +20,7 @@ object SkinVertex {
       normals += normals.find(_.is(v.normal)).getOrElse(SkinNormal(v.normal))
     }
 
-    new SkinVertex(new Vector3f(point), point, normals.toArray)
+    new SkinVertex(new Vector3f(point).sub(offset), point, normals.toArray)
   }
 
 }
