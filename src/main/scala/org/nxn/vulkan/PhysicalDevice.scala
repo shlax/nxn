@@ -16,7 +16,7 @@ class PhysicalDevice(val instance: Instance, val surface: Surface, deviceName:St
     vkCheck(VK10.vkEnumeratePhysicalDevices(vkInstance, nBuff, null))
     val n = nBuff.get(0)
     if(n <= 0){
-      throw new IllegalStateException("vkEnumeratePhysicalDevices reported zero accessible devices.")
+      throw IllegalStateException("vkEnumeratePhysicalDevices reported zero accessible devices.")
     }
 
     val devices = stackTop.callocPointer(n)
@@ -25,7 +25,7 @@ class PhysicalDevice(val instance: Instance, val surface: Surface, deviceName:St
     var vkGpu:Option[(VkPhysicalDevice, Int, IndexedSeq[Int], Int, IndexedSeq[Int])] = None
 
     for(i <- 0 until n) MemoryStack.stackPush()|{ stack =>
-      val gpu = new VkPhysicalDevice(devices.get(i), vkInstance)
+      val gpu = VkPhysicalDevice(devices.get(i), vkInstance)
       val intBuff = stack.callocInt(1)
 
       val nm = if(deviceName.isEmpty){ ""

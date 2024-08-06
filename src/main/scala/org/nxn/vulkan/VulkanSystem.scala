@@ -13,45 +13,45 @@ class VulkanSystem(val name:String, val windowSize:Dimension, deviceName:String 
   GLFWErrorCallback.createPrint.set()
 
   if (!GLFW.glfwInit()){
-    throw new IllegalStateException("Unable to initialize GLFW")
+    throw IllegalStateException("Unable to initialize GLFW")
   }
 
   if (!GLFWVulkan.glfwVulkanSupported()){
-    throw new IllegalStateException("Cannot find a compatible Vulkan installable client driver (ICD)")
+    throw IllegalStateException("Cannot find a compatible Vulkan installable client driver (ICD)")
   }
 
   protected def initInstance() : Instance = {
-    new Instance(this)
+    Instance(this)
   }
 
   val instance:Instance = initInstance()
 
   protected def initWindow(): GlfwWindow = {
-    new GlfwWindow(this)
+    GlfwWindow(this)
   }
 
   val window: GlfwWindow = initWindow()
 
   protected def initSurface(): Surface = {
-    new Surface(instance, window)
+    Surface(instance, window)
   }
 
   val surface:Surface = initSurface()
 
   protected def initDevice(deviceName:String):Device = {
-    new Device(instance, surface, deviceName)
+    Device(instance, surface, deviceName)
   }
 
   val device:Device = initDevice(deviceName)
 
   protected def initSwapChain():SwapChain = {
-    new SwapChain(surface, device)
+    SwapChain(surface, device)
   }
 
   val swapChain:SwapChain = initSwapChain()
 
   protected def initRenderPass():RenderPass = {
-    new RenderPass(swapChain)
+    RenderPass(swapChain)
   }
 
   val renderPass:RenderPass = initRenderPass()

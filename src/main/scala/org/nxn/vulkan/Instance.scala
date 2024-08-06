@@ -34,7 +34,7 @@ class Instance(val system: VulkanSystem) extends VkDebugUtilsMessengerCallbackEX
 
     val glfwExt = GLFWVulkan.glfwGetRequiredInstanceExtensions()
     if(glfwExt == null){
-      throw new IllegalStateException("glfwGetRequiredInstanceExtensions failed to find the platform surface extensions.");
+      throw IllegalStateException("glfwGetRequiredInstanceExtensions failed to find the platform surface extensions.");
     }
 
     var requiredExtension:Option[PointerBuffer] = None
@@ -111,7 +111,7 @@ class Instance(val system: VulkanSystem) extends VkDebugUtilsMessengerCallbackEX
     val p = stack.callocPointer(1)
     vkCheck(VK10.vkCreateInstance(iInfo, null, p))
 
-    val vkInst = new VkInstance(p.get(0), iInfo)
+    val vkInst = VkInstance(p.get(0), iInfo)
 
     for(i <- dbgInfo){
       val lp = stack.callocLong(1)

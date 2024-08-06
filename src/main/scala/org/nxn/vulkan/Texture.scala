@@ -47,7 +47,7 @@ class Texture(device: Device, val size:Dimension, format:Int = VK10.VK_FORMAT_R8
   })
 
   protected def initImageView(format:Int):ImageView = {
-    new ImageView(device, vkImage, format)
+    ImageView(device, vkImage, format)
   }
 
   val imageView: ImageView = initImageView(format)

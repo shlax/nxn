@@ -5,7 +5,7 @@ import org.nxn.utils.Axis
 
 class AxisAngle(val axis:Axis){
 
-  val angle:Angle3f = new Angle3f()
+  val angle:Angle3f = Angle3f()
 
   def rotation(): Matrix4f = {
     axis.rotate(angle())

@@ -6,17 +6,17 @@ import org.nxn.vulkan.GlfwWindow
 class OrbitCamera(val window: GlfwWindow, projection: Matrix4f, sensitivity:Float = 0.005f, scrollStep:Float = 0.25f) extends AutoCloseable {
 
   protected def initMouseInput():MouseInput = {
-    new MouseInput(window)
+    MouseInput(window)
   }
 
   val mouseInput:MouseInput = initMouseInput()
 
-  var xRotation: Angle3f = new Angle3f()
-  var yRotation: Angle3f = new Angle3f()
+  var xRotation: Angle3f = Angle3f()
+  var yRotation: Angle3f = Angle3f()
   var offset:Float = 0f
 
-  val rotationMatrix: Matrix4f = new Matrix4f()
-  val viewMatrix: Matrix4f = new Matrix4f()
+  val rotationMatrix: Matrix4f = Matrix4f()
+  val viewMatrix: Matrix4f = Matrix4f()
 
   protected def update(point: Vector3f, off: Float, rx: Float, ry: Float): this.type = {
     val tmp = Matrix4f.yRot(ry)

@@ -7,13 +7,13 @@ import org.nxn.utils.using.*
 class Queue(val device:Device, val familyIndex:Int, val index:Int) {
 
   if(familyIndex >= device.queuesFamilies.size){
-    throw new IndexOutOfBoundsException(familyIndex)
+    throw IndexOutOfBoundsException(familyIndex)
   }
 
   protected def initQueue(): VkQueue = MemoryStack.stackPush() | { stack =>
     val p = stack.callocPointer(1)
     VK10.vkGetDeviceQueue(device.vkDevice, familyIndex, index, p)
-    new VkQueue(p.get(0), device.vkDevice)
+    VkQueue(p.get(0), device.vkDevice)
   }
 
   val vkQueue:VkQueue = initQueue()

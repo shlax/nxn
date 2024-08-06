@@ -9,7 +9,7 @@ import java.nio.charset.StandardCharsets
 class ModelLoader extends ExceptionErrorListener{
 
   def loadModel(in: InputStream): ParsedModel = {
-    val p = new ModelParser(new CommonTokenStream(new ModelLexer(CharStreams.fromStream(in, StandardCharsets.UTF_8))))
+    val p = ModelParser(CommonTokenStream(ModelLexer(CharStreams.fromStream(in, StandardCharsets.UTF_8))))
     p.removeErrorListeners()
     p.addErrorListener(this)
     p.model().result

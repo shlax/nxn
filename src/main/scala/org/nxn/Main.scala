@@ -29,7 +29,7 @@ object Main extends Runnable{
   override def run(): Unit = {
     // val fps = new FpsCounter()
 
-    val shaders = new ShaderCompiler(true) | { compile =>
+    val shaders = ShaderCompiler(true) | { compile =>
       IndexedSeq(
         compile("/shaders/shader.vert", Shaderc.shaderc_glsl_vertex_shader, VK10.VK_SHADER_STAGE_VERTEX_BIT),
         compile("/shaders/shader.frag", Shaderc.shaderc_glsl_fragment_shader, VK10.VK_SHADER_STAGE_FRAGMENT_BIT)
@@ -37,36 +37,36 @@ object Main extends Runnable{
     }
 
     val cube = (getClass.getResourceAsStream("/models/cube.m3d")| { in =>
-      new ModelLoader().loadModel(in)
+      ModelLoader().loadModel(in)
     }).invert().compile().vulkanModel
 
-    new VulkanSystem("NXN", Dimension(1280, 720)) | { sys => // , "NVIDIA GeForce RTX 2050"
+    VulkanSystem("NXN", Dimension(1280, 720)) | { sys => // , "NVIDIA GeForce RTX 2050"
       val graphicsQueue = sys.device.graphicsQueue
 
       using { use =>
-        val imageAvailableSemaphore = use(new Semaphore(sys.device))
-        val renderFinishedSemaphore = use(new Semaphore(sys.device))
-        val inFlightFence = use(new Fence(sys.device))
+        val imageAvailableSemaphore = use(Semaphore(sys.device))
+        val renderFinishedSemaphore = use(Semaphore(sys.device))
+        val inFlightFence = use(Fence(sys.device))
 
         // vec2(0.0, -0.5), vec2(-0.5, 0.5), vec2(0.5, 0.5)
-        val points = use(new Buffer(sys.device, cube.vertexesSize, VK10.VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
+        val points = use(Buffer(sys.device, cube.vertexesSize, VK10.VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
             VK10.VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK10.VK_MEMORY_PROPERTY_HOST_COHERENT_BIT)).mapMemory{ memory =>
           val b = MemoryUtil.memFloatBuffer(memory.address, memory.size)
           cube.toFloatBuffer(b)
         }
 
-        val indexes = use(new Buffer(sys.device, cube.indexesSize, VK10.VK_BUFFER_USAGE_INDEX_BUFFER_BIT,
+        val indexes = use(Buffer(sys.device, cube.indexesSize, VK10.VK_BUFFER_USAGE_INDEX_BUFFER_BIT,
           VK10.VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK10.VK_MEMORY_PROPERTY_HOST_COHERENT_BIT)).mapMemory{ memory =>
           val b = MemoryUtil.memIntBuffer(memory.address, memory.size)
           cube.toIntBuffer(b)
         }
 
-        val sampler = use(new Sampler(sys.device))
+        val sampler = use(Sampler(sys.device))
 
-        val descriptorPool = use(new DescriptorPool(sys.device, Map(VK10.VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER -> 1)))
-        val layout = use(new DescriptorSetLayout(sys.device, 0, VK10.VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK10.VK_SHADER_STAGE_FRAGMENT_BIT))
+        val descriptorPool = use(DescriptorPool(sys.device, Map(VK10.VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER -> 1)))
+        val layout = use(DescriptorSetLayout(sys.device, 0, VK10.VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK10.VK_SHADER_STAGE_FRAGMENT_BIT))
 
-        val descriptorSet = use(new DescriptorSet(descriptorPool, IndexedSeq(layout)))
+        val descriptorSet = use(DescriptorSet(descriptorPool, IndexedSeq(layout)))
 
         // layout(push_constant) uniform Transformations { mat4 viewMatrix; } transformations;
         val pipelineLayout = use(new PipelineLayout(sys.device){
@@ -112,32 +112,32 @@ object Main extends Runnable{
           }
         })
 
-        new RenderCommand(sys.renderPass) | { render =>
+        RenderCommand(sys.renderPass) | { render =>
 
-          val texture = use(new Texture(sys.device, Dimension(512, 512))).updateDescriptorSet(descriptorSet, 0, sampler)
+          val texture = use(Texture(sys.device, Dimension(512, 512))).updateDescriptorSet(descriptorSet, 0, sampler)
 
-          new Fence(sys.device, false) | { fence =>
-            new Buffer(sys.device, 512 * 512 * 4, VK10.VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+          Fence(sys.device, false) | { fence =>
+            Buffer(sys.device, 512 * 512 * 4, VK10.VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
               VK10.VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK10.VK_MEMORY_PROPERTY_HOST_COHERENT_BIT) |{ stageBuffer =>
 
               stageBuffer.mapMemory{ memory =>
                 val b = MemoryUtil.memByteBuffer(memory.address, memory.size)
 
                 Main.getClass.getResourceAsStream("/textures/checker.png") | { is =>
-                  val dec = new PNGDecoder(is)
+                  val dec = PNGDecoder(is)
                   dec.decode(b, 512 * 4, PNGDecoder.Format.RGBA)
                 }
               }
 
-              new CommandBuffer(render.commandPool) | { commandBuffer =>
+              CommandBuffer(render.commandPool) | { commandBuffer =>
                 graphicsQueue.submit(texture.copyBufferToImage(stageBuffer, commandBuffer), fence).await()
               }
 
             }
           }
 
-          val cameraPoint = new Vector3f()
-          val camera = use(new OrbitCamera(sys.window, perspective(60, sys.windowSize, 1, 1000))).set(cameraPoint, 3, 0, 0)
+          val cameraPoint = Vector3f()
+          val camera = use(OrbitCamera(sys.window, perspective(60, sys.windowSize, 1, 1000))).set(cameraPoint, 3, 0, 0)
 
           // >>
           while (sys.window.pullEvents()) {

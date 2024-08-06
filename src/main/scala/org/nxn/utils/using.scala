@@ -29,7 +29,7 @@ object using {
   }
 
   inline def using[R](f: UsingManager => R): R = {
-    val m = new UsingManager
+    val m = UsingManager()
     try {
       f.apply(m)
     } finally {

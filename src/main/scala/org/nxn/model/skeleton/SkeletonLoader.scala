@@ -10,7 +10,7 @@ import java.nio.charset.StandardCharsets
 class SkeletonLoader extends ExceptionErrorListener{
 
   def loadSkeleton(in: InputStream): ParsedJoint = {
-    val p = new SkeletonParser(new CommonTokenStream(new SkeletonLexer(CharStreams.fromStream(in, StandardCharsets.UTF_8))))
+    val p = SkeletonParser(CommonTokenStream(SkeletonLexer(CharStreams.fromStream(in, StandardCharsets.UTF_8))))
     p.removeErrorListeners()
     p.addErrorListener(this)
     p.skeleton().result

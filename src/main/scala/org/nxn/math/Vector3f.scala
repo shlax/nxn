@@ -11,7 +11,7 @@ object Vector3f{
     val ty = v1.z * v2.x - v1.x * v2.z
     val tz = v1.x * v2.y - v1.y * v2.x
 
-    new Vector3f(tx, ty, tz)
+    Vector3f(tx, ty, tz)
   }
 
   def add(a: Vector3f, b: Vector3f): Vector3f = {
@@ -19,7 +19,7 @@ object Vector3f{
     val y = a.y + b.y
     val z = a.z + b.z
 
-    new Vector3f(x, y, z)
+    Vector3f(x, y, z)
   }
 
   def sub(a: Vector3f, b: Vector3f): Vector3f = {
@@ -27,7 +27,7 @@ object Vector3f{
     val y = a.y - b.y
     val z = a.z - b.z
 
-    new Vector3f(x, y, z)
+    Vector3f(x, y, z)
   }
 
 }

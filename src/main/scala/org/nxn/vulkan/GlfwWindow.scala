@@ -16,7 +16,7 @@ class GlfwWindow(val system:VulkanSystem) extends  AutoCloseable{
 
   val glfwWindowHandle:Long = initWindow()
   if (glfwWindowHandle == MemoryUtil.NULL){
-    throw new IllegalStateException("Failed to create the GLFW window")
+    throw IllegalStateException("Failed to create the GLFW window")
   }
 
   def pullEvents() :Boolean = {

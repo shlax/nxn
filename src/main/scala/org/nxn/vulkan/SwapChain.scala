@@ -42,7 +42,7 @@ class SwapChain(val surface: Surface, device: Device, imageCount:Int = 0) extend
     vkCheck(KHRSurface.vkGetPhysicalDeviceSurfaceFormatsKHR(vkPhysicalDevice, surface.vkSurface, formatsBuff, null))
     val numFormats = formatsBuff.get(0)
     if(numFormats <= 0){
-      throw new RuntimeException("vkGetPhysicalDeviceSurfaceFormatsKHR pSurfaceFormatCount = "+numFormats)
+      throw RuntimeException("vkGetPhysicalDeviceSurfaceFormatsKHR pSurfaceFormatCount = "+numFormats)
     }
 
     val surfaceFormats = VkSurfaceFormatKHR.calloc(numFormats, stack)
@@ -140,7 +140,7 @@ class SwapChain(val surface: Surface, device: Device, imageCount:Int = 0) extend
     dimension: Dimension) = initSwapChain(imageCount)
 
   protected def initImageViews(): IndexedSeq[ImageView] = {
-    for(i <- vkImages.zipWithIndex) yield new ImageView(device, i._1, format)
+    for(i <- vkImages.zipWithIndex) yield ImageView(device, i._1, format)
   }
 
   val imageViews: IndexedSeq[ImageView] = initImageViews()
@@ -151,7 +151,7 @@ class SwapChain(val surface: Surface, device: Device, imageCount:Int = 0) extend
     val props = VkFormatProperties.calloc(stack)
     VK10.vkGetPhysicalDeviceFormatProperties(device.physicalDevice.vkPhysicalDevice, depthFormat, props)
     if((props.optimalTilingFeatures() & VK10.VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT) != VK10.VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT){
-      throw new RuntimeException("vkPhysicalDevice don't support VK_FORMAT_D32_SFLOAT")
+      throw RuntimeException("vkPhysicalDevice don't support VK_FORMAT_D32_SFLOAT")
     }
 
     val info = VkImageCreateInfo.calloc(stack)
@@ -186,7 +186,7 @@ class SwapChain(val surface: Surface, device: Device, imageCount:Int = 0) extend
   })
 
   protected def initDepthImageView():ImageView = {
-    new ImageView(device, vkDepthImage, depthImageFormat, VK10.VK_IMAGE_ASPECT_DEPTH_BIT)
+    ImageView(device, vkDepthImage, depthImageFormat, VK10.VK_IMAGE_ASPECT_DEPTH_BIT)
   }
 
   val vkDepthImageView:ImageView = initDepthImageView()
@@ -199,7 +199,7 @@ class SwapChain(val surface: Surface, device: Device, imageCount:Int = 0) extend
     } else if (err == KHRSwapchain.VK_SUBOPTIMAL_KHR) {
       res = Some(PresentResult.suboptimal)
     } else if (err != VK10.VK_SUCCESS) {
-      throw new IllegalStateException(String.format("Vulkan error [0x%X]", err));
+      throw IllegalStateException(String.format("Vulkan error [0x%X]", err));
     }
 
     res
@@ -219,7 +219,7 @@ class SwapChain(val surface: Surface, device: Device, imageCount:Int = 0) extend
 
   def presentImage(index: NextFrame, waitSemaphore: Semaphore, queue: Queue = device.presentQueue): Option[PresentResult] = MemoryStack.stackPush() | { stack =>
     if (index.index >= vkImages.length) {
-      throw new IndexOutOfBoundsException(index.index)
+      throw IndexOutOfBoundsException(index.index)
     }
 
     val info = VkPresentInfoKHR.calloc(stack)

@@ -17,10 +17,10 @@ object perspective{
     val m22 = zFar / (zFar - zNear)
     val m23 = - (zFar * zNear) / (zFar - zNear)
 
-    new Matrix4f(m00, 0f,  0f,  0f,
-                 0f , m11, 0f,  0f,
-                 0f , 0f,  m22, m23,
-                 0f , 0f,  1f,  0f)
+    Matrix4f(m00, 0f,  0f,  0f,
+             0f , m11, 0f,  0f,
+             0f , 0f,  m22, m23,
+             0f , 0f,  1f,  0f)
   }
 
 }

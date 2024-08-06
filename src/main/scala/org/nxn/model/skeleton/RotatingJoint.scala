@@ -14,7 +14,7 @@ class RotatingJoint(name:String, val point: Vector3f, val angles:Array[AxisAngle
     if(angles.length == 1){
       val rot = angles.head.rotation()
 
-      val tmp = new Matrix4f(point).mulMxT(rot).mulMxT(modelMatrix)
+      val tmp = Matrix4f(point).mulMxT(rot).mulMxT(modelMatrix)
       rot.mulMxT(normalMatrix)
 
       update(tmp, rot)

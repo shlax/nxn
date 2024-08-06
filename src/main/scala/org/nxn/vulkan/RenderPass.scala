@@ -65,7 +65,7 @@ class RenderPass(val swapChain: SwapChain)  extends AutoCloseable{
   val vkRenderPass: Long = initRenderPass()
 
   protected def initFrameBuffers():IndexedSeq[FrameBuffer] = {
-    for(i <- swapChain.imageViews) yield new FrameBuffer(this, i)
+    for(i <- swapChain.imageViews) yield FrameBuffer(this, i)
   }
 
   val frameBuffers:IndexedSeq[FrameBuffer] = initFrameBuffers()

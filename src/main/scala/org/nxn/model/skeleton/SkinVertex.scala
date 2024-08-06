@@ -10,17 +10,17 @@ object SkinVertex {
 
   def apply(offset:Vector3f, points:Array[Vertex]):SkinVertex = {
     val point = points.head.point
-    val normals = new ArrayBuffer[SkinNormal]()
+    val normals = ArrayBuffer[SkinNormal]()
 
     for(v <- points){
       if(!point.eq(v.point)) {
-        throw new IllegalArgumentException("" + point + " != " + v.point)
+        throw IllegalArgumentException("" + point + " != " + v.point)
       }
 
       normals += normals.find(_.is(v.normal)).getOrElse(SkinNormal(v.normal))
     }
 
-    new SkinVertex(new Vector3f(point).sub(offset), point, normals.toArray)
+    new SkinVertex(Vector3f(point).sub(offset), point, normals.toArray)
   }
 
 }

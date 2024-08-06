@@ -18,7 +18,7 @@ class ShaderCompiler(debug: Boolean = false) extends AutoCloseable{
     }
     val res = Shaderc.shaderc_compile_into_spv(compiler, src, shaderType, uri, entryPoint, options)
     if (Shaderc.shaderc_result_get_compilation_status(res) != Shaderc.shaderc_compilation_status_success) {
-      throw new RuntimeException("Shader compilation failed: " + Shaderc.shaderc_result_get_error_message(res))
+      throw RuntimeException("Shader compilation failed: " + Shaderc.shaderc_result_get_error_message(res))
     }
 
     val buff = Shaderc.shaderc_result_get_bytes(res)

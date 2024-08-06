@@ -5,27 +5,28 @@ import org.nxn.model.CompiledModel
 import org.nxn.utils.Axis
 
 import scala.collection.mutable
+import scala.collection.mutable.ArrayBuffer
 
 class ParsedJoint(val name:String, val point: Vector3f, val axis:Array[Axis], val angles:Array[ParsedAngle],
                     val binding: Array[ParsedBinding], val subJoints: Array[ParsedJoint]){
 
-  if(point == null && angles == null) throw new IllegalArgumentException("point == null && angles == null")
-  if(point != null && angles != null) throw new IllegalArgumentException("point != null && angles != null")
-  if(point != null && axis == null) throw new IllegalArgumentException("point != null && axis == null")
+  if(point == null && angles == null) throw IllegalArgumentException("point == null && angles == null")
+  if(point != null && angles != null) throw IllegalArgumentException("point != null && angles != null")
+  if(point != null && axis == null) throw IllegalArgumentException("point != null && axis == null")
   if(angles != null){
-    if(angles.length == 0) throw new IllegalArgumentException("angles == 0")
-    if(angles.length > 3) throw new IllegalArgumentException("angles > 3 :" + angles.length)
-    if(angles.groupBy(_.to).maxBy(_._2.length)._2.length > 1) throw new IllegalArgumentException("duplicate to angle value")
+    if(angles.length == 0) throw IllegalArgumentException("angles == 0")
+    if(angles.length > 3) throw IllegalArgumentException("angles > 3 :" + angles.length)
+    if(angles.groupBy(_.to).maxBy(_._2.length)._2.length > 1) throw IllegalArgumentException("duplicate to angle value")
   }else if (axis != null) {
-    if (axis.length == 0) throw new IllegalArgumentException("axis == 0")
-    if (axis.length > 3) throw new IllegalArgumentException("axis > 3 :" + axis.length)
-    if (axis.groupBy(_.name()).maxBy(_._2.length)._2.length > 1) throw new IllegalArgumentException("duplicate axis value")
+    if (axis.length == 0) throw IllegalArgumentException("axis == 0")
+    if (axis.length > 3) throw IllegalArgumentException("axis > 3 :" + axis.length)
+    if (axis.groupBy(_.name()).maxBy(_._2.length)._2.length > 1) throw IllegalArgumentException("duplicate axis value")
   }
 
-  def apply(models:Map[String, CompiledModel], offset:Vector3f = new Vector3f(), parent:Option[RotatingJoint] = None):AbstractJoint = {
-    val off = if(point == null) offset else new Vector3f(offset).add(point)
+  def apply(models:Map[String, CompiledModel], offset:Vector3f = Vector3f(), parent:Option[RotatingJoint] = None):AbstractJoint = {
+    val off = if(point == null) offset else Vector3f(offset).add(point)
 
-    val vertexes = new mutable.ArrayBuffer[SkinVertex]()
+    val vertexes = ArrayBuffer[SkinVertex]()
     if(binding != null) {
       for (b <- binding) {
         val m = models(b.mesh)
@@ -37,10 +38,10 @@ class ParsedJoint(val name:String, val point: Vector3f, val axis:Array[Axis], va
 
     val sub = if(subJoints == null) new Array[AbstractJoint](0) else new Array[AbstractJoint](subJoints.length)
 
-    val ret = if(point != null) new RotatingJoint(name.intern(), point, axis.map(a => new AxisAngle(a)), vertexes.toArray, sub)
+    val ret = if(point != null) RotatingJoint(name.intern(), point, axis.map(a => AxisAngle(a)), vertexes.toArray, sub)
       else{
         val ang = angles.map(i => i(parent.get))
-        new InterpolatedJoint(name.intern(), ang, vertexes.toArray, sub)
+        InterpolatedJoint(name.intern(), ang, vertexes.toArray, sub)
       }
 
     val par = ret match {

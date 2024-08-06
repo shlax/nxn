@@ -8,19 +8,19 @@ import java.util
 class ExceptionErrorListener extends ANTLRErrorListener{
 
   override def syntaxError(recognizer: Recognizer[?, ?], offendingSymbol: Any, line: Int, charPositionInLine: Int, msg: String, e: RecognitionException): Unit = {
-    throw new RuntimeException("line " + line + ":" + charPositionInLine + " " + msg, e)
+    throw RuntimeException("line " + line + ":" + charPositionInLine + " " + msg, e)
   }
 
   override def reportAmbiguity(recognizer: Parser, dfa: DFA, startIndex: Int, stopIndex: Int, exact: Boolean, ambigAlts: util.BitSet, configs: ATNConfigSet): Unit = {
-    throw new RuntimeException("index " + startIndex + ":" + stopIndex)
+    throw RuntimeException("index " + startIndex + ":" + stopIndex)
   }
 
   override def reportAttemptingFullContext(recognizer: Parser, dfa: DFA, startIndex: Int, stopIndex: Int, conflictingAlts: util.BitSet, configs: ATNConfigSet): Unit = {
-    throw new RuntimeException("index " + startIndex + ":" + stopIndex)
+    throw RuntimeException("index " + startIndex + ":" + stopIndex)
   }
 
   override def reportContextSensitivity(recognizer: Parser, dfa: DFA, startIndex: Int, stopIndex: Int, prediction: Int, configs: ATNConfigSet): Unit = {
-    throw new RuntimeException("index " + startIndex + ":" + stopIndex + ":" + prediction)
+    throw RuntimeException("index " + startIndex + ":" + stopIndex + ":" + prediction)
   }
 
 }

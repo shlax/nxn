@@ -33,7 +33,7 @@ abstract class Memory(val device: Device) extends AutoCloseable{
     }
 
     if (memoryTypeIndex == -1) {
-      throw new RuntimeException("memoryTypeIndex not found")
+      throw RuntimeException("memoryTypeIndex not found")
     }
 
     val allocInfo = VkMemoryAllocateInfo.calloc(stack)

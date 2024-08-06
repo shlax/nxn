@@ -11,13 +11,13 @@ class RenderCommand(val renderPass: RenderPass, count:Int = 1) extends AutoClose
 
   protected def initCommandPool(): CommandPool = {
     val dev = renderPass.swapChain.device
-    new CommandPool(dev, dev.physicalDevice.graphicsQueueIndex, true)
+    CommandPool(dev, dev.physicalDevice.graphicsQueueIndex, true)
   }
 
   val commandPool:CommandPool = initCommandPool()
 
   protected def initCommandBuffers(count:Int): IndexedSeq[CommandBuffer] = {
-    for (i <- 0 until count) yield  new CommandBuffer(commandPool)
+    for (i <- 0 until count) yield  CommandBuffer(commandPool)
   }
 
   val commandBuffers: IndexedSeq[CommandBuffer] = initCommandBuffers(count)

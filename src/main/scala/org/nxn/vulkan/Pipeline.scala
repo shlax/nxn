@@ -15,7 +15,7 @@ class Pipeline(val pipelineLayout: PipelineLayout, val renderPass: RenderPass,
 
   protected def createShaderModules(modules:IndexedSeq[CompiledShader]):IndexedSeq[ShaderModule] = {
     val dev = renderPass.swapChain.device
-    for(c <- modules) yield new ShaderModule(dev, c)
+    for(c <- modules) yield ShaderModule(dev, c)
   }
 
   /** customize VkPipelineVertexInputStateCreateInfo */

@@ -19,7 +19,7 @@ class CommandBuffer(val commandPool: CommandPool, primary:Boolean = true) extend
 
     val buff = stack.callocPointer(1)
     vkCheck(VK10.vkAllocateCommandBuffers(vkDevice, info, buff))
-    val cmdBuff = new VkCommandBuffer(buff.get(0), vkDevice)
+    val cmdBuff = VkCommandBuffer(buff.get(0), vkDevice)
 
     cmdBuff
   }

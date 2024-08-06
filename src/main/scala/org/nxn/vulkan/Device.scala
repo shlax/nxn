@@ -7,7 +7,7 @@ import org.nxn.utils.using.*
 class Device(val instance: Instance, surface: Surface, deviceName:String = "") extends AutoCloseable{
 
   protected def initPhysicalDevice(deviceName:String):PhysicalDevice = {
-    new PhysicalDevice(instance, surface, deviceName)
+    PhysicalDevice(instance, surface, deviceName)
   }
 
   val physicalDevice:PhysicalDevice = initPhysicalDevice(deviceName)
@@ -58,7 +58,7 @@ class Device(val instance: Instance, surface: Surface, deviceName:String = "") e
     val buff = stack.callocPointer(1)
     vkCheck(VK10.vkCreateDevice(physicalDevice.vkPhysicalDevice, devInf, null, buff))
 
-    new VkDevice(buff.get(0), physicalDevice.vkPhysicalDevice, devInf)
+    VkDevice(buff.get(0), physicalDevice.vkPhysicalDevice, devInf)
   }
 
   val vkDevice:VkDevice = initDevice()
@@ -68,7 +68,7 @@ class Device(val instance: Instance, surface: Surface, deviceName:String = "") e
   }
 
   protected def initGraphicsQueue():Queue = {
-    new Queue(this, physicalDevice.graphicsQueueIndex, 0)
+    Queue(this, physicalDevice.graphicsQueueIndex, 0)
   }
 
   val graphicsQueue:Queue = initGraphicsQueue()
@@ -77,7 +77,7 @@ class Device(val instance: Instance, surface: Surface, deviceName:String = "") e
     if(physicalDevice.graphicsQueueIndex == physicalDevice.presentQueueIndex){
       graphicsQueue
     }else {
-      new Queue(this, physicalDevice.presentQueueIndex, 0)
+      Queue(this, physicalDevice.presentQueueIndex, 0)
     }
   }
 

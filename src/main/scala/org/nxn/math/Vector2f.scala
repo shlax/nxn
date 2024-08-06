@@ -10,14 +10,14 @@ object Vector2f{
     val x = a.x + b.x
     val y = a.y + b.y
 
-    new Vector2f(x, y)
+    Vector2f(x, y)
   }
 
   def sub(a: Vector2f, b: Vector2f): Vector2f = {
     val x = a.x - b.x
     val y = a.y - b.y
 
-    new Vector2f(x, y)
+    Vector2f(x, y)
   }
 
 }

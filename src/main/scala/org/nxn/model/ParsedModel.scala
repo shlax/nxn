@@ -1,7 +1,9 @@
 package org.nxn.model
 
 import org.nxn.math.{Vector2f, Vector3f}
+
 import scala.collection.mutable
+import scala.collection.mutable.ArrayBuffer
 
 class ParsedModel(val points:Array[Vector3f], val faces:Array[ParsedTriangle]){
 
@@ -14,7 +16,7 @@ class ParsedModel(val points:Array[Vector3f], val faces:Array[ParsedTriangle]){
   def compile(epsilon:Float = 0.0000001f):CompiledModel = {
     class IndexVertex(val index:Int, val vertex:Vertex)
 
-    val vertexes = new Array[mutable.ArrayBuffer[IndexVertex]](points.length)
+    val vertexes = new Array[ArrayBuffer[IndexVertex]](points.length)
     val indexes = new Array[IndexedTriangle](faces.length)
     var ind = 0
 
@@ -35,7 +37,7 @@ class ParsedModel(val points:Array[Vector3f], val faces:Array[ParsedTriangle]){
     def put(pv:ParsedVertex):Int = {
       var v = vertexes(pv.index)
       if(v == null){
-        v = new mutable.ArrayBuffer[IndexVertex]()
+        v = ArrayBuffer[IndexVertex]()
         vertexes(pv.index) = v
       }
 
@@ -43,14 +45,14 @@ class ParsedModel(val points:Array[Vector3f], val faces:Array[ParsedTriangle]){
         val act = next
         val normal = v.map(_.vertex.normal).find( i => eqVector3f(i, pv.normal) ).getOrElse(pv.normal)
         val uvs = pv.uvs.zipWithIndex.map( i => v.map(_.vertex.uvs(i._2)).find( j => eqVector2f(j, i._1) ).getOrElse(i._1) )
-        v += new IndexVertex(act, new Vertex(points(pv.index), normal, uvs))
+        v += IndexVertex(act, Vertex(points(pv.index), normal, uvs))
         next += 1
         act
       }
     }
 
     for(f <- faces){
-      indexes(ind) = new IndexedTriangle(put(f.a), put(f.b), put(f.c))
+      indexes(ind) = IndexedTriangle(put(f.a), put(f.b), put(f.c))
       ind += 1
     }
 
@@ -64,7 +66,7 @@ class ParsedModel(val points:Array[Vector3f], val faces:Array[ParsedTriangle]){
       ind += 1
     }
 
-    new CompiledModel(new IndexedModel(vertexArray, indexes), indMap)
+    CompiledModel(IndexedModel(vertexArray, indexes), indMap)
   }
 
 }
