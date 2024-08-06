@@ -5,7 +5,7 @@ import org.nxn.math.{Matrix4f, Vector3f}
 object SkinNormal{
 
   def apply(normal:Vector3f):SkinNormal = {
-    new SkinNormal(new Vector3f(normal), normal)
+    new SkinNormal(Vector3f(normal), normal)
   }
 
 }
