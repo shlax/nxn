@@ -3,11 +3,10 @@ package org.nxn.model.skeleton.parser;
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.*;
-import org.antlr.v4.runtime.misc.*;
 import org.antlr.v4.runtime.tree.*;
+import org.nxn.math.Axis;
+
 import java.util.List;
-import java.util.Iterator;
-import java.util.ArrayList;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast", "CheckReturnValue"})
 public class SkeletonParser extends Parser {
@@ -236,7 +235,7 @@ public class SkeletonParser extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class AxisContext extends ParserRuleContext {
-		public org.nxn.utils.Axis[] r;
+		public Axis[] r;
 		public Token t;
 		public TerminalNode NAME() { return getToken(SkeletonParser.NAME, 0); }
 		public AxisContext(ParserRuleContext parent, int invokingState) {
@@ -255,7 +254,7 @@ public class SkeletonParser extends Parser {
 			match(T__2);
 			setState(48);
 			((AxisContext)_localctx).t = match(NAME);
-			 ((AxisContext)_localctx).r =  (((AxisContext)_localctx).t!=null?((AxisContext)_localctx).t.getText():null).chars().mapToObj(c -> org.nxn.utils.Axis.valueOf(String.valueOf((char)c))).toArray(l -> new org.nxn.utils.Axis[l]); 
+			 ((AxisContext)_localctx).r =  (((AxisContext)_localctx).t!=null?((AxisContext)_localctx).t.getText():null).chars().mapToObj(c -> Axis.valueOf(String.valueOf((char)c))).toArray(l -> new Axis[l]); 
 			}
 		}
 		catch (RecognitionException re) {
@@ -369,7 +368,7 @@ public class SkeletonParser extends Parser {
 			match(T__7);
 			setState(72);
 			((AngleContext)_localctx).t = match(NAME);
-			 ((AngleContext)_localctx).r =  new org.nxn.model.skeleton.ParsedAngle(org.nxn.utils.Axis.valueOf((((AngleContext)_localctx).f!=null?((AngleContext)_localctx).f.getText():null)), org.nxn.utils.Axis.valueOf((((AngleContext)_localctx).t!=null?((AngleContext)_localctx).t.getText():null)), ((AngleContext)_localctx).n.r); 
+			 ((AngleContext)_localctx).r =  new org.nxn.model.skeleton.ParsedAngle(Axis.valueOf((((AngleContext)_localctx).f!=null?((AngleContext)_localctx).f.getText():null)), Axis.valueOf((((AngleContext)_localctx).t!=null?((AngleContext)_localctx).t.getText():null)), ((AngleContext)_localctx).n.r); 
 			}
 		}
 		catch (RecognitionException re) {

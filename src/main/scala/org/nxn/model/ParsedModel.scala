@@ -1,7 +1,6 @@
 package org.nxn.model
 
-import org.nxn.math.{Vector2f, Vector3f}
-import org.nxn.utils.Axis
+import org.nxn.math.{Axis, Vector2f, Vector3f}
 
 import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer

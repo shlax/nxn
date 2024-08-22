@@ -1,6 +1,4 @@
-package org.nxn.utils
-
-import org.nxn.math.{Matrix4f, Vector3f}
+package org.nxn.math
 
 enum Axis extends Enum[Axis] {
   case X extends Axis
@@ -15,7 +13,7 @@ enum Axis extends Enum[Axis] {
     }
   }
 
-  def rotate(m:Matrix4f, a:Float):Matrix4f = {
+  def rotate(m: Matrix4f, a: Float): Matrix4f = {
     this match {
       case X => m.xRot(a)
       case Y => m.yRot(a)
@@ -31,7 +29,7 @@ enum Axis extends Enum[Axis] {
     }
   }
 
-  def update(v:Vector3f, w:Float) : Vector3f = {
+  def update(v: Vector3f, w: Float): Vector3f = {
     this match {
       case X => v.x = w
       case Y => v.y = w

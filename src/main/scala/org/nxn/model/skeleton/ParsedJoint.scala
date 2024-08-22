@@ -1,8 +1,7 @@
 package org.nxn.model.skeleton
 
-import org.nxn.math.Vector3f
+import org.nxn.math.{Axis, Vector3f}
 import org.nxn.model.CompiledModel
-import org.nxn.utils.Axis
 
 import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer

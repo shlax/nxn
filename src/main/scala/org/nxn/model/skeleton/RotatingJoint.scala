@@ -1,7 +1,6 @@
 package org.nxn.model.skeleton
 
-import org.nxn.math.{Angle3f, Matrix4f, Vector3f}
-import org.nxn.utils.Axis
+import org.nxn.math.{Angle3f, Axis, Matrix4f, Vector3f}
 
 class RotatingJoint(name:String, val point: Vector3f, val angles:Array[AxisAngle],
                       vertexes:Array[SkinVertex], subJoints:Array[AbstractJoint]) extends AbstractJoint(name, vertexes, subJoints){

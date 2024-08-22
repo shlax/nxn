@@ -1,7 +1,6 @@
 package org.nxn.model.skeleton
 
-import org.nxn.math.{Angle3f, Matrix4f}
-import org.nxn.utils.Axis
+import org.nxn.math.{Angle3f, Axis, Matrix4f}
 
 class AxisAngle(val axis:Axis){
 

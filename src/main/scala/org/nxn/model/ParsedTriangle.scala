@@ -1,6 +1,6 @@
 package org.nxn.model
 
-import org.nxn.utils.Axis
+import org.nxn.math.Axis
 
 class ParsedTriangle(val a:ParsedVertex, val b:ParsedVertex, val c:ParsedVertex){
 
