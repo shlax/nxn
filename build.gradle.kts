@@ -8,8 +8,8 @@ repositories {
 
 dependencies {
 
-    implementation("org.scala-lang:scala3-library_3:3.4.2")
-    implementation("org.antlr:antlr4-runtime:4.13.1")
+    implementation("org.scala-lang:scala3-library_3:3.5.0")
+    implementation("org.antlr:antlr4-runtime:4.13.2")
 
     implementation("org.l33tlabs.twl:pngdecoder:1.0")
 

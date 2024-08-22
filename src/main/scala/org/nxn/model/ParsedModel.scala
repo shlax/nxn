@@ -1,15 +1,16 @@
 package org.nxn.model
 
 import org.nxn.math.{Vector2f, Vector3f}
+import org.nxn.utils.Axis
 
 import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer
 
 class ParsedModel(val points:Array[Vector3f], val faces:Array[ParsedTriangle]){
 
-  def invert():this.type = {
-    for(p <- points) p.y = -1 * p.y
-    for(f <- faces) f.invert()
+  def invert(a:Axis):this.type = {
+    for(p <- points) a(p) = -1 * a(p)
+    for(f <- faces) f.invert(a)
     this
   }
 

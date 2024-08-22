@@ -7,7 +7,7 @@ import org.lwjgl.vulkan.{VK10, VkCommandBuffer, VkPipelineLayoutCreateInfo, VkPi
 import org.nxn.controls.{MouseInput, OrbitCamera}
 import org.nxn.math.{Matrix4f, Vector2f, Vector3f}
 import org.nxn.utils.using.*
-import org.nxn.utils.{Dimension, FpsCounter}
+import org.nxn.utils.{Axis, Dimension, FpsCounter}
 import org.nxn.vulkan.memory.{MemoryBuffer, TypeLength}
 import org.nxn.vulkan.shader.ShaderCompiler
 import org.nxn.vulkan.{Buffer, CommandBuffer, DescriptorPool, DescriptorSet, DescriptorSetLayout, Fence, Pipeline, PipelineLayout, RenderCommand, Sampler, Semaphore, Texture, VulkanSystem}
@@ -38,7 +38,7 @@ object Main extends Runnable{
 
     val cube = (getClass.getResourceAsStream("/models/cube.m3d")| { in =>
       ModelLoader().loadModel(in)
-    }).invert().compile().vulkanModel
+    }).invert(Axis.Y).compile().vulkanModel
 
     VulkanSystem("NXN", Dimension(1280, 720)) | { sys => // , "NVIDIA GeForce RTX 2050"
       val graphicsQueue = sys.device.graphicsQueue
