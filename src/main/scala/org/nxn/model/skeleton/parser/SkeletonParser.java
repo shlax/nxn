@@ -33,7 +33,7 @@ public class SkeletonParser extends Parser {
 
 	private static String[] makeLiteralNames() {
 		return new String[] {
-			null, "'['", "']'", "':'", "'('", "','", "')'", "'>'", "'+'", "'-'", 
+			null, "'['", "']'", "':'", "'('", "','", "')'", "'->'", "'+'", "'-'", 
 			"'.'", "'e'", "'E'"
 		};
 	}
