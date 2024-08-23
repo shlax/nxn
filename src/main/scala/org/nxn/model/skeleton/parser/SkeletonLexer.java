@@ -1,4 +1,4 @@
-// Generated from C:/Users/root/IdeaProjects/NXN/src/g4/Skeleton.g4 by ANTLR 4.13.1
+// Generated from /home/pochodnicky/wrksp/no-git/NXN/src/g4/Skeleton.g4 by ANTLR 4.13.1
 package org.nxn.model.skeleton.parser;
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.CharStream;
@@ -37,7 +37,7 @@ public class SkeletonLexer extends Lexer {
 
 	private static String[] makeLiteralNames() {
 		return new String[] {
-			null, "'['", "']'", "':'", "'('", "','", "')'", "'-'", "'>'", "'+'", 
+			null, "'['", "']'", "':'", "'('", "','", "')'", "'>'", "'+'", "'-'", 
 			"'.'", "'e'", "'E'"
 		};
 	}
@@ -139,8 +139,8 @@ public class SkeletonLexer extends Lexer {
 		"\u0000\"\u0004\u0001\u0000\u0000\u0000#$\u0005:\u0000\u0000$\u0006\u0001"+
 		"\u0000\u0000\u0000%&\u0005(\u0000\u0000&\b\u0001\u0000\u0000\u0000\'("+
 		"\u0005,\u0000\u0000(\n\u0001\u0000\u0000\u0000)*\u0005)\u0000\u0000*\f"+
-		"\u0001\u0000\u0000\u0000+,\u0005-\u0000\u0000,\u000e\u0001\u0000\u0000"+
-		"\u0000-.\u0005>\u0000\u0000.\u0010\u0001\u0000\u0000\u0000/0\u0005+\u0000"+
+		"\u0001\u0000\u0000\u0000+,\u0005>\u0000\u0000,\u000e\u0001\u0000\u0000"+
+		"\u0000-.\u0005+\u0000\u0000.\u0010\u0001\u0000\u0000\u0000/0\u0005-\u0000"+
 		"\u00000\u0012\u0001\u0000\u0000\u000012\u0005.\u0000\u00002\u0014\u0001"+
 		"\u0000\u0000\u000034\u0005e\u0000\u00004\u0016\u0001\u0000\u0000\u0000"+
 		"56\u0005E\u0000\u00006\u0018\u0001\u0000\u0000\u00007;\u0007\u0000\u0000"+

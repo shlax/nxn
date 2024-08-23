@@ -17,7 +17,7 @@ angles returns [ org.nxn.model.skeleton.ParsedAngle[] r ]:
     { $r = l.toArray(new org.nxn.model.skeleton.ParsedAngle[0]); };
 
 angle returns [ org.nxn.model.skeleton.ParsedAngle r ]:
-    n=floatNum ':' f=NAME '-' '>' t=NAME
+    n=floatNum ':' f=NAME '>' t=NAME
     { $r = new org.nxn.model.skeleton.ParsedAngle(org.nxn.math.Axis.valueOf($f.text), org.nxn.math.Axis.valueOf($t.text), $n.r); };
 
 jointList returns [ org.nxn.model.skeleton.ParsedJoint[] r ]:
