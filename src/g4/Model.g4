@@ -33,8 +33,7 @@ vector2  returns [ org.nxn.math.Vector2f r ]:
     { $r = new org.nxn.math.Vector2f($a.r, $b.r); } ;
 
 floatNum returns [ float r ]:
-    s=('+'|'-')? n=DIGITS ('.' m=DIGITS)? (('e'|'E') e=('+'|'-')? p=DIGITS )?
-    {
+    s=('+'|'-')? n=DIGITS ('.' m=DIGITS)? (('e'|'E') e=('+'|'-')? p=DIGITS )? {
         StringBuilder sb = new StringBuilder();
         if($s.text != null){
             sb.append($s.text);
