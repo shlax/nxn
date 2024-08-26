@@ -197,7 +197,7 @@ public class KeyFrameParser extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class AnglesContext extends ParserRuleContext {
-		public org.nxn.model.skeleton.animation.JointAngle[] r;
+		public org.nxn.model.skeleton.animation.ParsedJointAngle[] r;
 		public AngleContext i;
 		public AngleContext j;
 		public List<AngleContext> angle() {
@@ -219,7 +219,7 @@ public class KeyFrameParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			 java.util.ArrayList<org.nxn.model.skeleton.animation.JointAngle> l = new java.util.ArrayList<org.nxn.model.skeleton.animation.JointAngle>(); 
+			 java.util.ArrayList<org.nxn.model.skeleton.animation.ParsedJointAngle> l = new java.util.ArrayList<org.nxn.model.skeleton.animation.ParsedJointAngle>(); 
 			setState(32);
 			match(T__0);
 			setState(33);
@@ -244,7 +244,7 @@ public class KeyFrameParser extends Parser {
 			}
 			setState(44);
 			match(T__2);
-			 ((AnglesContext)_localctx).r =  l.toArray(new org.nxn.model.skeleton.animation.JointAngle[0]); 
+			 ((AnglesContext)_localctx).r =  l.toArray(new org.nxn.model.skeleton.animation.ParsedJointAngle[0]); 
 			}
 		}
 		catch (RecognitionException re) {
@@ -260,7 +260,7 @@ public class KeyFrameParser extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class AngleContext extends ParserRuleContext {
-		public org.nxn.model.skeleton.animation.JointAngle r;
+		public org.nxn.model.skeleton.animation.ParsedJointAngle r;
 		public Token a;
 		public FloatNumContext v;
 		public TerminalNode NAME() { return getToken(KeyFrameParser.NAME, 0); }
@@ -285,7 +285,7 @@ public class KeyFrameParser extends Parser {
 			match(T__3);
 			setState(49);
 			((AngleContext)_localctx).v = floatNum();
-			 ((AngleContext)_localctx).r =  new org.nxn.model.skeleton.animation.JointAngle(org.nxn.math.Axis.valueOf((((AngleContext)_localctx).a!=null?((AngleContext)_localctx).a.getText():null)), ((AngleContext)_localctx).v.r); 
+			 ((AngleContext)_localctx).r =  new org.nxn.model.skeleton.animation.ParsedJointAngle(org.nxn.math.Axis.valueOf((((AngleContext)_localctx).a!=null?((AngleContext)_localctx).a.getText():null)), ((AngleContext)_localctx).v.r); 
 			}
 		}
 		catch (RecognitionException re) {

@@ -11,14 +11,14 @@ joint returns [ org.nxn.model.skeleton.animation.ParsedJointAngles r ]:
     { $r = new org.nxn.model.skeleton.animation.ParsedJointAngles( $n.text, $a.r ); }
 ;
 
-angles returns [ org.nxn.model.skeleton.animation.JointAngle[] r ]:
-    { java.util.ArrayList<org.nxn.model.skeleton.animation.JointAngle> l = new java.util.ArrayList<org.nxn.model.skeleton.animation.JointAngle>(); }
+angles returns [ org.nxn.model.skeleton.animation.ParsedJointAngle[] r ]:
+    { java.util.ArrayList<org.nxn.model.skeleton.animation.ParsedJointAngle> l = new java.util.ArrayList<org.nxn.model.skeleton.animation.ParsedJointAngle>(); }
     '[' i=angle { l.add($i.r); } (',' j=angle { l.add($j.r); } )* ']'
-    { $r = l.toArray(new org.nxn.model.skeleton.animation.JointAngle[0]); }
+    { $r = l.toArray(new org.nxn.model.skeleton.animation.ParsedJointAngle[0]); }
 ;
 
-angle returns [ org.nxn.model.skeleton.animation.JointAngle r ]:
-    a=NAME ':' v=floatNum { $r = new org.nxn.model.skeleton.animation.JointAngle(org.nxn.math.Axis.valueOf($a.text), $v.r); }
+angle returns [ org.nxn.model.skeleton.animation.ParsedJointAngle r ]:
+    a=NAME ':' v=floatNum { $r = new org.nxn.model.skeleton.animation.ParsedJointAngle(org.nxn.math.Axis.valueOf($a.text), $v.r); }
 ;
 
 floatNum returns [ float r ]:
