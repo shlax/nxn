@@ -22,11 +22,11 @@ public class SkeletonParser extends Parser {
 	public static final int
 		RULE_skeleton = 0, RULE_joint = 1, RULE_axis = 2, RULE_angles = 3, RULE_angle = 4, 
 		RULE_jointList = 5, RULE_bindings = 6, RULE_binding = 7, RULE_indList = 8, 
-		RULE_vector3 = 9, RULE_floatNum = 10, RULE_indNum = 11;
+		RULE_vector3 = 9, RULE_floatNum = 10, RULE_intNum = 11;
 	private static String[] makeRuleNames() {
 		return new String[] {
 			"skeleton", "joint", "axis", "angles", "angle", "jointList", "bindings", 
-			"binding", "indList", "vector3", "floatNum", "indNum"
+			"binding", "indList", "vector3", "floatNum", "intNum"
 		};
 	}
 	public static final String[] ruleNames = makeRuleNames();
@@ -551,13 +551,13 @@ public class SkeletonParser extends Parser {
 	@SuppressWarnings("CheckReturnValue")
 	public static class IndListContext extends ParserRuleContext {
 		public int[] r;
-		public IndNumContext n;
-		public IndNumContext m;
-		public List<IndNumContext> indNum() {
-			return getRuleContexts(IndNumContext.class);
+		public IntNumContext n;
+		public IntNumContext m;
+		public List<IntNumContext> intNum() {
+			return getRuleContexts(IntNumContext.class);
 		}
-		public IndNumContext indNum(int i) {
-			return getRuleContext(IndNumContext.class,i);
+		public IntNumContext intNum(int i) {
+			return getRuleContext(IntNumContext.class,i);
 		}
 		public IndListContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -576,7 +576,7 @@ public class SkeletonParser extends Parser {
 			setState(112);
 			match(T__0);
 			setState(113);
-			((IndListContext)_localctx).n = indNum();
+			((IndListContext)_localctx).n = intNum();
 			 l.add(((IndListContext)_localctx).n.r); 
 			setState(121);
 			_errHandler.sync(this);
@@ -587,7 +587,7 @@ public class SkeletonParser extends Parser {
 				setState(115);
 				match(T__4);
 				setState(116);
-				((IndListContext)_localctx).m = indNum();
+				((IndListContext)_localctx).m = intNum();
 				 l.add(((IndListContext)_localctx).m.r); 
 				}
 				}
@@ -792,25 +792,25 @@ public class SkeletonParser extends Parser {
 	}
 
 	@SuppressWarnings("CheckReturnValue")
-	public static class IndNumContext extends ParserRuleContext {
+	public static class IntNumContext extends ParserRuleContext {
 		public int r;
 		public Token n;
 		public TerminalNode DIGITS() { return getToken(SkeletonParser.DIGITS, 0); }
-		public IndNumContext(ParserRuleContext parent, int invokingState) {
+		public IntNumContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_indNum; }
+		@Override public int getRuleIndex() { return RULE_intNum; }
 	}
 
-	public final IndNumContext indNum() throws RecognitionException {
-		IndNumContext _localctx = new IndNumContext(_ctx, getState());
-		enterRule(_localctx, 22, RULE_indNum);
+	public final IntNumContext intNum() throws RecognitionException {
+		IntNumContext _localctx = new IntNumContext(_ctx, getState());
+		enterRule(_localctx, 22, RULE_intNum);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(153);
-			((IndNumContext)_localctx).n = match(DIGITS);
-			 ((IndNumContext)_localctx).r =  Integer.parseInt((((IndNumContext)_localctx).n!=null?((IndNumContext)_localctx).n.getText():null)); 
+			((IntNumContext)_localctx).n = match(DIGITS);
+			 ((IntNumContext)_localctx).r =  Integer.parseInt((((IntNumContext)_localctx).n!=null?((IntNumContext)_localctx).n.getText():null)); 
 			}
 		}
 		catch (RecognitionException re) {

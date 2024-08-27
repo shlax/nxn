@@ -22,11 +22,11 @@ public class ModelParser extends Parser {
 	public static final int
 		RULE_model = 0, RULE_triangles = 1, RULE_triangle = 2, RULE_vertex = 3, 
 		RULE_uvs = 4, RULE_points = 5, RULE_vector3 = 6, RULE_vector2 = 7, RULE_floatNum = 8, 
-		RULE_indNum = 9;
+		RULE_intNum = 9;
 	private static String[] makeRuleNames() {
 		return new String[] {
 			"model", "triangles", "triangle", "vertex", "uvs", "points", "vector3", 
-			"vector2", "floatNum", "indNum"
+			"vector2", "floatNum", "intNum"
 		};
 	}
 	public static final String[] ruleNames = makeRuleNames();
@@ -255,11 +255,11 @@ public class ModelParser extends Parser {
 	@SuppressWarnings("CheckReturnValue")
 	public static class VertexContext extends ParserRuleContext {
 		public org.nxn.model.ParsedVertex r;
-		public IndNumContext i;
+		public IntNumContext i;
 		public Vector3Context n;
 		public UvsContext u;
-		public IndNumContext indNum() {
-			return getRuleContext(IndNumContext.class,0);
+		public IntNumContext intNum() {
+			return getRuleContext(IntNumContext.class,0);
 		}
 		public Vector3Context vector3() {
 			return getRuleContext(Vector3Context.class,0);
@@ -280,7 +280,7 @@ public class ModelParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(49);
-			((VertexContext)_localctx).i = indNum();
+			((VertexContext)_localctx).i = intNum();
 			setState(50);
 			match(T__0);
 			setState(51);
@@ -655,25 +655,25 @@ public class ModelParser extends Parser {
 	}
 
 	@SuppressWarnings("CheckReturnValue")
-	public static class IndNumContext extends ParserRuleContext {
+	public static class IntNumContext extends ParserRuleContext {
 		public int r;
 		public Token n;
 		public TerminalNode DIGITS() { return getToken(ModelParser.DIGITS, 0); }
-		public IndNumContext(ParserRuleContext parent, int invokingState) {
+		public IntNumContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_indNum; }
+		@Override public int getRuleIndex() { return RULE_intNum; }
 	}
 
-	public final IndNumContext indNum() throws RecognitionException {
-		IndNumContext _localctx = new IndNumContext(_ctx, getState());
-		enterRule(_localctx, 18, RULE_indNum);
+	public final IntNumContext intNum() throws RecognitionException {
+		IntNumContext _localctx = new IntNumContext(_ctx, getState());
+		enterRule(_localctx, 18, RULE_intNum);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(119);
-			((IndNumContext)_localctx).n = match(DIGITS);
-			 ((IndNumContext)_localctx).r =  Integer.parseInt((((IndNumContext)_localctx).n!=null?((IndNumContext)_localctx).n.getText():null)); 
+			((IntNumContext)_localctx).n = match(DIGITS);
+			 ((IntNumContext)_localctx).r =  Integer.parseInt((((IntNumContext)_localctx).n!=null?((IntNumContext)_localctx).n.getText():null)); 
 			}
 		}
 		catch (RecognitionException re) {

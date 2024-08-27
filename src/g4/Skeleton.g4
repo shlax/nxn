@@ -35,7 +35,7 @@ binding returns [ org.nxn.model.skeleton.ParsedBinding r ]:
 
 indList returns [ int[] r ]:
     { java.util.ArrayList<Integer> l = new java.util.ArrayList<Integer>(); }
-    '[' n=indNum { l.add($n.r); } ( ',' m=indNum { l.add($m.r); } )* ']'
+    '[' n=intNum { l.add($n.r); } ( ',' m=intNum { l.add($m.r); } )* ']'
     { $r = l.stream().mapToInt(Integer::intValue).toArray(); };
 
 vector3  returns [ org.nxn.math.Vector3f r ]:
@@ -62,7 +62,7 @@ floatNum returns [ float r ]:
         $r = Float.parseFloat(sb.toString());
     };
 
-indNum returns [ int r ]:
+intNum returns [ int r ]:
     n=DIGITS
     { $r = Integer.parseInt($n.text); } ;
 

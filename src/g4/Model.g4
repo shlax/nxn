@@ -13,7 +13,7 @@ triangle returns [ org.nxn.model.ParsedTriangle r ] :
     { $r = new org.nxn.model.ParsedTriangle($a.r, $b.r, $c.r); } ;
 
 vertex returns [ org.nxn.model.ParsedVertex r ] :
-    i=indNum ':' n=vector3 ':' u=uvs
+    i=intNum ':' n=vector3 ':' u=uvs
     { $r = new org.nxn.model.ParsedVertex($i.r, $n.r, $u.r.toArray( new org.nxn.math.Vector2f[0] ) ); } ;
 
 uvs returns [ java.util.List<org.nxn.math.Vector2f> r ] :
@@ -52,7 +52,7 @@ floatNum returns [ float r ]:
         $r = Float.parseFloat(sb.toString());
     } ;
 
-indNum returns [ int r ]:
+intNum returns [ int r ]:
     n=DIGITS
     { $r = Integer.parseInt($n.text); } ;
 

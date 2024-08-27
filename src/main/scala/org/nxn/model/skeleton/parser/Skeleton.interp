@@ -46,7 +46,7 @@ binding
 indList
 vector3
 floatNum
-indNum
+intNum
 
 
 atn:
