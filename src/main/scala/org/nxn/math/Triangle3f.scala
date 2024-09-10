@@ -1,3 +1,3 @@
 package org.nxn.math
 
-case class Triangle3f(a:Vector3f, b:Vector3f, c:Vector3f)
+class Triangle3f(val a:Vector3f, val b:Vector3f, val c:Vector3f)
