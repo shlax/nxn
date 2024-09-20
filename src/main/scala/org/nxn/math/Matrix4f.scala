@@ -248,29 +248,29 @@ class Matrix4f(var m00: Float, var m01: Float, var m02: Float, var m03: Float,  
   }
 
   def transpose(): this.type = {
-    var tmp = m10
+    val tmp01 = m10
     this.m10 = this.m01
-    this.m01 = tmp
+    this.m01 = tmp01
 
-    tmp = this.m20
+    val tmp20 = this.m20
     this.m20 = this.m02
-    this.m02 = tmp
+    this.m02 = tmp20
 
-    tmp = this.m30
+    val tmp30 = this.m30
     this.m30 = this.m03
-    this.m03 = tmp
+    this.m03 = tmp30
 
-    tmp = this.m21
+    val tmp21 = this.m21
     this.m21 = this.m12
-    this.m12 = tmp
+    this.m12 = tmp21
 
-    tmp = this.m31
+    val tmp31 = this.m31
     this.m31 = this.m13
-    this.m13 = tmp
+    this.m13 = tmp31
 
-    tmp = this.m32
+    val tmp32 = this.m32
     this.m32 = this.m23
-    this.m23 = tmp
+    this.m23 = tmp32
 
     this
   }
