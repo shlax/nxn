@@ -8,22 +8,22 @@ repositories {
 
 dependencies {
 
-    implementation("org.scala-lang:scala3-library_3:3.6.1")
+    implementation("org.scala-lang:scala3-library_3:3.6.2")
     implementation("org.antlr:antlr4-runtime:4.13.2")
 
     implementation("org.l33tlabs.twl:pngdecoder:1.0")
 
-    implementation("org.lwjgl:lwjgl-glfw:3.3.4")
-    implementation("org.lwjgl:lwjgl-vulkan:3.3.4")
-    implementation("org.lwjgl:lwjgl-shaderc:3.3.4")
+    implementation("org.lwjgl:lwjgl-glfw:3.3.5")
+    implementation("org.lwjgl:lwjgl-vulkan:3.3.5")
+    implementation("org.lwjgl:lwjgl-shaderc:3.3.5")
 
-    runtimeOnly("org.lwjgl:lwjgl:3.3.4:natives-linux")
-    runtimeOnly("org.lwjgl:lwjgl-glfw:3.3.4:natives-linux")
-    runtimeOnly("org.lwjgl:lwjgl-shaderc:3.3.4:natives-linux")
+    runtimeOnly("org.lwjgl:lwjgl:3.3.5:natives-linux")
+    runtimeOnly("org.lwjgl:lwjgl-glfw:3.3.5:natives-linux")
+    runtimeOnly("org.lwjgl:lwjgl-shaderc:3.3.5:natives-linux")
 
-    runtimeOnly("org.lwjgl:lwjgl:3.3.4:natives-windows")
-    runtimeOnly("org.lwjgl:lwjgl-glfw:3.3.4:natives-windows")
-    runtimeOnly("org.lwjgl:lwjgl-shaderc:3.3.4:natives-windows")
+    runtimeOnly("org.lwjgl:lwjgl:3.3.5:natives-windows")
+    runtimeOnly("org.lwjgl:lwjgl-glfw:3.3.5:natives-windows")
+    runtimeOnly("org.lwjgl:lwjgl-shaderc:3.3.5:natives-windows")
 }
 
 tasks.register<Copy>("copyDependenciesToLibs") {
