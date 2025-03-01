@@ -19,17 +19,13 @@ class FpsCounter(mod:Int = 135, report:Int = 90) {
     if(ind == mod){
       ind = 0
       if(act == -1){
-        if(report <= mod){
-          act = report - 2
-        }else{
-          act = mod - 1
-        }
+        act = 0
       }
     }
 
-    if(act >= 0){
+    if(act >= 0) {
       act += 1
-      if(act == report){
+      if (act == report) {
         act = 0
         val avg = times.sum.doubleValue / mod.doubleValue
         c.accept(1e9d / avg)
