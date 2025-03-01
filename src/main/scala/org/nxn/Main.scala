@@ -1,7 +1,7 @@
 package org.nxn
 
 import de.matthiasmann.twl.utils.PNGDecoder
-import org.lwjgl.system.{MemoryStack, MemoryUtil}
+import org.lwjgl.system.{Configuration, MemoryStack, MemoryUtil}
 import org.lwjgl.util.shaderc.Shaderc
 import org.lwjgl.vulkan.{VK10, VkCommandBuffer, VkPipelineLayoutCreateInfo, VkPipelineVertexInputStateCreateInfo, VkPushConstantRange, VkVertexInputAttributeDescription, VkVertexInputBindingDescription}
 import org.nxn.controls.{MouseInput, OrbitCamera}
@@ -17,7 +17,7 @@ import org.nxn.math.perspective.*
 object Main extends Runnable{
 
   def main(args:Array[String]) : Unit = {
-//    Configuration.STACK_SIZE.set(128)
+    Configuration.STACK_SIZE.set(128)
     try {
       run()
     }catch {
