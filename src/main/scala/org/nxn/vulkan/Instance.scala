@@ -18,17 +18,26 @@ class Instance(val system: VulkanSystem) extends VkDebugUtilsMessengerCallbackEX
       vkCheck(VK10.vkEnumerateInstanceLayerProperties(nBuff, null))
       val n = nBuff.get(0)
       if(n > 0) {
-        val availableLayers = VkLayerProperties.calloc(n, stack)
-        vkCheck(VK10.vkEnumerateInstanceLayerProperties(nBuff, availableLayers))
-        for (i <- 0 until n) {
-          val l = availableLayers.get(i)
-          if (l.layerNameString() == "VK_LAYER_KHRONOS_validation") {
-            val p = stack.callocPointer(1)
-            p.put(stack.ASCII("VK_LAYER_KHRONOS_validation"))
-            p.flip()
-            requiredLayers = Some(p)
+        var validationFound = false
+
+        MemoryStack.stackPush()|{ stackProp =>
+          val availableLayers = VkLayerProperties.calloc(n, stackProp)
+          vkCheck(VK10.vkEnumerateInstanceLayerProperties(nBuff, availableLayers))
+          for (i <- 0 until n) {
+            val l = availableLayers.get(i)
+            if (l.layerNameString() == "VK_LAYER_KHRONOS_validation") {
+              validationFound = true
+            }
           }
         }
+
+        if(validationFound){
+          val p = stack.callocPointer(1)
+          p.put(stack.ASCII("VK_LAYER_KHRONOS_validation"))
+          p.flip()
+          requiredLayers = Some(p)
+        }
+
       }
     }
 
@@ -43,17 +52,26 @@ class Instance(val system: VulkanSystem) extends VkDebugUtilsMessengerCallbackEX
       vkCheck(VK10.vkEnumerateInstanceExtensionProperties(null.asInstanceOf[CharSequence], nBuff, null))
       val n = nBuff.get(0)
       if (n > 0) {
-        val ext = VkExtensionProperties.calloc(n, stack)
-        vkCheck(VK10.vkEnumerateInstanceExtensionProperties(null.asInstanceOf[CharSequence], nBuff, ext))
-        for(i <- 0 until n){
-          val e = ext.get(i)
-          if(EXTDebugUtils.VK_EXT_DEBUG_UTILS_EXTENSION_NAME == e.extensionNameString()){
-            val p = stack.callocPointer(1)
-            p.put(stack.ASCII(EXTDebugUtils.VK_EXT_DEBUG_UTILS_EXTENSION_NAME))
-            p.flip()
-            requiredExtension = Some(p)
+        var requiredExtensionFound = false
+
+        MemoryStack.stackPush()| { stackExt =>
+          val ext = VkExtensionProperties.calloc(n, stackExt)
+          vkCheck(VK10.vkEnumerateInstanceExtensionProperties(null.asInstanceOf[CharSequence], nBuff, ext))
+          for (i <- 0 until n) {
+            val e = ext.get(i)
+            if (EXTDebugUtils.VK_EXT_DEBUG_UTILS_EXTENSION_NAME == e.extensionNameString()) {
+              requiredExtensionFound = true
+            }
           }
         }
+        
+        if(requiredExtensionFound){
+          val p = stack.callocPointer(1)
+          p.put(stack.ASCII(EXTDebugUtils.VK_EXT_DEBUG_UTILS_EXTENSION_NAME))
+          p.flip()
+          requiredExtension = Some(p)
+        }
+        
       }
     }
 

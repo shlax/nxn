@@ -17,7 +17,7 @@ import org.nxn.math.perspective.*
 object Main extends Runnable{
 
   def main(args:Array[String]) : Unit = {
-    Configuration.STACK_SIZE.set(128)
+    //Configuration.STACK_SIZE.set(128)
     try {
       run()
     }catch {
