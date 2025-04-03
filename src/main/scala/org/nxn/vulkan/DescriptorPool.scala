@@ -2,7 +2,7 @@ package org.nxn.vulkan
 
 import org.lwjgl.system.MemoryStack
 import org.lwjgl.vulkan.{VK10, VkDescriptorPoolCreateInfo, VkDescriptorPoolSize}
-import org.nxn.utils.using.*
+import org.nxn.utils.closeable.*
 
 /** poolTypes : Map(VK10.VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER -> 1) */
 class DescriptorPool(val device: Device, poolSizes:Map[Int,Int], maxSets:Int = 1) extends AutoCloseable{

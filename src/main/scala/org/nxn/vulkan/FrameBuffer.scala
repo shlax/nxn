@@ -2,7 +2,7 @@ package org.nxn.vulkan
 
 import org.lwjgl.system.MemoryStack
 import org.lwjgl.vulkan.{VK10, VkFramebufferCreateInfo}
-import org.nxn.utils.using.*
+import org.nxn.utils.closeable.*
 
 class FrameBuffer(val renderPass: RenderPass, val imageView:ImageView) extends AutoCloseable {
 

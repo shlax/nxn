@@ -3,7 +3,7 @@ package org.nxn.vulkan
 import org.lwjgl.system.{MemoryStack, MemoryUtil}
 import org.lwjgl.vulkan.{KHRSurface, KHRSwapchain, VK10, VkExtent2D, VkExtent3D, VkFormatProperties, VkImageCreateInfo, VkMemoryRequirements, VkPresentInfoKHR, VkSurfaceCapabilitiesKHR, VkSurfaceFormatKHR, VkSwapchainCreateInfoKHR}
 import org.nxn.utils.Dimension
-import org.nxn.utils.using.*
+import org.nxn.utils.closeable.*
 import org.nxn.vulkan.frame.NextFrame
 import org.nxn.vulkan.frame.PresentResult
 

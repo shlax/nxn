@@ -2,7 +2,7 @@ package org.nxn.vulkan
 
 import org.lwjgl.system.MemoryStack
 import org.lwjgl.vulkan.{VK10, VkSamplerCreateInfo}
-import org.nxn.utils.using.*
+import org.nxn.utils.closeable.*
 
 class Sampler(val device: Device, filter:Int = VK10.VK_FILTER_LINEAR, addressMode:Int = VK10.VK_SAMPLER_ADDRESS_MODE_REPEAT) extends AutoCloseable{
 

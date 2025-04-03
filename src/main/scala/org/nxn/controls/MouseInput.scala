@@ -3,7 +3,7 @@ package org.nxn.controls
 import org.lwjgl.glfw.{GLFW, GLFWCursorPosCallbackI, GLFWMouseButtonCallbackI, GLFWScrollCallbackI}
 import org.lwjgl.system.MemoryUtil
 import org.nxn.math.Vector3f
-import org.nxn.utils.using.*
+import org.nxn.utils.closeable.*
 import org.nxn.vulkan.GlfwWindow
 
 class MouseInput(val window: GlfwWindow) extends AutoCloseable{

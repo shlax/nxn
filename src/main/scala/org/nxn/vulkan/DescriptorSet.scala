@@ -2,7 +2,7 @@ package org.nxn.vulkan
 
 import org.lwjgl.system.MemoryStack
 import org.lwjgl.vulkan.{VK10, VkDescriptorSetAllocateInfo}
-import org.nxn.utils.using.*
+import org.nxn.utils.closeable.*
 
 class DescriptorSet(val pool:DescriptorPool, layouts:IndexedSeq[DescriptorSetLayout]) extends AutoCloseable{
 

@@ -1,7 +1,7 @@
 package org.nxn.vulkan.shader
 
 import org.lwjgl.util.shaderc.Shaderc
-import org.nxn.utils.using.*
+import org.nxn.utils.closeable.*
 
 import scala.io.Source
 

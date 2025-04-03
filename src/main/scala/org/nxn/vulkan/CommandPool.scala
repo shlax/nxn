@@ -2,7 +2,7 @@ package org.nxn.vulkan
 
 import org.lwjgl.system.MemoryStack
 import org.lwjgl.vulkan.{VK10, VkCommandPoolCreateInfo}
-import org.nxn.utils.using.*
+import org.nxn.utils.closeable.*
 
 class CommandPool(val device: Device, val queueFamilyIndex:Int, createReset: Boolean = true) extends AutoCloseable{
 

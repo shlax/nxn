@@ -6,7 +6,7 @@ import org.lwjgl.util.shaderc.Shaderc
 import org.lwjgl.vulkan.{VK10, VkCommandBuffer, VkPipelineLayoutCreateInfo, VkPipelineVertexInputStateCreateInfo, VkPushConstantRange, VkVertexInputAttributeDescription, VkVertexInputBindingDescription}
 import org.nxn.controls.{MouseInput, OrbitCamera}
 import org.nxn.math.{Axis, Matrix4f, Vector2f, Vector3f}
-import org.nxn.utils.using.*
+import org.nxn.utils.closeable.*
 import org.nxn.utils.{Dimension, FpsCounter}
 import org.nxn.vulkan.memory.{MemoryBuffer, TypeLength}
 import org.nxn.vulkan.shader.ShaderCompiler

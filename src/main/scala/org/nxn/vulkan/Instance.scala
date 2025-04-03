@@ -4,7 +4,7 @@ import org.lwjgl.PointerBuffer
 import org.lwjgl.glfw.GLFWVulkan
 import org.lwjgl.system.{MemoryStack, MemoryUtil}
 import org.lwjgl.vulkan.{EXTDebugUtils, VK, VK10, VkApplicationInfo, VkDebugUtilsMessengerCallbackDataEXT, VkDebugUtilsMessengerCallbackEXT, VkDebugUtilsMessengerCallbackEXTI, VkDebugUtilsMessengerCreateInfoEXT, VkExtensionProperties, VkInstance, VkInstanceCreateInfo, VkLayerProperties}
-import org.nxn.utils.using.*
+import org.nxn.utils.closeable.*
 
 class Instance(val system: VulkanSystem) extends VkDebugUtilsMessengerCallbackEXTI, AutoCloseable{
 

@@ -5,7 +5,7 @@ import org.lwjgl.vulkan.{VK10, VkClearValue, VkCommandBuffer, VkRect2D, VkRender
 import org.nxn.vulkan.frame.NextFrame
 
 import java.util.function.{BiConsumer, Consumer}
-import org.nxn.utils.using.*
+import org.nxn.utils.closeable.*
 
 class RenderCommand(val renderPass: RenderPass, count:Int = 1) extends AutoCloseable{
 

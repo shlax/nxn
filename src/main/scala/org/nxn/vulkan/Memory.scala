@@ -2,7 +2,7 @@ package org.nxn.vulkan
 
 import org.lwjgl.system.MemoryStack
 import org.lwjgl.vulkan.{VK10, VkMemoryAllocateInfo, VkMemoryRequirements}
-import org.nxn.utils.using.*
+import org.nxn.utils.closeable.*
 import org.nxn.vulkan.memory.MemoryBuffer
 
 import java.util.function.Consumer

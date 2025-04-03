@@ -3,7 +3,7 @@ package org.nxn.utils
 import scala.annotation.targetName
 import scala.util.control.NonFatal
 
-object using {
+object closeable {
 
   extension [T <: AutoCloseable](ac: T) {
 
