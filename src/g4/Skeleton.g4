@@ -1,5 +1,19 @@
 grammar Skeleton;
 
+/* [
+    joint1:(1,1,1):X:[
+        s1:[1,2],
+        s2:[2]
+    ]:[
+        joint2:(0.5:X->Y):[
+            s2:[3]
+        ],
+        joint3:(1,2,3):XYZ:[
+            s2:[3]
+        ]
+    ]
+] */
+
 skeleton returns [ org.nxn.model.skeleton.ParsedJoint result ]:
     '[' j=joint ']' { $result = $j.r; } ;
 

@@ -1,0 +1,135 @@
+
+proc int countJoints(string $name){
+    $src_connections = `listConnections -d true -s false -t jointCluster $name`;
+    $src_joints = `listConnections -d true -s false -t joint $name`;
+
+    return size($src_connections) + size($src_joints);
+}
+
+proc exportJoints(string $name,int $filename, int $tabs){
+
+	$src_connections = `listConnections -d true -s false -t jointCluster $name`;
+	$src_joints = `listConnections -d true -s false -t joint $name`;
+
+    if(size($src_connections) > 0 || size($src_joints) > 0){
+
+        for($k = 0; $k < $tabs+1; $k ++) fprint($filename, "\t");
+        fprint($filename, $name);
+
+        fprint($filename, ":(");
+        string $arg;
+
+        $arg = `getAttr ($name+".translateX")`;
+        fprint($filename, $arg+",");
+
+        $arg = `getAttr ($name+".translateY")`;
+        fprint($filename, $arg+",");
+
+        $arg = `getAttr ($name+".translateZ")`;
+        fprint($filename, $arg+"):XYZ");
+
+
+        if(size($src_connections) > 0){
+            fprint $filename ":[\n";
+
+            for( $cluster in $src_connections ){
+
+                $repSep = 0;
+
+                $A = `listSets -o $cluster`;
+                for( $b in $A ){
+
+                    select $b;
+                    $c = `ls -selection`;
+
+                    for($q in $c){
+
+                    //	print($q+":[\n");
+                        string $tmpTmp = $q;
+
+                        string $buff[];
+                        tokenize($tmpTmp, "[:]", $buff);
+
+                        int $qwe;
+                        int $max;
+                        if($buff[2] == ""){
+                            $max = $buff[1];
+                        }else{
+                            $max = $buff[2];
+                        }
+
+                        string $buffNm[];
+                        tokenize($buff[0], ".", $buffNm);
+
+                        for($k = 0; $k < $tabs+2; $k ++) fprint($filename, "\t");
+                        fprint($filename,""+$buffNm[0]);
+                        fprint $filename ":[";
+
+                        $sep = 0;
+
+                        for($qwe = $buff[1]; $qwe <= $max; $qwe++ ){
+                            if($sep == 0){
+                                $sep = 1;
+                            }else{
+                                fprint $filename ",";
+                            }
+                            fprint $filename $qwe;
+                        }
+
+                        fprint $filename "]";
+                        if($repSep == 0){
+                            $repSep = 1;
+                        }else{
+                            fprint $filename ",";
+                        }
+                        fprint $filename "\n";
+                    }
+
+                }
+            }
+
+            for($k = 0; $k < $tabs+1; $k ++) fprint($filename, "\t");
+            fprint $filename "]";
+
+        }
+
+        $cnt = 0;
+        for($joint in $src_joints){
+            $cnt += countJoints($joint);
+        }
+
+        if($cnt > 0){
+            fprint $filename ":[\n";
+
+            $sep = 0;
+
+            for($joint in $src_joints){
+                exportJoints($joint, $filename, $tabs + 1);
+                if($sep == 0){
+                    $sep = 1;
+                }else{
+                    fprint $filename ",";
+                }
+            }
+
+            for($k = 0; $k < $tabs+1; $k ++) fprint($filename, "\t");
+            fprint $filename "]";
+        }
+    }
+
+    fprint $filename "\n";
+}
+
+proc exportJointsFile(string $name,string $filename){
+	int $file = `fopen $filename "w"`;
+
+	fprint $file "[\n";
+	
+	exportJoints($name, $file, 0);
+	
+	fprint $file "]";
+	
+	fclose $file;
+}
+
+exportJointsFile("joint1", "z:\\wrksp\\no-git\\NXN\\src\\main\\resources\\models\\bar\\bar.skl");

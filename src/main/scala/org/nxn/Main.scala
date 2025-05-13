@@ -36,7 +36,7 @@ object Main extends Runnable{
       )
     }
 
-    val cube = (getClass.getResourceAsStream("/models/cube.m3d")| { in => // sphere
+    val cube = (getClass.getResourceAsStream("/models/cube.msh")| { in => // sphere
       ModelLoader().loadModel(in)
     }).invert(Axis.Y).compile().vulkanModel
 

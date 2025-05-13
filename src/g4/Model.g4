@@ -1,5 +1,17 @@
 grammar Model;
 
+/* [
+    (-0.5,-0.5,0.5),
+    (0.5,-0.5,0.5),
+    (-0.5,0.5,0.5)
+]:[
+    [
+        0:(0,0,1):[(0.375,0)],
+        1:(0,0,1):[(0.625,0)],
+        2:(0,0,1):[(0.375,0.25)]
+    ]
+] */
+
 model returns [ org.nxn.model.ParsedModel result ] :
     p=points ':' t=triangles
     { $result = new org.nxn.model.ParsedModel( $p.r.toArray(new org.nxn.math.Vector3f[0] ), $t.r.toArray( new org.nxn.model.ParsedTriangle[0] ) ); };
