@@ -43,6 +43,11 @@ proc exportJoints(string $name,int $filename, int $tabs){
                     $c = `ls -selection`;
 
                     for($q in $c){
+                        if($repSep == 0){
+                            $repSep = 1;
+                        }else{
+                            fprint $filename ",\n";
+                        }
 
                     //	print($q+":[\n");
                         string $tmpTmp = $q;
@@ -77,13 +82,9 @@ proc exportJoints(string $name,int $filename, int $tabs){
                         }
 
                         fprint $filename "]";
-                        if($repSep == 0){
-                            $repSep = 1;
-                        }else{
-                            fprint $filename ",";
-                        }
-                        fprint $filename "\n";
                     }
+
+                    fprint $filename "\n";
 
                 }
             }
