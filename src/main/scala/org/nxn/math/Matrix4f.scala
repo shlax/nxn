@@ -181,6 +181,7 @@ class Matrix4f(var m00: Float, var m01: Float, var m02: Float, var m03: Float,  
     out
   }
 
+  /** Sets the value of this matrix to the result of multiplying itself with matrix `m` */
   def mulThisWith(m : Matrix4f) : this.type = {
     mul(this, m)
   }
