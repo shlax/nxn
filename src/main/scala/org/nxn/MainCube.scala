@@ -14,7 +14,7 @@ import org.nxn.vulkan.{Buffer, CommandBuffer, DescriptorPool, DescriptorSet, Des
 import org.nxn.model.ModelLoader
 import org.nxn.math.perspective.*
 
-object Main extends Runnable{
+object MainCube extends Runnable{
 
   def main(args:Array[String]) : Unit = {
     //Configuration.STACK_SIZE.set(128)
@@ -123,7 +123,7 @@ object Main extends Runnable{
               stageBuffer.mapMemory{ memory =>
                 val b = MemoryUtil.memByteBuffer(memory.address, memory.size)
 
-                Main.getClass.getResourceAsStream("/textures/checker.png") | { is =>
+                MainCube.getClass.getResourceAsStream("/textures/checker.png") | { is =>
                   val dec = PNGDecoder(is)
                   dec.decode(b, 512 * 4, PNGDecoder.Format.RGBA)
                 }

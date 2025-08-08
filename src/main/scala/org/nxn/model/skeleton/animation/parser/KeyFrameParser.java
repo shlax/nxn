@@ -1,4 +1,4 @@
-// Generated from /home/pochodnicky/wrksp/no-git/NXN/src/g4/KeyFrame.g4 by ANTLR 4.13.1
+// Generated from /home/pochodnicky/wrksp/no-git/NXN/src/g4/KeyFrame.g4 by ANTLR 4.13.2
 package org.nxn.model.skeleton.animation.parser;
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
@@ -9,9 +9,9 @@ import java.util.List;
 import java.util.Iterator;
 import java.util.ArrayList;
 
-@SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast", "CheckReturnValue"})
+@SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast", "CheckReturnValue", "this-escape"})
 public class KeyFrameParser extends Parser {
-	static { RuntimeMetaData.checkVersion("4.13.1", RuntimeMetaData.VERSION); }
+	static { RuntimeMetaData.checkVersion("4.13.2", RuntimeMetaData.VERSION); }
 
 	protected static final DFA[] _decisionToDFA;
 	protected static final PredictionContextCache _sharedContextCache =
@@ -93,7 +93,7 @@ public class KeyFrameParser extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class KeyFrameContext extends ParserRuleContext {
-		public org.nxn.model.skeleton.animation.ParsedKeyFrame r;
+		public org.nxn.model.skeleton.animation.ParsedKeyFrame result;
 		public JointContext j;
 		public JointContext k;
 		public List<JointContext> joint() {
@@ -140,7 +140,7 @@ public class KeyFrameParser extends Parser {
 			}
 			setState(23);
 			match(T__2);
-			 ((KeyFrameContext)_localctx).r =  new org.nxn.model.skeleton.animation.ParsedKeyFrame(new org.nxn.model.skeleton.animation.ParsedJointAngles[0]); 
+			 ((KeyFrameContext)_localctx).result =  new org.nxn.model.skeleton.animation.ParsedKeyFrame(new org.nxn.model.skeleton.animation.ParsedJointAngles[0]); 
 			}
 		}
 		catch (RecognitionException re) {
