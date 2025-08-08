@@ -1,5 +1,9 @@
 grammar KeyFrame;
 
+/* [
+    joint1 : [ X: 30, Y:45 ],
+    joint2 : [ X: 30, Z:45 ]
+] */
 keyFrame returns [ org.nxn.model.skeleton.animation.ParsedKeyFrame result ]:
     { java.util.ArrayList<org.nxn.model.skeleton.animation.ParsedJointAngles> l = new java.util.ArrayList<org.nxn.model.skeleton.animation.ParsedJointAngles>(); }
     '[' j=joint { l.add($j.r); } (',' k=joint { l.add($k.r); } )*  ']'
