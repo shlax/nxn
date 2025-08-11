@@ -10,16 +10,16 @@ class InterpolatedJoint(name:String, val interpolations:Array[InterpolatedAngle]
       val rot = interpolations.head.rotation()
 
       val tmp = Matrix4f.mul(modelMatrix, rot)
-      rot.mulWithThis(normalMatrix)
+      rot.mulWith(normalMatrix)
 
       update(tmp, rot)
     }else{
       val tmp = interpolations.head.rotation()
-      val rot = interpolations.tail.head.rotation().mulWithThis(tmp)
-      for (i <- interpolations.tail.tail) rot.mulThisWith(i.rotation(tmp))
+      val rot = interpolations.tail.head.rotation().mulWith(tmp)
+      for (i <- interpolations.tail.tail) rot.mul(i.rotation(tmp))
 
       tmp.mul(modelMatrix, rot)
-      rot.mulWithThis(normalMatrix)
+      rot.mulWith(normalMatrix)
 
       update(tmp, rot)
     }
