@@ -182,8 +182,7 @@ class Matrix4f(var m00: Float, var m01: Float, var m02: Float, var m03: Float,  
   }
 
   def * (m : Matrix4f): Matrix4f = {
-    val tmp = new Matrix4f
-    tmp.mul(this, m)
+    Matrix4f.mul(this, m)
   }
 
   def mulWith(m: Matrix4f): this.type = {
