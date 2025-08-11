@@ -1,41 +1,20 @@
 package org.nxn.math
 
-enum Axis extends Enum[Axis] {
-  case X extends Axis
-  case Y extends Axis
-  case Z extends Axis
+enum Axis(rot: Float => Matrix4f, rotMat: (Matrix4f, Float) => Matrix4f,
+          get: Vector3f => Float, set: (Vector3f, Float) => Unit) extends Enum[Axis] {
 
-  def rotate(a: Float): Matrix4f = {
-    this match {
-      case X => Matrix4f.xRot(a)
-      case Y => Matrix4f.yRot(a)
-      case Z => Matrix4f.zRot(a)
-    }
-  }
+  case X extends Axis(a => Matrix4f.xRot(a), (m,a) => m.xRot(a), v => v.x, (v,w) => v.x = w)
+  case Y extends Axis(a => Matrix4f.yRot(a), (m,a) => m.yRot(a), v => v.y, (v,w) => v.y = w)
+  case Z extends Axis(a => Matrix4f.zRot(a), (m,a) => m.zRot(a), v => v.z, (v,w) => v.z = w)
 
-  def rotate(m: Matrix4f, a: Float): Matrix4f = {
-    this match {
-      case X => m.xRot(a)
-      case Y => m.yRot(a)
-      case Z => m.zRot(a)
-    }
-  }
+  def rotate(a: Float): Matrix4f = rot(a)
+  def rotate(m: Matrix4f, a: Float): Matrix4f = rotMat(m, a)
 
-  def apply(v: Vector3f): Float = {
-    this match {
-      case X => v.x
-      case Y => v.y
-      case Z => v.z
-    }
-  }
+  def apply(v: Vector3f): Float = get(v)
 
-  def update(v: Vector3f, w: Float): Vector3f = {
-    this match {
-      case X => v.x = w
-      case Y => v.y = w
-      case Z => v.z = w
-    }
-    v
+  def update(vec: Vector3f, w: Float): Vector3f = {
+    set(vec, w)
+    vec
   }
 
 }
