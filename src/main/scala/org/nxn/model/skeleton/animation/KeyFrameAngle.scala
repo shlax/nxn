@@ -1,7 +1,9 @@
 package org.nxn.model.skeleton.animation
 
-import org.nxn.model.skeleton.AxisAngle
+import org.nxn.math.Angle3f
 
-class KeyFrameAngle(val angle: AxisAngle, val value:Float) {
+class KeyFrameAngle(val angle: Angle3f, val value:Float) {
+
+
 
 }
