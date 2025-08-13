@@ -11,12 +11,11 @@ class ParsedKeyFrame(jointsAngles: Array[ParsedJointAngles]) {
 
     j.traverse{
       case r : RotatingJoint =>
-        val ang = jointsAngles.find(_.name == r.name).map(_.angles)
+        val ang = jointsAngles.find(_.name == r.name)
         for(a <- r.angles){
           var v: Float = Float.NaN
-          for(pa <- ang){
-            val ov = pa.find(_.axis == a.axis).map(a => a.value)
-            for(x <- ov) v = x
+          for(pa <- ang; x <- pa(a.axis)){
+            v = x.value
           }
           angles += v
         }
