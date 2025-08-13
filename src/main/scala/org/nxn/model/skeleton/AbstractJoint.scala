@@ -4,12 +4,12 @@ import org.nxn.math.Matrix4f
 
 abstract class AbstractJoint(val name:String, val vertexes:Array[SkinVertex], val subJoints:Array[AbstractJoint]){
 
-  def apply(nm:String): Option[AbstractJoint] = {
-    if(nm == name) Some(this)
-    else{
-      var res:Option[AbstractJoint] = None
-      for(a <- subJoints if res.isEmpty) res = a(nm)
-      res
+  def traverse(fn: PartialFunction[AbstractJoint, Unit]):Unit = {
+    if(fn.isDefinedAt(this)){
+      fn.apply(this)
+    }
+    for(s <- subJoints){
+      s.traverse(fn)
     }
   }
 
