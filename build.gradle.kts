@@ -24,6 +24,8 @@ dependencies {
     runtimeOnly("org.lwjgl:lwjgl:3.3.6:natives-windows")
     runtimeOnly("org.lwjgl:lwjgl-glfw:3.3.6:natives-windows")
     runtimeOnly("org.lwjgl:lwjgl-shaderc:3.3.6:natives-windows")
+
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.13.4")
 }
 
 tasks.register<Copy>("copyDependenciesToLibs") {
