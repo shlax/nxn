@@ -20,7 +20,7 @@ class Interpolator{
     val s12 = nextValue - value
 
     s1 = value
-    v1 = if(s12 != 0f && Math.signum(s01) == Math.signum(s12)) s12 else 0f
+    v1 = if(s12 != 0f && s01 != 0f && Math.signum(s01) == Math.signum(s12) ) s12 else 0f
 
     // solve a0 a1  t = 0.5
     // v1 = v0 + a0 * (t/2) + a1 * (t/2)
