@@ -37,10 +37,7 @@ class Interpolator{
 
   /** time from 0 to 1 */
   def apply(t: Float): Float = {
-    if(t == 1f){
-      v = v1
-      s = s1
-    }else if(t <= 0.5f){
+    if(t <= 0.5f){
       v = v0 + a0 * t
       s = s0 + v0 * t + a0 * t * t / 2f
     }else{
