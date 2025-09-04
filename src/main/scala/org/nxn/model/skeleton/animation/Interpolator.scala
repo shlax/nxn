@@ -31,7 +31,7 @@ class Interpolator{
     // a0 = -(2 (v0 - v1))/t and t!=0
     // a0 = -(4 s0 - 4 s1 + 3 t v0 + t v1)/t^2 and t!=0
 
-    a0 = 4f * s1 - 4f * s0 - 3 * v0 - v1
+    a0 = 4f * s1 - 4f * s0 - 3f * v0 - v1
     a1 = a0 + 2f * v0 - 2f * v1
   }
 
