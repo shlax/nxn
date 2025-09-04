@@ -48,4 +48,6 @@ class Interpolator{
     s
   }
 
+  def value():Float = s
+
 }
