@@ -13,7 +13,7 @@ class Interpolator{
   var a1 = 0f
 
   def update(value: Float, nextValue:Float):Unit = {
-    v0 = if(t <= 0.5f) v0 + a0 * t else v1 - a0 * (1f - t)
+    v0 = if(t <= 0.5f) v0 + a0 * t else v1 - a1 * (1f - t)
     s0 = s
 
     val s01 = value - s0
