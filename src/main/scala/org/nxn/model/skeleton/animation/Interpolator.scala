@@ -41,7 +41,7 @@ class Interpolator{
     if(tt <= 0.5f){
       s = s0 + v0 * tt + a0 * tt * tt / 2f
     }else{
-      val tm = 1f - t
+      val tm = 1f - tt
       s = s1 - v1 * tm - a1 * tm * tm / 2f
     }
     s
