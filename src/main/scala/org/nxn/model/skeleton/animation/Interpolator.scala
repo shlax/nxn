@@ -2,7 +2,7 @@ package org.nxn.model.skeleton.animation
 
 class Interpolator{
   var s = 0f
-  var v = 0f
+  var t = 0f
 
   var s0 = 0f
   var v0 = 0f
@@ -13,8 +13,8 @@ class Interpolator{
   var a1 = 0f
 
   def update(value: Float, nextValue:Float):Unit = {
+    v0 = if(t <= 0.5f) v0 + a0 * t else v1 - a0 * (1f - t)
     s0 = s
-    v0 = v
 
     val s01 = value - s0
     val s12 = nextValue - value
@@ -36,13 +36,12 @@ class Interpolator{
   }
 
   /** time from 0 to 1 */
-  def apply(t: Float): Float = {
-    if(t <= 0.5f){
-      v = v0 + a0 * t
-      s = s0 + v0 * t + a0 * t * t / 2f
+  def apply(tt: Float): Float = {
+    t = tt
+    if(tt <= 0.5f){
+      s = s0 + v0 * tt + a0 * tt * tt / 2f
     }else{
       val tm = 1f - t
-      v = v1 - a0 * tm
       s = s1 - v1 * tm - a1 * tm * tm / 2f
     }
     s
