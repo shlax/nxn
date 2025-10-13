@@ -7,12 +7,12 @@ enum Axis(rot: Float => Matrix4f, rotMat: (Matrix4f, Float) => Matrix4f,
   case Y extends Axis(a => Matrix4f.yRot(a), (m,a) => m.yRot(a), v => v.y, (v,w) => v.y = w)
   case Z extends Axis(a => Matrix4f.zRot(a), (m,a) => m.zRot(a), v => v.z, (v,w) => v.z = w)
 
-  def rotate(a: Float): Matrix4f = rot(a)
-  def rotate(m: Matrix4f, a: Float): Matrix4f = rotMat(m, a)
+  inline def rotate(a: Float): Matrix4f = rot(a)
+  inline def rotate(m: Matrix4f, a: Float): Matrix4f = rotMat(m, a)
 
-  def apply(v: Vector3f): Float = get(v)
+  inline def apply(v: Vector3f): Float = get(v)
 
-  def update(vec: Vector3f, w: Float): Vector3f = {
+  inline def update(vec: Vector3f, w: Float): Vector3f = {
     set(vec, w)
     vec
   }
