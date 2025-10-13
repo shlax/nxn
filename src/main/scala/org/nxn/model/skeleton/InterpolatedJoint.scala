@@ -9,17 +9,17 @@ class InterpolatedJoint(name:String, val interpolations:Array[InterpolatedAngle]
     if(interpolations.length == 1){
       val rot = interpolations.head.rotation()
 
-      val tmp = Matrix4f.mul(modelMatrix, rot)
-      rot.mulWith(normalMatrix)
+      val tmp = Matrix4f.multiply(modelMatrix, rot)
+      rot.multiplyWith(normalMatrix)
 
       update(tmp, rot)
     }else{
       val tmp = interpolations.head.rotation()
-      val rot = interpolations.tail.head.rotation().mulWith(tmp)
-      for (i <- interpolations.tail.tail) rot.mul(i.rotation(tmp))
+      val rot = interpolations.tail.head.rotation().multiplyWith(tmp)
+      for (i <- interpolations.tail.tail) rot.multiply(i.rotation(tmp))
 
-      tmp.mul(modelMatrix, rot)
-      rot.mulWith(normalMatrix)
+      tmp.multiply(modelMatrix, rot)
+      rot.multiplyWith(normalMatrix)
 
       update(tmp, rot)
     }

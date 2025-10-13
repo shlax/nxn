@@ -11,8 +11,8 @@ class RayIntersection {
 
   /** https://en.wikipedia.org/wiki/M%C3%B6ller%E2%80%93Trumbore_intersection_algorithm */
   def intersect(r: Ray3f, t: Triangle3f): Float = {
-    e1.sub(t.b, t.a)
-    e2.sub(t.c, t.a)
+    e1.subtract(t.b, t.a)
+    e2.subtract(t.c, t.a)
 
     vp.cross(r.dir, e2)
 
@@ -21,7 +21,7 @@ class RayIntersection {
     else {
       val iDet = 1f / det
 
-      vt.sub(r.point, t.a)
+      vt.subtract(r.point, t.a)
 
       val u = vt.dot(vp) * iDet
       if (u < 0 || u > 1) Float.NaN

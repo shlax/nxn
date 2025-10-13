@@ -19,11 +19,11 @@ class OrbitCamera(val window: GlfwWindow, projection: Matrix4f, sensitivity:Floa
   val viewMatrix: Matrix4f = Matrix4f()
 
   protected def update(point: Vector3f, off: Float, rx: Float, ry: Float): this.type = {
-    val tmp = Matrix4f.yRot(ry)
-    rotationMatrix.xRot(rx).mul(tmp)
+    val tmp = Matrix4f.rotateY(ry)
+    rotationMatrix.rotateX(rx).multiply(tmp)
 
-    tmp.set(point).mulWith(rotationMatrix)
-    viewMatrix.set(0f, 0f, off).mul(tmp).mulWith(projection)
+    tmp.set(point).multiplyWith(rotationMatrix)
+    viewMatrix.set(0f, 0f, off).multiply(tmp).multiplyWith(projection)
 
     this
   }

@@ -6,7 +6,7 @@ import java.nio.FloatBuffer
 
 object Matrix4f{
 
-  def xRot(angle: Float): Matrix4f = {
+  def rotateX(angle: Float): Matrix4f = {
     val s = Math.sin(angle.toDouble).toFloat
     val c = Math.cos(angle.toDouble).toFloat
 
@@ -16,7 +16,7 @@ object Matrix4f{
              0f, 0f, 0f, 1f)
   }
 
-  def yRot(angle: Float): Matrix4f = {
+  def rotateY(angle: Float): Matrix4f = {
     val s = Math.sin(angle.toDouble).toFloat
     val c = Math.cos(angle.toDouble).toFloat
 
@@ -26,7 +26,7 @@ object Matrix4f{
              0f, 0f, 0f, 1f)
   }
 
-  def zRot(angle: Float): Matrix4f = {
+  def rotateZ(angle: Float): Matrix4f = {
     val s = Math.sin(angle.toDouble).toFloat
     val c = Math.cos(angle.toDouble).toFloat
 
@@ -36,7 +36,7 @@ object Matrix4f{
              0f, 0f, 0f, 1f)
   }
 
-  def mul(m : Matrix4f, n : Matrix4f):Matrix4f = {
+  def multiply(m : Matrix4f, n : Matrix4f):Matrix4f = {
     val t00 = m.m00 * n.m00 + m.m01 * n.m10 + m.m02 * n.m20 + m.m03 * n.m30
     val t01 = m.m00 * n.m01 + m.m01 * n.m11 + m.m02 * n.m21 + m.m03 * n.m31
     val t02 = m.m00 * n.m02 + m.m01 * n.m12 + m.m02 * n.m22 + m.m03 * n.m32
@@ -95,7 +95,7 @@ class Matrix4f(var m00: Float, var m01: Float, var m02: Float, var m03: Float,  
          v.m30, v.m31, v.m32, v.m33)
   }
 
-  def xRot(angle: Float): this.type = {
+  def rotateX(angle: Float): this.type = {
     val s = Math.sin(angle.toDouble).toFloat
     val c = Math.cos(angle.toDouble).toFloat
 
@@ -107,7 +107,7 @@ class Matrix4f(var m00: Float, var m01: Float, var m02: Float, var m03: Float,  
     this
   }
 
-  def yRot(angle: Float): this.type = {
+  def rotateY(angle: Float): this.type = {
     val s = Math.sin(angle.toDouble).toFloat
     val c = Math.cos(angle.toDouble).toFloat
 
@@ -119,7 +119,7 @@ class Matrix4f(var m00: Float, var m01: Float, var m02: Float, var m03: Float,  
     this
   }
 
-  def zRot(angle: Float): this.type = {
+  def rotateZ(angle: Float): this.type = {
     val s = Math.sin(angle.toDouble).toFloat
     val c = Math.cos(angle.toDouble).toFloat
 
@@ -182,19 +182,19 @@ class Matrix4f(var m00: Float, var m01: Float, var m02: Float, var m03: Float,  
   }
 
   def * (m : Matrix4f): Matrix4f = {
-    Matrix4f.mul(this, m)
+    Matrix4f.multiply(this, m)
   }
 
-  def mulWith(m: Matrix4f): this.type = {
-    mul(m, this)
+  def multiplyWith(m: Matrix4f): this.type = {
+    multiply(m, this)
   }
 
   /** Sets the value of this matrix to the result of multiplying itself with matrix `m` */
-  def mul(m : Matrix4f) : this.type = {
-    mul(this, m)
+  def multiply(m : Matrix4f) : this.type = {
+    multiply(this, m)
   }
 
-  def mul(m : Matrix4f, n : Matrix4f):this.type = {
+  def multiply(m : Matrix4f, n : Matrix4f):this.type = {
     val t00 = m.m00 * n.m00 + m.m01 * n.m10 + m.m02 * n.m20 + m.m03 * n.m30
     val t01 = m.m00 * n.m01 + m.m01 * n.m11 + m.m02 * n.m21 + m.m03 * n.m31
     val t02 = m.m00 * n.m02 + m.m01 * n.m12 + m.m02 * n.m22 + m.m03 * n.m32

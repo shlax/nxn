@@ -22,7 +22,7 @@ object Vector3f{
     Vector3f(x, y, z)
   }
 
-  def sub(a: Vector3f, b: Vector3f): Vector3f = {
+  def subtract(a: Vector3f, b: Vector3f): Vector3f = {
     val x = a.x - b.x
     val y = a.y - b.y
     val z = a.z - b.z
@@ -46,11 +46,11 @@ class Vector3f(var x : Float, var y : Float, var z : Float)  extends ToFloatBuff
     a(this) = v
     this
   }
-  
+
   def apply(a:Axis): Float = {
     a(this)
   }
-  
+
   def set(vx: Float, vy:Float, vz:Float): this.type  = {
     x = vx
     y = vy
@@ -66,7 +66,11 @@ class Vector3f(var x : Float, var y : Float, var z : Float)  extends ToFloatBuff
     
     this
   }
-  
+
+  def + (b: Vector3f): this.type = {
+    add(b)
+  }
+
   def add(a:Vector3f, b:Vector3f):this.type = {
     x = a.x + b.x
     y = a.y + b.y
@@ -83,7 +87,11 @@ class Vector3f(var x : Float, var y : Float, var z : Float)  extends ToFloatBuff
     this
   }
 
-  def sub(b:Vector3f): this.type = {
+  def - (b:Vector3f) : this.type = {
+    subtract(b)
+  }
+
+  def subtract(b:Vector3f): this.type = {
     x -= b.x
     y -= b.y
     z -= b.z
@@ -91,7 +99,7 @@ class Vector3f(var x : Float, var y : Float, var z : Float)  extends ToFloatBuff
     this
   }
 
-  def sub(a:Vector3f, b:Vector3f) : this.type = {
+  def subtract(a:Vector3f, b:Vector3f) : this.type = {
     x = a.x - b.x
     y = a.y - b.y
     z = a.z - b.z
@@ -99,7 +107,7 @@ class Vector3f(var x : Float, var y : Float, var z : Float)  extends ToFloatBuff
     this
   }
 
-  def mul(m:Float): this.type = {
+  def multiply(m:Float): this.type = {
     x = x * m
     y = y * m
     z = z * m
@@ -107,7 +115,7 @@ class Vector3f(var x : Float, var y : Float, var z : Float)  extends ToFloatBuff
     this
   }
 
-  def div(m:Float):this.type = {
+  def divide(m:Float):this.type = {
     x = x / m
     y = y / m
     z = z / m

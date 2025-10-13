@@ -20,7 +20,7 @@ object SkinVertex {
       normals += normals.find(_.is(v.normal)).getOrElse(SkinNormal(v.normal))
     }
 
-    new SkinVertex(Vector3f(point).sub(offset), point, normals.toArray)
+    new SkinVertex(Vector3f(point).subtract(offset), point, normals.toArray)
   }
 
 }
