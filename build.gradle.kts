@@ -8,7 +8,7 @@ repositories {
 
 dependencies {
 
-    implementation("org.scala-lang:scala3-library_3:3.7.2")
+    implementation("org.scala-lang:scala3-library_3:3.7.3")
     implementation("org.antlr:antlr4-runtime:4.13.2")
 
     implementation("org.l33tlabs.twl:pngdecoder:1.0")
@@ -25,7 +25,7 @@ dependencies {
     runtimeOnly("org.lwjgl:lwjgl-glfw:3.3.6:natives-windows")
     runtimeOnly("org.lwjgl:lwjgl-shaderc:3.3.6:natives-windows")
 
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.13.4")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:6.0.0")
 }
 
 tasks.register<Copy>("copyDependenciesToLibs") {

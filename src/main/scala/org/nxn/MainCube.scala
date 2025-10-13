@@ -14,6 +14,7 @@ import org.nxn.vulkan.{Buffer, CommandBuffer, DescriptorPool, DescriptorSet, Des
 import org.nxn.model.ModelLoader
 import org.nxn.math.perspective.*
 
+// --sun-misc-unsafe-memory-access=allow --enable-native-access=ALL-UNNAMED -XX:+UnlockExperimentalVMOptions -XX:+TrustFinalNonStaticFields
 object MainCube extends Runnable{
 
   def main(args:Array[String]) : Unit = {
