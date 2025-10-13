@@ -176,7 +176,7 @@ class Matrix4f(var m00: Float, var m01: Float, var m02: Float, var m03: Float,  
     val y = m10*in.x + m11*in.y + m12*in.z + m13
     val z = m20*in.x + m21*in.y + m22*in.z + m23
 
-    out.x = x; out.y =y; out.z = z
+    out.x = x; out.y = y; out.z = z
 
     out
   }
