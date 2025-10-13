@@ -11,8 +11,8 @@ object Matrix4f{
     val c = Math.cos(angle.toDouble).toFloat
 
     Matrix4f(1f, 0f, 0f, 0f,
-             0f, c , -s, 0f,
-             0f, s , c , 0f,
+             0f,  c, -s, 0f,
+             0f,  s,  c, 0f,
              0f, 0f, 0f, 1f)
   }
 
@@ -20,9 +20,9 @@ object Matrix4f{
     val s = Math.sin(angle.toDouble).toFloat
     val c = Math.cos(angle.toDouble).toFloat
 
-    Matrix4f(c , 0f, s , 0f,
+    Matrix4f( c, 0f,  s, 0f,
              0f, 1f, 0f, 0f,
-             -s, 0f, c , 0f,
+             -s, 0f,  c, 0f,
              0f, 0f, 0f, 1f)
   }
 
@@ -30,8 +30,8 @@ object Matrix4f{
     val s = Math.sin(angle.toDouble).toFloat
     val c = Math.cos(angle.toDouble).toFloat
 
-    Matrix4f(c , -s, 0f, 0f,
-             s , c , 0f, 0f,
+    Matrix4f( c, -s, 0f, 0f,
+              s,  c, 0f, 0f,
              0f, 0f, 1f, 0f,
              0f, 0f, 0f, 1f)
   }
@@ -100,8 +100,8 @@ class Matrix4f(var m00: Float, var m01: Float, var m02: Float, var m03: Float,  
     val c = Math.cos(angle.toDouble).toFloat
 
     m00 = 1f; m01 = 0f; m02 = 0f; m03 = 0f
-    m10 = 0f; m11 = c ; m12 = -s; m13 = 0f
-    m20 = 0f; m21 = s ; m22 = c ; m23 = 0f
+    m10 = 0f; m11 =  c; m12 = -s; m13 = 0f
+    m20 = 0f; m21 =  s; m22 =  c; m23 = 0f
     m30 = 0f; m31 = 0f; m32 = 0f; m33 = 1f
 
     this
@@ -111,9 +111,9 @@ class Matrix4f(var m00: Float, var m01: Float, var m02: Float, var m03: Float,  
     val s = Math.sin(angle.toDouble).toFloat
     val c = Math.cos(angle.toDouble).toFloat
 
-    m00 = c ; m01 = 0f; m02 = s ; m03 = 0f
+    m00 =  c; m01 = 0f; m02 =  s; m03 = 0f
     m10 = 0f; m11 = 1f; m12 = 0f; m13 = 0f
-    m20 = -s; m21 = 0f; m22 = c ; m23 = 0f
+    m20 = -s; m21 = 0f; m22 =  c; m23 = 0f
     m30 = 0f; m31 = 0f; m32 = 0f; m33 = 1f
 
     this
@@ -123,8 +123,8 @@ class Matrix4f(var m00: Float, var m01: Float, var m02: Float, var m03: Float,  
     val s = Math.sin(angle.toDouble).toFloat
     val c = Math.cos(angle.toDouble).toFloat
 
-    m00 = c ; m01 = -s; m02 = 0f; m03 = 0f
-    m10 = s ; m11 = c ; m12 = 0f; m13 = 0f
+    m00 =  c; m01 = -s; m02 = 0f; m03 = 0f
+    m10 =  s; m11 =  c; m12 = 0f; m13 = 0f
     m20 = 0f; m21 = 0f; m22 = 1f; m23 = 0f
     m30 = 0f; m31 = 0f; m32 = 0f; m33 = 1f
 

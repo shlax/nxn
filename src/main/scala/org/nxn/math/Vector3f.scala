@@ -107,12 +107,20 @@ class Vector3f(var x : Float, var y : Float, var z : Float)  extends ToFloatBuff
     this
   }
 
+  def * (m: Float): this.type = {
+    multiply(m)
+  }
+
   def multiply(m:Float): this.type = {
     x = x * m
     y = y * m
     z = z * m
 
     this
+  }
+
+  def / (m: Float): this.type = {
+    divide(m)
   }
 
   def divide(m:Float):this.type = {

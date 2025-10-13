@@ -13,7 +13,7 @@ object Vector2f{
     Vector2f(x, y)
   }
 
-  def sub(a: Vector2f, b: Vector2f): Vector2f = {
+  def subtract(a: Vector2f, b: Vector2f): Vector2f = {
     val x = a.x - b.x
     val y = a.y - b.y
 
@@ -25,6 +25,10 @@ object Vector2f{
 class Vector2f(var x : Float, var y : Float) extends ToFloatBuffer{
 
   def this() = this(0f, 0f)
+
+  def + (b: Vector2f): this.type = {
+    add(b)
+  }
 
   def add(a: Vector2f, b: Vector2f): this.type = {
     x = a.x + b.x
@@ -40,28 +44,40 @@ class Vector2f(var x : Float, var y : Float) extends ToFloatBuffer{
     this
   }
 
-  def sub(b: Vector2f): this.type = {
+  def - (b: Vector2f): this.type = {
+    subtract(b)
+  }
+
+  def subtract(b: Vector2f): this.type = {
     x -= b.x
     y -= b.y
 
     this
   }
 
-  def sub(a: Vector2f, b: Vector2f): this.type = {
+  def subtract(a: Vector2f, b: Vector2f): this.type = {
     x = a.x - b.x
     y = a.y - b.y
 
     this
   }
 
-  def mul(m: Float): this.type = {
+  def * (m: Float): this.type = {
+    multiply(m)
+  }
+
+  def multiply(m: Float): this.type = {
     x = x * m
     y = y * m
 
     this
   }
 
-  def div(m: Float): this.type = {
+  def / (m: Float): this.type = {
+    divide(m)
+  }
+
+  def divide(m: Float): this.type = {
     x = x / m
     y = y / m
 
