@@ -12,9 +12,8 @@ enum Axis(rot: Float => Matrix4f, rotMat: (Matrix4f, Float) => Matrix4f,
 
   def apply(v: Vector3f): Float = get(v)
 
-  def update(vec: Vector3f, w: Float): Vector3f = {
+  def update(vec: Vector3f, w: Float): Unit = {
     set(vec, w)
-    vec
   }
 
 }
