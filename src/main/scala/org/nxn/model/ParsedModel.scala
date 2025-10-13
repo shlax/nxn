@@ -8,7 +8,7 @@ import scala.collection.mutable.ArrayBuffer
 class ParsedModel(val points:Array[Vector3f], val faces:Array[ParsedTriangle]){
 
   def invert(a:Axis):this.type = {
-    for(p <- points) a(p) = -1f * a(p)
+    for(p <- points) p(a) = -1f * p(a)
     for(f <- faces) f.invert(a)
     this
   }

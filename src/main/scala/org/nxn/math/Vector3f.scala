@@ -41,6 +41,15 @@ class Vector3f(var x : Float, var y : Float, var z : Float)  extends ToFloatBuff
   def this(v: Vector3f) = {
     this(v.x, v.y, v.z)
   }
+
+  def update(a:Axis, v:Float): this.type = {
+    a(this) = v
+    this
+  }
+  
+  def apply(a:Axis): Float = {
+    a(this)
+  }
   
   def set(vx: Float, vy:Float, vz:Float): this.type  = {
     x = vx
