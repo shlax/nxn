@@ -6,8 +6,8 @@ class ParsedJointAngles(val name:String, val angles:Array[ParsedJointAngle]) {
 
   def apply(a:Axis):Option[ParsedJointAngle] = {
     var res:Option[ParsedJointAngle] = None
-    for(a <- angles if a.axis == a){
-      res = Some(a)
+    for(i <- angles if i.axis == a){
+      res = Some(i)
     }
     res
   }

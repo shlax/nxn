@@ -48,7 +48,9 @@ class ParsedJoint(val name:String, val point: Vector3f, val axis:Array[Axis], va
         case _ => parent
       }
 
-    for(i <- subJoints.zipWithIndex) sub(i._2) = i._1(models, off, par)
+    if(subJoints != null) {
+      for (i <- subJoints.zipWithIndex) sub(i._2) = i._1(models, off, par)
+    }
 
     ret
   }

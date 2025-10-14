@@ -140,7 +140,7 @@ public class KeyFrameParser extends Parser {
 			}
 			setState(23);
 			match(T__2);
-			 ((KeyFrameContext)_localctx).result =  new org.nxn.model.skeleton.animation.ParsedKeyFrame(new org.nxn.model.skeleton.animation.ParsedJointAngles[0]); 
+			 ((KeyFrameContext)_localctx).result =  new org.nxn.model.skeleton.animation.ParsedKeyFrame( l.toArray( new org.nxn.model.skeleton.animation.ParsedJointAngles[0]) ); 
 			}
 		}
 		catch (RecognitionException re) {

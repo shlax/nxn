@@ -7,7 +7,7 @@ grammar KeyFrame;
 keyFrame returns [ org.nxn.model.skeleton.animation.ParsedKeyFrame result ]:
     { java.util.ArrayList<org.nxn.model.skeleton.animation.ParsedJointAngles> l = new java.util.ArrayList<org.nxn.model.skeleton.animation.ParsedJointAngles>(); }
     '[' j=joint { l.add($j.r); } (',' k=joint { l.add($k.r); } )*  ']'
-    { $result = new org.nxn.model.skeleton.animation.ParsedKeyFrame(new org.nxn.model.skeleton.animation.ParsedJointAngles[0]); }
+    { $result = new org.nxn.model.skeleton.animation.ParsedKeyFrame( l.toArray( new org.nxn.model.skeleton.animation.ParsedJointAngles[0]) ); }
 ;
 
 joint returns [ org.nxn.model.skeleton.animation.ParsedJointAngles r ]:

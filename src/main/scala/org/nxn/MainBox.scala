@@ -6,6 +6,7 @@ import org.nxn.MainCube.run
 import org.nxn.math.Axis
 import org.nxn.model.ModelLoader
 import org.nxn.model.skeleton.SkeletonLoader
+import org.nxn.model.skeleton.animation.KeyFrameLoader
 import org.nxn.utils.closeable.*
 import org.nxn.vulkan.shader.ShaderCompiler
 
@@ -40,6 +41,9 @@ object MainBox extends Runnable{
 
     val model = boxSkeleton(Map("pCube1" -> boxMesh))
 
+    val animations = for(s <- Seq("00", "30")) yield getClass.getResourceAsStream("/models/box/animation/"+s+".ang") | { in =>
+      KeyFrameLoader().loadKeyFrame(in).apply(model)
+    }
 
   }
 

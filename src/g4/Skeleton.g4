@@ -18,8 +18,13 @@ skeleton returns [ org.nxn.model.skeleton.ParsedJoint result ]:
     '[' j=joint ']' { $result = $j.r; } ;
 
 joint returns [ org.nxn.model.skeleton.ParsedJoint r ]:
-    nm=NAME ':' ( (v=vector3 o=axis) | a=angles ) (':' b=bindings  )? ( ':' l=jointList )?
-    { $r = new org.nxn.model.skeleton.ParsedJoint( $nm.text, $v.r, $o.r, $a.r, $b.r, $l.r); };
+    { org.nxn.math.Vector3f av = null;
+      org.nxn.math.Axis[] ao = null;
+      org.nxn.model.skeleton.ParsedAngle[] aa = null;
+      org.nxn.model.skeleton.ParsedBinding[] ab = null;
+      org.nxn.model.skeleton.ParsedJoint[] al = null; }
+    nm=NAME ':' ( (v=vector3 o=axis { av = $v.r; av = $v.r; ao = $o.r; } ) | a=angles { aa = $a.r; } ) (':' b=bindings { ab = $b.r; } )? ( ':' l=jointList { al = $l.r; } )?
+    { $r = new org.nxn.model.skeleton.ParsedJoint( $nm.text, av, ao, aa, ab, al); };
 
 axis returns [ org.nxn.math.Axis[] r ]:
     ':' t=NAME
