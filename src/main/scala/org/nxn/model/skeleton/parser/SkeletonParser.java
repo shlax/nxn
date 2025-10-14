@@ -191,7 +191,7 @@ public class SkeletonParser extends Parser {
 				((JointContext)_localctx).v = vector3();
 				setState(33);
 				((JointContext)_localctx).o = axis();
-				 av = ((JointContext)_localctx).v.r; av = ((JointContext)_localctx).v.r; ao = ((JointContext)_localctx).o.r; 
+				 av = ((JointContext)_localctx).v.r; ao = ((JointContext)_localctx).o.r; 
 				}
 				}
 				break;

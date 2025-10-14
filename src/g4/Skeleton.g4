@@ -23,7 +23,7 @@ joint returns [ org.nxn.model.skeleton.ParsedJoint r ]:
       org.nxn.model.skeleton.ParsedAngle[] aa = null;
       org.nxn.model.skeleton.ParsedBinding[] ab = null;
       org.nxn.model.skeleton.ParsedJoint[] al = null; }
-    nm=NAME ':' ( (v=vector3 o=axis { av = $v.r; av = $v.r; ao = $o.r; } ) | a=angles { aa = $a.r; } ) (':' b=bindings { ab = $b.r; } )? ( ':' l=jointList { al = $l.r; } )?
+    nm=NAME ':' ( (v=vector3 o=axis { av = $v.r; ao = $o.r; } ) | a=angles { aa = $a.r; } ) (':' b=bindings { ab = $b.r; } )? ( ':' l=jointList { al = $l.r; } )?
     { $r = new org.nxn.model.skeleton.ParsedJoint( $nm.text, av, ao, aa, ab, al); };
 
 axis returns [ org.nxn.math.Axis[] r ]:
