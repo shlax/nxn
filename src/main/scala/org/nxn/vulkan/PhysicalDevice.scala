@@ -30,9 +30,11 @@ class PhysicalDevice(val instance: Instance, val surface: Surface, deviceName:St
 
       val nm = if(deviceName.isEmpty){ ""
       }else{
-        val devProp = VkPhysicalDeviceProperties.calloc(stack)
-        VK10.vkGetPhysicalDeviceProperties(gpu, devProp)
-        devProp.deviceNameString()
+        MemoryStack.stackPush()| { stackNm =>
+          val devProp = VkPhysicalDeviceProperties.calloc(stackNm)
+          VK10.vkGetPhysicalDeviceProperties(gpu, devProp)
+          devProp.deviceNameString()
+        }
       }
 
       VK10.vkGetPhysicalDeviceQueueFamilyProperties(gpu, intBuff, null)
